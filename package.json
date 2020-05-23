@@ -1,0 +1,17 @@
+{
+  "name": "tea-layer1-listener",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@polkadot/api": "^1.14.1",
+    "nats": "^1.4.9",
+    "rxjs": "^6.5.5"
+  }
+}
