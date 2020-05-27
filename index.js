@@ -1,7 +1,12 @@
 const NATS = require('nats')
 const { ApiPromise } = require('@polkadot/api')
 
-const nc = NATS.connect()
+const nc = NATS.connect();
+
+const cache = {
+      latest_block_height : 0,
+      latest_block_hash: '',
+};
 
 function handle_new_header(header) {
       nc.publish('layer1.chain.newheader', `${header.number}.${header.hash}`)
@@ -26,7 +31,9 @@ async function main() {
 
       // listen new block
       api.rpc.chain.subscribeNewHeads((header) => {
-            // console.log(`chain is at #${header.number} has hash ${header.hash}`)
+            console.log(`chain is at #${header.number} has hash ${header.hash}`)
+            cache.latest_block_hash = header.hash;
+            cache.latest_block_height = header.number;
             handle_new_header(header)
       })
 
@@ -47,6 +54,9 @@ async function main() {
                   case 'node_info':
                         const nodeInfo = await api.query.tea.nodes(msg);
                         nc.publish(reply, JSON.stringify(nodeInfo))
+                        break;
+                  case 'latest_block':
+                        nc.publish(reply, JSON.stringify(cache));
                         break;
                   default:
                         nc.publish(reply, JSON.stringify(['action_does_not_support']))
