@@ -19,17 +19,8 @@ async function main() {
                         "payment": "u32",
                         "cid": "H256"
                   },
-                  Task: {
-                        "account": "H256",
-                        "amt": "Balance",
-                        "model_id": "Hash",
-                        "cid": "Hash"
-                  },
-                  Competitor: {
-                        "account": "H256",
-                        "task_id": "Hash",
-                        "random_value": "H256"
-                  }
+                  TeaId: "Vec<u8>",
+                  PeerId: "Vec<u8>"
             }
       })
 
@@ -40,21 +31,25 @@ async function main() {
       })
 
       nc.subscribe('layer1.async.*.>', async function (msg, reply, subject, sid) {
-            // console.log('Received a message: ', msg, reply, subject, sid)
+            console.log('Received a message: ', msg, reply, subject, sid)
             const subSections = subject.split('.')
             // console.log(subSections)
+            if (subSections.length < 4) {
+                  console.log('invalid subject')
+                  return
+            }
             const replyTo = subSections[2]
             const action = subSections[3]
             switch(action) {
                   case 'bootstrap':
-                        nc.publish(replyTo + '.action.bootstrap', JSON.stringify(['tea-node1', 'tea-node2']))
+                        nc.publish(reply, JSON.stringify(['tea-node1', 'tea-node2']))
                         break;
                   case 'node_info':
                         const nodeInfo = await api.query.tea.nodes(msg);
-                        nc.publish(replyTo + '.action.node_info', JSON.stringify(nodeInfo))
+                        nc.publish(reply, JSON.stringify(nodeInfo))
                         break;
                   default:
-                        nc.publish(replyTo + '.error.action_does_not_support', '')
+                        nc.publish(reply, JSON.stringify(['action_does_not_support']))
             }
       })
 }
