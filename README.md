@@ -21,7 +21,6 @@ npm start
 
 - Get node info
 ```bash
-cargo run --example nats-box -- sub 'layer1_reply.*.>'
 cargo run --example nats-box -- pub layer1.async.layer1_reply.node_info eb628d56ad353cc7a9b4db31aae999c402a02da9da6d2651a8e9aa2f73920b95
 ```
 
@@ -35,7 +34,6 @@ Received a Message {
 
 - Get bootstrap
 ```bash
-cargo run --example nats-box -- sub 'layer1_reply.*.>'
 cargo run --example nats-box -- pub layer1.async.layer1_reply.bootstrap 123
 ```
 
@@ -44,6 +42,19 @@ Response:
 Received a Message {
   subject: "layer1_reply.action.bootstrap",
   data: "["tea-node1","tea-node2"]"
+}
+```
+
+- Get block hash
+```bash
+cargo run --example nats-box -- pub layer1.async.layer1_reply.get_block_hash 10
+```
+
+Response:
+```
+Received a Message {
+  subject: "layer1_reply.action.get_block_hash",
+  data: "\"0x7a3cb3d654df28ccc328c2760a6dd7036a13b232f5639d5c1626795a03c44b88\""
 }
 ```
 

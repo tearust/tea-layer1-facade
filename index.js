@@ -50,14 +50,18 @@ async function main() {
             switch(action) {
                   case 'bootstrap':
                         nc.publish(reply, JSON.stringify(['tea-node1', 'tea-node2']))
-                        break;
+                        break
                   case 'node_info':
-                        const nodeInfo = await api.query.tea.nodes(msg);
+                        const nodeInfo = await api.query.tea.nodes(msg)
                         nc.publish(reply, JSON.stringify(nodeInfo))
-                        break;
+                        break
                   case 'latest_block':
-                        nc.publish(reply, JSON.stringify(cache));
-                        break;
+                        nc.publish(reply, JSON.stringify(cache))
+                        break
+                  case 'get_block_hash':
+                        const blockHash = await api.rpc.chain.getBlockHash(parseInt(msg))
+                        nc.publish(reply, JSON.stringify(blockHash))
+                        break
                   default:
                         nc.publish(reply, JSON.stringify(['action_does_not_support']))
             }
