@@ -31,7 +31,7 @@ async function main() {
 
       // listen new block
       api.rpc.chain.subscribeNewHeads((header) => {
-            console.log(`chain is at #${header.number} has hash ${header.hash}`)
+            //console.log(`chain is at #${header.number} has hash ${header.hash}`)
             cache.latest_block_hash = header.hash;
             cache.latest_block_height = header.number;
             handle_new_header(header)
