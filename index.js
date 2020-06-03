@@ -6,6 +6,8 @@ const nc = NATS.connect();
 const cache = {
       latest_block_height : 0,
       latest_block_hash: '',
+
+      peer_url_list: []
 };
 
 function handle_new_header(header) {
@@ -62,10 +64,35 @@ async function main() {
                         const blockHash = await api.rpc.chain.getBlockHash(parseInt(msg))
                         nc.publish(reply, JSON.stringify(blockHash))
                         break
+
+                  case 'put_peer_url':
+                        // TODO put url to layer1
+                        const list = {
+                              list: put_peer_url(msg)
+                        };
+                        nc.publish(reply, JSON.stringify(list));
+                        break;
                   default:
                         nc.publish(reply, JSON.stringify(['action_does_not_support']))
             }
       })
+}
+
+function put_peer_url(msg){
+      console.log('receive peer url : ', msg);
+      let n = cache.peer_url_list.find((x) => x === msg);
+      if(!n){
+            cache.peer_url_list.push(msg);
+      }
+
+      const rs = [];
+      cache.peer_url_list.forEach((x) => {
+            if(x !== msg){
+                  rs.push(x);
+            }
+      })
+
+      return rs;
 }
 
 main().catch((error) => {
