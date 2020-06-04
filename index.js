@@ -11,7 +11,7 @@ const cache = {
 };
 
 function handle_new_header(header) {
-      nc.publish('layer1.chain.newheader', `${header.number}.${header.hash}`)
+      nc.publish(`layer1.chain.newheader.${header.number}`, header.hash)
 }
 
 async function main() {
