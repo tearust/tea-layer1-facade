@@ -60,13 +60,13 @@ Received a Message {
 
 - Listen new block
 ```bash
-cargo run --example nats-box -- sub 'layer1.chain.newheader'
+cargo run --example nats-box -- sub 'layer1.chain.newheader.>'
 ```
 
 Response:
 ```
 Received a Message {
-  subject: "layer1.chain.newheader",
-  data: "11504.0x23491f576dd33543a4bc7fa2b99f922a44fc26e086adcfd0acda1b54df0028ee"
+  subject: "layer1.chain.newheader.11504",
+  data: "0x23491f576dd33543a4bc7fa2b99f922a44fc26e086adcfd0acda1b54df0028ee"
 }
 ```

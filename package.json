@@ -5,12 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "test"
+    "test": "mocha"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@polkadot/api": "^1.14.1",
+    "mocha": "^7.2.0",
     "nats": "^1.4.9",
     "rxjs": "^6.5.5"
   }
