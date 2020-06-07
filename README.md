@@ -70,3 +70,42 @@ Received a Message {
   data: "0x23491f576dd33543a4bc7fa2b99f922a44fc26e086adcfd0acda1b54df0028ee"
 }
 ```
+
+- Add new node
+```
+nc.publish('layer1.async.replay.add_new_node', '0x02b40e313842e45574e0ca5b37cb0580cc3378ceb096b562a9828b2137b98f5f', 'layer1.test.result')
+```
+
+Response:
+```
+Received a Message {
+  subject: "layer1.test.result",
+  data: "{"status":{"InBlock":"0x2d00885753cfe9988e21dbfe86cfe7d1a7fb4f52df937cb7682a46f88bc6e10b"},"tea_id":"0x02b40e313842e45574e0ca5b37cb0580cc3378ceb096b562a9828b2137b98f5f"}"
+}
+```
+
+- Update peer ID
+```
+nc.publish('layer1.async.replay.update_peer_id', '0x02b40e313842e45574e0ca5b37cb0580cc3378ceb096b562a9828b2137b98f5f__0x1fbb8d02600f4931fbed2e4f998d9e16d1a95e6d4586b5787310a95d2f8a6ed4_0xa555a7e72e9810dde46ca653d56956a2d6e88bb3896038f19674bd3b02d94d18', 'layer1.test.result')
+```
+
+Response:
+```
+Received a Message {
+  subject: "layer1.test.result",
+  data: "{"status":{"InBlock":"0x269d352a5c5cd1776ebd72750e44e08b1caad309862fd571b4ac87575ae0f10c"},"tea_id":"0x02b40e313842e45574e0ca5b37cb0580cc3378ceb096b562a9828b2137b98f5f"}"
+}
+```
+
+- Get node list
+```
+nc.publish('layer1.async.replay.get_nodes', '', 'layer1.test.result')
+```
+
+Response:
+```
+Received a Message {
+  subject: "layer1.test.result",
+  data: "[{"TeaId":"0x02b40e313842e45574e0ca5b37cb0580cc3378ceb096b562a9828b2137b98f5f","Peers":["0x1fbb8d02600f4931fbed2e4f998d9e16d1a95e6d4586b5787310a95d2f8a6ed4","0xa555a7e72e9810dde46ca653d56956a2d6e88bb3896038f19674bd3b02d94d18"]},{"TeaId":"0xdd487dbc71b5fd6260a523b0b9b9f8258763f58848c96f888dbddc07d3d094db","Peers":["0xdd487dbc71b5fd6260a523b0b9b9f8258763f58848c96f888dbddc07d3d094db","0x316ca2db416e37a37d2d2aa57a07aaffb1ac65ad4bf8fa4367c1e1edce9f60d6"]},{"TeaId":"0xa2d56e0a85f22450963acb427530073b497fb73d3ff48eb3ab534fb483b7e412","Peers":["0x13363206e8593bb175c94ee0a978ece66ecf911396bffc4a1dffc0c589a51e13","0x02b40e313842e45574e0ca5b37cb0580cc3378ceb096b562a9828b2137b98f5f","0x4b60d01ac2e35e9067358342b228d96e2fb0e8ad801d99de34cdbaaa53cd7965"]}]"
+}
+```

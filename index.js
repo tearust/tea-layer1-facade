@@ -20,22 +20,21 @@ async function main() {
             types: {
                   Weight: "u32",
                   Address: "AccountId",
+                  TeaId: "Bytes",
+                  PeerId: "Bytes",
                   Node: {
-                        "key": "Bytes",
-                        "amt": "u64"
+                        "TeaId": "TeaId",
+                        "Peers": "Vec<PeerId>"
                   },
                   Model: {
                         "account": "AccountId",
                         "payment": "u32",
                         "cid": "H256"
-                  },
-                  TeaId: "Vec<u8>",
-                  PeerId: "Vec<u8>"
+                  }
             }
       })
 
       await cryptoWaitReady()
-
 
       // listen new block
       api.rpc.chain.subscribeNewHeads((header) => {
@@ -87,18 +86,55 @@ async function main() {
                         console.log('send transfer');
                         break
                   case 'add_new_node':
-                        await add_new_node(api, alice, '0xa2d56e0a85f22450963acb427530073b497fb73d3ff48eb3ab534fb483b7e412');
+                        var tea_id = msg
+                        await api.tx.tea.addNewNode(tea_id)
+                              .signAndSend(alice, ({ events = [], status }) => {
+                                    if (status.isInBlock) {
+                                          console.log('Successful add new node with tea_id ' + tea_id);
+                                          nc.publish(reply, JSON.stringify({status, tea_id}))
+                                    } else {
+                                          console.log('Status of transfer: ' + status.type);
+                                    }
+
+                                    events.forEach(({ phase, event: { data, method, section } }) => {
+                                          console.log(phase.toString() + ' : ' + section + '.' + method + ' ' + data.toString());
+                                    });
+                        });
                         console.log('send add_new_node tx')
                         break
                   case 'update_peer_id':
-                        await update_peer_id(api, alice, '0xa2d56e0a85f22450963acb427530073b497fb73d3ff48eb3ab534fb483b7e412', '0x13363206e8593bb175c94ee0a978ece66ecf911396bffc4a1dffc0c589a51e13');
+                        const teaInfo = msg.split('__')
+                        var tea_id = teaInfo[0]
+                        const peers = teaInfo[1].split('_')
+                        await api.tx.tea.updatePeerId(tea_id, peers)
+                              .signAndSend(alice, ({ events = [], status }) => {
+                                    if (status.isInBlock) {
+                                          console.log('Successful add new node with tea_id ' + tea_id);
+                                          nc.publish(reply, JSON.stringify({status, tea_id}))
+                                    } else {
+                                          console.log('Status of transfer: ' + status.type);
+                                    }
+
+                                    events.forEach(({ phase, event: { data, method, section } }) => {
+                                          console.log(phase.toString() + ' : ' + section + '.' + method + ' ' + data.toString());
+                                    });
+                        });
                         console.log('send update_peer_id tx')
+                        break
+                  case 'get_nodes':
+                        const nodes = await api.query.tea.nodes.entries()
+                        const teaNodes = nodes.map((n) => {
+                              return n[1]
+                        })
+                        nc.publish(reply, JSON.stringify(teaNodes))
                         break
                   default:
                         nc.publish(reply, JSON.stringify(['action_does_not_support']))
             }
       })
 }
+
+// '0xa2d56e0a85f22450963acb427530073b497fb73d3ff48eb3ab534fb483b7e412', '0x13363206e8593bb175c94ee0a978ece66ecf911396bffc4a1dffc0c589a51e13'
 
 function put_peer_url(msg){
       console.log('receive peer url : ', msg);
@@ -128,47 +164,11 @@ async function transfer(api, sender, recipient, amount) {
 
                         // Loop through Vec<EventRecord> to display all events
                         events.forEach(({ phase, event: { data, method, section } }) => {
-                        console.log(`\t' ${phase}: ${section}.${method}:: ${data}`);
+                              console.log(`\t' ${phase}: ${section}.${method}:: ${data}`);
                         });
 
                         unsub();
                   }
-      });
-}
-
-async function add_new_node(api, sender, tea_id) {
-      // Create a extrinsic, add new node.
-      const transfer = api.tx.tea.addNewNode(tea_id);
-
-      // Sign and Send the transaction
-      await transfer.signAndSend(sender, ({ events = [], status }) => {
-            if (status.isInBlock) {
-                  console.log('Successful add new node with tea_id ' + tea_id);
-            } else {
-                  console.log('Status of transfer: ' + status.type);
-            }
-
-            events.forEach(({ phase, event: { data, method, section } }) => {
-                  console.log(phase.toString() + ' : ' + section + '.' + method + ' ' + data.toString());
-            });
-      });
-}
-
-async function update_peer_id(api, sender, tea_id, peer_id) {
-      // Create a extrinsic, update peer id.
-      const transfer = api.tx.tea.updatePeerId(tea_id, peer_id);
-
-      // Sign and Send the transaction
-      transfer.signAndSend(sender, ({ events = [], status }) => {
-            if (status.isInBlock) {
-                  console.log('Successful add new node with tea_id ' + tea_id);
-            } else {
-                  console.log('Status of transfer: ' + status.type);
-            }
-
-            events.forEach(({ phase, event: { data, method, section } }) => {
-                  console.log(phase.toString() + ' : ' + section + '.' + method + ' ' + data.toString());
-            });
       });
 }
 
