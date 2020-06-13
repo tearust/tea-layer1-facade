@@ -11,10 +11,6 @@ const cache = {
       peer_url_list: []
 };
 
-function handle_new_header(header) {
-      nc.publish(`layer1.chain.newheader.${header.number}`, `${header.hash}`)
-}
-
 async function main() {
       const api = await ApiPromise.create({
             types: {
@@ -22,6 +18,7 @@ async function main() {
                   Address: "AccountId",
                   TeaId: "Bytes",
                   PeerId: "Bytes",
+                  TaskIndex: "u32",
                   Node: {
                         "TeaId": "TeaId",
                         "Peers": "Vec<PeerId>"
@@ -30,6 +27,14 @@ async function main() {
                         "account": "AccountId",
                         "payment": "u32",
                         "cid": "H256"
+                  },
+                  Task: {
+                        "delegate_node": "TeaId",
+                        "ref_num": "u32",
+                        "cap_cid": "Bytes",
+                        "model_cid": "Bytes",
+                        "data_cid": "Bytes",
+                        "payment": "u32"
                   }
             }
       })
@@ -43,6 +48,11 @@ async function main() {
             cache.latest_block_height = header.number;
             handle_new_header(header)
       })
+
+      // Subscribe to system events via storage
+      api.query.system.events((events) => {
+            handle_events(events)
+      });
 
       nc.subscribe('layer1.async.*.>', async function (msg, reply, subject, sid) {
             console.log('Received a message: ', msg, reply, subject, sid)
@@ -86,12 +96,12 @@ async function main() {
                         console.log('send transfer');
                         break
                   case 'add_new_node':
-                        var tea_id = msg
-                        await api.tx.tea.addNewNode(tea_id)
+                        var teaId = msg
+                        await api.tx.tea.addNewNode(teaId)
                               .signAndSend(alice, ({ events = [], status }) => {
                                     if (status.isInBlock) {
-                                          console.log('Successful add new node with tea_id ' + tea_id);
-                                          nc.publish(reply, JSON.stringify({status, tea_id}))
+                                          console.log('Successful add new node with teaId ' + teaId);
+                                          nc.publish(reply, JSON.stringify({status, teaId}))
                                     } else {
                                           console.log('Status of transfer: ' + status.type);
                                     }
@@ -103,14 +113,14 @@ async function main() {
                         console.log('send add_new_node tx')
                         break
                   case 'update_peer_id':
-                        const teaInfo = msg.split('__')
-                        var tea_id = teaInfo[0]
-                        const peers = teaInfo[1].split('_')
-                        await api.tx.tea.updatePeerId(tea_id, peers)
+                        var teaInfo = msg.split('__')
+                        var teaId = teaInfo[0]
+                        let peers = teaInfo[1].split('_')
+                        await api.tx.tea.updatePeerId(teaId, peers)
                               .signAndSend(alice, ({ events = [], status }) => {
                                     if (status.isInBlock) {
-                                          console.log('Successful add new node with tea_id ' + tea_id);
-                                          nc.publish(reply, JSON.stringify({status, tea_id}))
+                                          console.log('Successful add new node with teaId ' + teaId);
+                                          nc.publish(reply, JSON.stringify({status, teaId}))
                                     } else {
                                           console.log('Status of transfer: ' + status.type);
                                     }
@@ -120,6 +130,29 @@ async function main() {
                                     });
                         });
                         console.log('send update_peer_id tx')
+                        break
+                  case 'add_new_task':
+                        var teaInfo = msg.split('_')
+                        var teaId = teaInfo[0]
+                        let refNum = parseInt(teaInfo[1])
+                        let capCid = teaInfo[2]
+                        let modelCid = teaInfo[3]
+                        let dataCid = teaInfo[4]
+                        let payment = parseInt(teaInfo[5])
+
+                        await api.tx.tea.addNewTask(teaId, refNum, capCid, modelCid, dataCid, payment)
+                              .signAndSend(alice, ({ events = [], status }) => {
+                                    if (status.isInBlock) {
+                                          console.log('Included at block hash', status.asInBlock.toHex());
+                                          console.log('Events:');
+                                          events.forEach(({ event: { data, method, section }, phase }) => {
+                                                console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
+                                          });
+                                    } else if (status.isFinalized) {
+                                          console.log('Finalized block hash', status.asFinalized.toHex());
+                                    }
+                        });
+                        console.log('send add_new_task tx')
                         break
                   case 'get_nodes':
                         const nodes = await api.query.tea.nodes.entries()
@@ -134,7 +167,37 @@ async function main() {
       })
 }
 
-// '0xa2d56e0a85f22450963acb427530073b497fb73d3ff48eb3ab534fb483b7e412', '0x13363206e8593bb175c94ee0a978ece66ecf911396bffc4a1dffc0c589a51e13'
+function handle_new_header(header) {
+      nc.publish(`layer1.chain.newheader.${header.number}`, `${header.hash}`)
+}
+
+function handle_events(events) {
+      // Loop through the Vec<EventRecord>
+      events.forEach((record) => {
+            // Extract the phase, event and the event types
+            const { event, phase } = record;
+            const types = event.typeDef;
+        
+            if (event.section == 'tea') {
+                  console.log(`Received tea events:`);
+
+                  let eventData = {
+                        section: event.section,
+                        method: event.method,
+                        data: {}
+                  }
+                  // Loop through each of the parameters, displaying the type and data
+                  event.data.forEach((data, index) => {
+                        // console.log(`\t\t\t${types[index].type}: ${data.toString()}`);
+                        eventData.data[types[index].type] = data
+                  });
+
+                  console.log(JSON.stringify(eventData))
+
+                  nc.publish(`layer1.event.${event.section}.${event.method}`, JSON.stringify(eventData))
+            }
+      });
+}
 
 function put_peer_url(msg){
       console.log('receive peer url : ', msg);

@@ -16,11 +16,15 @@ function get_nodes() {
       nc.publish('layer1.async.replay.get_nodes', '', 'layer1.test.result')
 }
 
+function add_new_task() {
+      nc.publish('layer1.async.replay.add_new_task', '0x04_110_0x01_0x02_0x03_10', 'layer1.test.result')
+}
 
 function main() {
       // add_new_node()
       // update_peer_id()
-      get_nodes()
+      // get_nodes()
+      add_new_task()
 }
 
 main()
