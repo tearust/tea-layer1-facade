@@ -1,7 +1,7 @@
 const NATS = require('nats')
 const { ApiPromise, Keyring } = require('@polkadot/api')
 const { cryptoWaitReady } = require('@polkadot/util-crypto')
-
+const _ = require('lodash');
 const nc = NATS.connect();
 
 const cache = {
@@ -181,20 +181,58 @@ function handle_events(events) {
             if (event.section == 'tea') {
                   console.log(`Received tea events:`);
 
-                  let eventData = {
-                        section: event.section,
-                        method: event.method,
-                        data: {}
-                  }
+                  let eventData = {}
                   // Loop through each of the parameters, displaying the type and data
                   event.data.forEach((data, index) => {
                         // console.log(`\t\t\t${types[index].type}: ${data.toString()}`);
-                        eventData.data[types[index].type] = data
+                        eventData[types[index].type] = data
                   });
 
-                  console.log(JSON.stringify(eventData))
+                  switch (event.method) {
+                        case 'NewTaskAdded':
+                              var msg = {}
+                              msg['account_id'] = eventData.AccountId
+                              msg['delegate_node'] = {
+                                    tea_id: eventData.Node.TeaId,
+                                    peers: eventData.Node.Peers
+                              }
+                              msg['ref_num'] = eventData.Task.ref_num
+                              msg['cap_cid'] = eventData.Task.cap_cid
+                              msg['model_cid'] = eventData.Task.model_cid
+                              msg['data_cid'] = eventData.Task.data_cid
+                              msg['payment'] = eventData.Task.payment
 
-                  nc.publish(`layer1.event.${event.section}.${event.method}`, JSON.stringify(eventData))
+                              console.log(JSON.stringify(msg))
+                              nc.publish(`layer1.event.${event.section}.${event.method}`, JSON.stringify(msg))
+                              break
+                        case 'NewModelAdded':
+                              var msg = {}
+                              msg['account_id'] = eventData.AccountId
+
+                              console.log(JSON.stringify(msg))
+                              nc.publish(`layer1.event.${event.section}.${event.method}`, JSON.stringify(msg))
+                              break
+                        case 'UpdateNodePeer':
+                              var msg = {}
+                              msg['account_id'] = eventData.AccountId
+                              msg['node'] = {
+                                    'tea_id': eventData.Node.TeaId,
+                                    'peers': eventData.Node.Peers
+                              }
+
+                              console.log(JSON.stringify(msg))
+                              nc.publish(`layer1.event.${event.section}.${event.method}`, JSON.stringify(msg))
+                              break
+                        case 'NewNodeJoined':
+                              var msg = {}
+                              msg['account_id'] = eventData.AccountId
+                              msg['tea_id'] = eventData.Node.TeaId
+
+                              console.log(JSON.stringify(msg))
+                              nc.publish(`layer1.event.${event.section}.${event.method}`, JSON.stringify(msg))
+                              break
+                        default:
+                  }
             }
       });
 }
