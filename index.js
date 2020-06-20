@@ -18,7 +18,6 @@ async function main() {
                   Address: "AccountId",
                   TeaId: "Bytes",
                   PeerId: "Bytes",
-                  TaskIndex: "u32",
                   Node: {
                         "TeaId": "TeaId",
                         "Peers": "Vec<PeerId>"
@@ -34,7 +33,7 @@ async function main() {
                         "cap_cid": "Bytes",
                         "model_cid": "Bytes",
                         "data_cid": "Bytes",
-                        "payment": "u32"
+                        "payment": "Balance"
                   }
             }
       })
@@ -154,6 +153,22 @@ async function main() {
                         });
                         console.log('send add_new_task tx')
                         break
+                  case 'complete_task':
+                        const taskId = msg;
+                        await api.tx.tea.completeTask(taskId)
+                              .signAndSend(alice, ({ events = [], status }) => {
+                                    if (status.isInBlock) {
+                                          console.log('Included at block hash', status.asInBlock.toHex());
+                                          console.log('Events:');
+                                          events.forEach(({ event: { data, method, section }, phase }) => {
+                                                console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
+                                          });
+                                    } else if (status.isFinalized) {
+                                          console.log('Finalized block hash', status.asFinalized.toHex());
+                                    }
+                        });
+                        console.log('send add_new_task tx')
+                        break
                   case 'get_nodes':
                         const nodes = await api.query.tea.nodes.entries()
                         const teaNodes = nodes.map((n) => {
@@ -227,6 +242,18 @@ function handle_events(events) {
                               var msg = {}
                               msg['account_id'] = eventData.AccountId
                               msg['tea_id'] = eventData.Node.TeaId
+
+                              console.log(JSON.stringify(msg))
+                              nc.publish(`layer1.event.${event.section}.${event.method}`, JSON.stringify(msg))
+                              break
+                        case 'CompleteTask':
+                              var msg = {}
+                              msg['account_id'] = eventData.AccountId
+                              msg['ref_num'] = eventData.Task.ref_num
+                              msg['cap_cid'] = eventData.Task.cap_cid
+                              msg['model_cid'] = eventData.Task.model_cid
+                              msg['data_cid'] = eventData.Task.data_cid
+                              msg['payment'] = eventData.Task.payment
 
                               console.log(JSON.stringify(msg))
                               nc.publish(`layer1.event.${event.section}.${event.method}`, JSON.stringify(msg))

@@ -20,11 +20,16 @@ function add_new_task() {
       nc.publish('layer1.async.replay.add_new_task', '0x04_110_0x01_0x02_0x03_10', 'layer1.test.result')
 }
 
+function complete_task() {
+      nc.publish('layer1.async.replay.complete_task', '0x25484d12f935dbf24d116585edf4ce4936f3659390ea897b5081c66ac665f16e', 'layer1.test.result')
+}
+
 function main() {
       // add_new_node()
       // update_peer_id()
       // get_nodes()
-      add_new_task()
+      // add_new_task()
+      complete_task()
 }
 
 main()
