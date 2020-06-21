@@ -1,0 +1,92 @@
+{
+  "nested": {
+    "libp2p_delegate": {
+      "nested": {
+        "CidHash": {
+          "fields": {
+            "cid": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "hash": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            }
+          }
+        },
+        "TaskRegisterRequest": {
+          "fields": {
+            "cidHash": {
+              "rule": "repeated",
+              "type": "CidHash",
+              "id": 1
+            },
+            "ekey1": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "blockChainAccount": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            }
+          }
+        },
+        "TaskRegisterResponse": {
+          "fields": {
+            "RefNum": {
+              "type": "bytes",
+              "id": 1
+            },
+            "Error": {
+              "type": "string",
+              "id": 2
+            }
+          }
+        },
+        "AddNewTask": {
+          "fields": {
+            "teaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "refNum": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "rsaPub": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            },
+            "capCid": {
+              "rule": "required",
+              "type": "string",
+              "id": 4
+            },
+            "modelCid": {
+              "rule": "required",
+              "type": "string",
+              "id": 5
+            },
+            "dataCid": {
+              "rule": "required",
+              "type": "string",
+              "id": 6
+            },
+            "payment": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 7
+            }
+          }
+        }
+      }
+    }
+  }
+}

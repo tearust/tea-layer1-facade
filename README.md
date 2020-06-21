@@ -60,7 +60,19 @@ Received a Message {
 
 - Add new node
 ```
-nc.publish('layer1.async.replay.add_new_node', '0x02b40e313842e45574e0ca5b37cb0580cc3378ceb096b562a9828b2137b98f5f', 'layer1.test.result')
+const task = new proto.Protobuf('AddNewTask');
+task.payload({
+      teaId: Buffer.from('01', 'hex'),
+      refNum: Buffer.from('abcdefg', 'hex'),
+      rsaPub: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
+      capCid: '111',
+      modelCid: '222',
+      dataCid: '333',
+      payment: 1000,
+});
+
+const taskBuf = Buffer.from(task.toBuffer()).toString('base64');
+nc.publish('layer1.async.replay.add_new_task', taskBuf, 'layer1.test.result')
 ```
 
 Response:
@@ -99,12 +111,12 @@ Received a Message {
 
 - Add new task
 
-Message format: {tea_id}_{ref_num}_{cap_cid}_{model_cid}_{data_cid}_{payment}
+Message format: {tea_id}_{ref_num}_{rsa_pub}_{cap_cid}_{model_cid}_{data_cid}_{payment}
 
 Note: `tea_id` must already exsit in the layer1.
 
 ```
-nc.publish('layer1.async.replay.add_new_task', '0x04_110_0x01_0x02_0x03_10', 'layer1.test.result')
+nc.publish('layer1.async.replay.add_new_task', '0x04_0x10_0x11_0x01_0x02_0x03_10', 'layer1.test.result')
 ```
 
 - Complete task

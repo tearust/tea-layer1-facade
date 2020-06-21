@@ -2,17 +2,21 @@
   "name": "tea-layer1-listener",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "mocha"
+    "start": "node src/index.js",
+    "test": "mocha",
+    "protobuf": "pbjs -t json ../tea-codec/proto/libp2p-delegate.proto > ./src/protobuf/protobuf.json"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@polkadot/api": "^1.14.1",
+    "bignumber.js": "^9.0.0",
     "mocha": "^7.2.0",
     "nats": "^1.4.9",
-    "rxjs": "^6.5.5"
+    "protobufjs": "^6.9.0",
+    "rxjs": "^6.5.5",
+    "to-hex": "0.0.15"
   }
 }

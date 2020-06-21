@@ -2,6 +2,9 @@ const NATS = require('nats')
 const { ApiPromise, Keyring } = require('@polkadot/api')
 const { cryptoWaitReady } = require('@polkadot/util-crypto')
 const _ = require('lodash');
+const proto = require('./proto');
+const toHex = require('to-hex');
+
 const nc = NATS.connect();
 
 const cache = {
@@ -29,7 +32,8 @@ async function main() {
                   },
                   Task: {
                         "delegate_node": "TeaId",
-                        "ref_num": "u32",
+                        "ref_num": "Bytes",
+                        "rsa_pub": "Bytes",
                         "cap_cid": "Bytes",
                         "model_cid": "Bytes",
                         "data_cid": "Bytes",
@@ -131,15 +135,21 @@ async function main() {
                         console.log('send update_peer_id tx')
                         break
                   case 'add_new_task':
-                        var teaInfo = msg.split('_')
-                        var teaId = teaInfo[0]
-                        let refNum = parseInt(teaInfo[1])
-                        let capCid = teaInfo[2]
-                        let modelCid = teaInfo[3]
-                        let dataCid = teaInfo[4]
-                        let payment = parseInt(teaInfo[5])
+                        const protoMsg = Buffer.from(msg, 'base64');
+                        const newTaskBuf = new proto.Protobuf('AddNewTask');
+                        const newTask = newTaskBuf.decode(protoMsg);
+                        console.log(newTask);
+                        
+                        var teaId = toHex(newTask.teaId, { addPrefix: true });
+                        console.log(teaId);
+                        let refNum = toHex(newTask.refNum, { addPrefix: true });
+                        let rsaPub = toHex(newTask.rsaPub, { addPrefix: true });
+                        let capCid = toHex(Buffer.from(newTask.capCid), { addPrefix: true });
+                        let modelCid = toHex(Buffer.from(newTask.modelCid), { addPrefix: true });
+                        let dataCid = toHex(Buffer.from(newTask.dataCid), { addPrefix: true });
+                        let payment = newTask.payment;
 
-                        await api.tx.tea.addNewTask(teaId, refNum, capCid, modelCid, dataCid, payment)
+                        await api.tx.tea.addNewTask(teaId, refNum, rsaPub, capCid, modelCid, dataCid, payment)
                               .signAndSend(alice, ({ events = [], status }) => {
                                     if (status.isInBlock) {
                                           console.log('Included at block hash', status.asInBlock.toHex());
@@ -212,6 +222,7 @@ function handle_events(events) {
                                     peers: eventData.Node.Peers
                               }
                               msg['ref_num'] = eventData.Task.ref_num
+                              msg['rsa_pub'] = eventData.Task.rsa_pub
                               msg['cap_cid'] = eventData.Task.cap_cid
                               msg['model_cid'] = eventData.Task.model_cid
                               msg['data_cid'] = eventData.Task.data_cid
@@ -250,6 +261,7 @@ function handle_events(events) {
                               var msg = {}
                               msg['account_id'] = eventData.AccountId
                               msg['ref_num'] = eventData.Task.ref_num
+                              msg['rsa_pub'] = eventData.Task.rsa_pub
                               msg['cap_cid'] = eventData.Task.cap_cid
                               msg['model_cid'] = eventData.Task.model_cid
                               msg['data_cid'] = eventData.Task.data_cid

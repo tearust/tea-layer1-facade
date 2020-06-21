@@ -1,6 +1,7 @@
 const assert = require('assert');
-const { ApiPromise } = require('@polkadot/api')
-const NATS = require('nats')
+const { ApiPromise } = require('@polkadot/api');
+const NATS = require('nats');
+const proto = require('../src/proto');
 
 const nc = NATS.connect();
 
@@ -17,19 +18,39 @@ function get_nodes() {
 }
 
 function add_new_task() {
-      nc.publish('layer1.async.replay.add_new_task', '0x04_110_0x01_0x02_0x03_10', 'layer1.test.result')
+      const task = new proto.Protobuf('AddNewTask');
+      task.payload({
+            teaId: Buffer.from('01', 'hex'),
+            refNum: Buffer.from('abcdefg', 'hex'),
+            rsaPub: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
+            capCid: '111',
+            modelCid: '222',
+            dataCid: '333',
+            payment: 1000,
+      });
+
+      const taskBuf = Buffer.from(task.toBuffer()).toString('base64');
+      // const protoMsg = Buffer.from(taskBuf.toString(), 'base64');
+      // const newTaskBuf = new proto.Protobuf('AddNewTask');
+      // const newTask = newTaskBuf.decode(protoMsg);
+      // console.log('3', newTask);
+
+      nc.publish('layer1.async.replay.add_new_task', taskBuf, 'layer1.test.result')
 }
 
 function complete_task() {
       nc.publish('layer1.async.replay.complete_task', '0x25484d12f935dbf24d116585edf4ce4936f3659390ea897b5081c66ac665f16e', 'layer1.test.result')
 }
 
-function main() {
+async function main() {
       // add_new_node()
       // update_peer_id()
       // get_nodes()
-      // add_new_task()
-      complete_task()
+      add_new_task()
+      // complete_task()
 }
 
-main()
+main().catch((error) => {
+      console.error(error)
+      process.exit(-1)
+})
