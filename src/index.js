@@ -35,6 +35,8 @@ async function main() {
                         "ref_num": "Bytes",
                         "rsa_pub": "Bytes",
                         "cap_cid": "Bytes",
+                        "manifest_cid": "Bytes",
+                        "wasm_cid": "Bytes",
                         "model_cid": "Bytes",
                         "data_cid": "Bytes",
                         "payment": "Balance"
@@ -136,7 +138,7 @@ async function main() {
                         break
                   case 'add_new_task':
                         const protoMsg = Buffer.from(msg, 'base64');
-                        const newTaskBuf = new proto.Protobuf('AddNewTask');
+                        const newTaskBuf = new proto.Protobuf('AddNewTaskRequest');
                         const newTask = newTaskBuf.decode(protoMsg);
                         console.log(newTask);
                         
@@ -145,11 +147,13 @@ async function main() {
                         let refNum = toHex(newTask.refNum, { addPrefix: true });
                         let rsaPub = toHex(newTask.rsaPub, { addPrefix: true });
                         let capCid = toHex(Buffer.from(newTask.capCid), { addPrefix: true });
+                        let manifestCid = toHex(Buffer.from(newTask.manifestCid), { addPrefix: true });
+                        let wasmCid = toHex(Buffer.from(newTask.wasmCid), { addPrefix: true });
                         let modelCid = toHex(Buffer.from(newTask.modelCid), { addPrefix: true });
                         let dataCid = toHex(Buffer.from(newTask.dataCid), { addPrefix: true });
                         let payment = newTask.payment;
 
-                        await api.tx.tea.addNewTask(teaId, refNum, rsaPub, capCid, modelCid, dataCid, payment)
+                        await api.tx.tea.addNewTask(teaId, refNum, rsaPub, capCid, manifestCid, wasmCid, modelCid, dataCid, payment)
                               .signAndSend(alice, ({ events = [], status }) => {
                                     if (status.isInBlock) {
                                           console.log('Included at block hash', status.asInBlock.toHex());

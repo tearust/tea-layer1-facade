@@ -32,14 +32,38 @@
               "rule": "required",
               "type": "bytes",
               "id": 3
+            },
+            "wasm": {
+              "rule": "required",
+              "type": "CidHash",
+              "id": 4
+            },
+            "wasmManifest": {
+              "rule": "required",
+              "type": "CidHash",
+              "id": 5
+            },
+            "wasmChecker": {
+              "rule": "required",
+              "type": "CidHash",
+              "id": 6
+            },
+            "payment": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 7
             }
           }
         },
         "TaskRegisterResponse": {
           "fields": {
             "RefNum": {
-              "type": "bytes",
+              "type": "string",
               "id": 1
+            },
+            "RsaPubKey": {
+              "type": "string",
+              "id": 3
             },
             "Error": {
               "type": "string",
@@ -47,7 +71,7 @@
             }
           }
         },
-        "AddNewTask": {
+        "AddNewTaskRequest": {
           "fields": {
             "teaId": {
               "rule": "required",
@@ -69,20 +93,66 @@
               "type": "string",
               "id": 4
             },
-            "modelCid": {
+            "manifestCid": {
               "rule": "required",
               "type": "string",
               "id": 5
             },
-            "dataCid": {
+            "wasmCid": {
               "rule": "required",
               "type": "string",
               "id": 6
             },
+            "modelCid": {
+              "rule": "required",
+              "type": "string",
+              "id": 7
+            },
+            "dataCid": {
+              "rule": "required",
+              "type": "string",
+              "id": 8
+            },
             "payment": {
               "rule": "required",
               "type": "uint32",
-              "id": 7
+              "id": 9
+            }
+          }
+        },
+        "GeneralTaskMessage": {
+          "fields": {
+            "messageType": {
+              "rule": "required",
+              "type": "MessageType",
+              "id": 1
+            },
+            "payload": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            }
+          },
+          "nested": {
+            "MessageType": {
+              "values": {
+                "ApplyToExecuteTaskRequest": 0,
+                "ApplyToExecuteTaskResponse": 1
+              }
+            }
+          }
+        },
+        "ApplyToExecuteTaskRequest": {
+          "fields": {
+            "TpmSignature": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "TeaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
             }
           }
         }

@@ -18,20 +18,23 @@ function get_nodes() {
 }
 
 function add_new_task() {
-      const task = new proto.Protobuf('AddNewTask');
+      const task = new proto.Protobuf('AddNewTaskRequest');
       task.payload({
             teaId: Buffer.from('01', 'hex'),
             refNum: Buffer.from('abcdefg', 'hex'),
             rsaPub: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
             capCid: '111',
-            modelCid: '222',
-            dataCid: '333',
+            manifestCid: '222',
+            wasmCid: '333',
+            modelCid: '444',
+            dataCid: '555',
             payment: 1000,
       });
 
       const taskBuf = Buffer.from(task.toBuffer()).toString('base64');
-      // const protoMsg = Buffer.from(taskBuf.toString(), 'base64');
-      // const newTaskBuf = new proto.Protobuf('AddNewTask');
+
+      // const protoMsg = Buffer.from(taskBuf, 'base64');
+      // const newTaskBuf = new proto.Protobuf('AddNewTaskRequest');
       // const newTask = newTaskBuf.decode(protoMsg);
       // console.log('3', newTask);
 
