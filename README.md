@@ -155,6 +155,8 @@ cargo run --example nats-box -- sub 'layer1.event.tea.NewTaskAdded'
 
 Subject format: layer1.event.{layer1_module}.{event}
 
+if event is NewTaskAdded, the msg body is base64 of libp2p-delegate.proto message Task.
+
 Message format: https://github.com/tearust/tea-codec/blob/master/proto/libp2p-delegate.proto#L63
 
 Sample:
@@ -188,4 +190,5 @@ const response = {
 Message Body:
 ```
 CgMSNFYSEgoBARIDEinfEgNcg9gSAzFdDhpGCgEBEgOrze8aIMfgFvrQeWu2hZTkmm7xlCz35zSX5p7bMtGbovqzaWWWIgMxMTEqAzIyMjIDMzMzOgM0NDRCAzU1NUjoBw==
+//this is the base64 of a protobuf Task message
 ```
