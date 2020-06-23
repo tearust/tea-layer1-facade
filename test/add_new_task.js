@@ -22,6 +22,7 @@ async function main() {
                   Task: {
                         "delegate_node": "TeaId",
                         "ref_num": "u32",
+                        "rsa_pub": "Bytes",
                         "cap_cid": "Bytes",
                         "manifest_cid": "Bytes",
                         "wasm_cid": "Bytes",
