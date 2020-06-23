@@ -36,7 +36,40 @@ describe('protobuf test suit', () => {
             assert.deepEqual({task}, newTask);
       });
 
-      it('AddNewTaskResponse tes', () => {
-            
+      it('AddNewTaskResponse test', () => {
+            const task = {
+                  teaId: Buffer.from('01', 'hex'),
+                  refNum: Buffer.from('abcdefg', 'hex'),
+                  rsaPub: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
+                  capCid: '111',
+                  manifestCid: '222',
+                  wasmCid: '333',
+                  modelCid: '444',
+                  dataCid: '555',
+                  payment: 1000,
+            }
+            const node = {
+                  teaId: Buffer.from('01', 'hex'),
+                  peers: [
+                        Buffer.from('1229df2', 'hex'),
+                        Buffer.from('5c83d8c', 'hex'),
+                        Buffer.from('315d0ec', 'hex'),
+                  ]
+            }
+            const response = {
+                  accountId: Buffer.from('1234567', 'hex'),
+                  delegateNode: node,
+                  task,
+            }
+
+            const responseBuf = new proto.Protobuf('AddNewTaskResponse');
+            responseBuf.payload(response);
+            const newTaskResponseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
+            console.log("newTaskResponseBase64", newTaskResponseBase64);
+
+            const newResponseBuf = new proto.Protobuf('AddNewTaskResponse');
+            const newResponse = newResponseBuf.decode(Buffer.from(newTaskResponseBase64, 'base64'));
+            // console.log('decode:', newResponse);
+            assert.deepEqual(response, newResponse);
       })
 })

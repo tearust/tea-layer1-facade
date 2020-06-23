@@ -60,19 +60,22 @@ Received a Message {
 
 - Add new node
 ```
-const task = new proto.Protobuf('AddNewTask');
-task.payload({
+const task = {
       teaId: Buffer.from('01', 'hex'),
       refNum: Buffer.from('abcdefg', 'hex'),
       rsaPub: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
       capCid: '111',
-      modelCid: '222',
-      dataCid: '333',
+      manifestCid: '222',
+      wasmCid: '333',
+      modelCid: '444',
+      dataCid: '555',
       payment: 1000,
-});
+}
 
-const taskBuf = Buffer.from(task.toBuffer()).toString('base64');
-nc.publish('layer1.async.replay.add_new_task', taskBuf, 'layer1.test.result')
+const taskBuf = new proto.Protobuf('AddNewTaskRequest');
+taskBuf.payload({task});
+const taskBufBase64 = Buffer.from(taskBuf.toBuffer()).toString('base64');
+nc.publish('layer1.async.replay.add_new_task', taskBufBase64, 'layer1.test.result')
 ```
 
 Response:
@@ -146,13 +149,42 @@ Received a Message {
 
 - Listen new event
 
-Subject format: layer1.event.{layer1_module}.{event}
-
 ```bash
 cargo run --example nats-box -- sub 'layer1.event.tea.NewTaskAdded'
 ```
 
+Subject format: layer1.event.{layer1_module}.{event}
+Response format: https://github.com/tearust/tea-codec/blob/master/proto/libp2p-delegate.proto#L63
+
+Sample:
+```
+const task = {
+      teaId: Buffer.from('01', 'hex'),
+      refNum: Buffer.from('abcdefg', 'hex'),
+      rsaPub: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
+      capCid: '111',
+      manifestCid: '222',
+      wasmCid: '333',
+      modelCid: '444',
+      dataCid: '555',
+      payment: 1000,
+}
+const node = {
+      teaId: Buffer.from('01', 'hex'),
+      peers: [
+            Buffer.from('1229df2', 'hex'),
+            Buffer.from('5c83d8c', 'hex'),
+            Buffer.from('315d0ec', 'hex'),
+      ]
+}
+const response = {
+      accountId: Buffer.from('1234567', 'hex'),
+      delegateNode: node,
+      task,
+}
+```
+
 Response:
 ```
-{"section":"tea","method":"NewTaskAdded","data":{"AccountId":"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","Node":{"TeaId":"0x04","Peers":["0x02","0x03"]},"Task":{"delegate_node":"0x04","ref_num":112,"cap_cid":"0x05","model_cid":"0x06","data_cid":"0x07","payment":50}}}
+CgMSNFYSEgoBARIDEinfEgNcg9gSAzFdDhpGCgEBEgOrze8aIMfgFvrQeWu2hZTkmm7xlCz35zSX5p7bMtGbovqzaWWWIgMxMTEqAzIyMjIDMzMzOgM0NDRCAzU1NUjoBw==
 ```
