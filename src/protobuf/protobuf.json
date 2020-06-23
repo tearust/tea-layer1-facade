@@ -71,7 +71,43 @@
             }
           }
         },
-        "AddNewTaskRequest": {
+        "GeneralTaskMessage": {
+          "fields": {
+            "messageType": {
+              "rule": "required",
+              "type": "MessageType",
+              "id": 1
+            },
+            "payload": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            }
+          },
+          "nested": {
+            "MessageType": {
+              "values": {
+                "ApplyToExecuteTaskRequest": 0,
+                "ApplyToExecuteTaskResponse": 1
+              }
+            }
+          }
+        },
+        "ApplyToExecuteTaskRequest": {
+          "fields": {
+            "TpmSignature": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "TeaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            }
+          }
+        },
+        "Task": {
           "fields": {
             "teaId": {
               "rule": "required",
@@ -120,39 +156,45 @@
             }
           }
         },
-        "GeneralTaskMessage": {
+        "Node": {
           "fields": {
-            "messageType": {
-              "rule": "required",
-              "type": "MessageType",
-              "id": 1
-            },
-            "payload": {
+            "teaId": {
               "rule": "required",
               "type": "bytes",
+              "id": 1
+            },
+            "peers": {
+              "rule": "repeated",
+              "type": "bytes",
               "id": 2
-            }
-          },
-          "nested": {
-            "MessageType": {
-              "values": {
-                "ApplyToExecuteTaskRequest": 0,
-                "ApplyToExecuteTaskResponse": 1
-              }
             }
           }
         },
-        "ApplyToExecuteTaskRequest": {
+        "AddNewTaskRequest": {
           "fields": {
-            "TpmSignature": {
+            "task": {
+              "rule": "required",
+              "type": "Task",
+              "id": 1
+            }
+          }
+        },
+        "AddNewTaskResponse": {
+          "fields": {
+            "accountId": {
               "rule": "required",
               "type": "bytes",
               "id": 1
             },
-            "TeaId": {
+            "delegateNode": {
               "rule": "required",
-              "type": "bytes",
+              "type": "Node",
               "id": 2
+            },
+            "task": {
+              "rule": "required",
+              "type": "Task",
+              "id": 3
             }
           }
         }

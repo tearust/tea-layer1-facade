@@ -142,16 +142,16 @@ async function main() {
                         const newTask = newTaskBuf.decode(protoMsg);
                         console.log(newTask);
                         
-                        var teaId = toHex(newTask.teaId, { addPrefix: true });
+                        var teaId = toHex(newTask.task.teaId, { addPrefix: true });
                         console.log(teaId);
-                        let refNum = toHex(newTask.refNum, { addPrefix: true });
-                        let rsaPub = toHex(newTask.rsaPub, { addPrefix: true });
-                        let capCid = toHex(Buffer.from(newTask.capCid), { addPrefix: true });
-                        let manifestCid = toHex(Buffer.from(newTask.manifestCid), { addPrefix: true });
-                        let wasmCid = toHex(Buffer.from(newTask.wasmCid), { addPrefix: true });
-                        let modelCid = toHex(Buffer.from(newTask.modelCid), { addPrefix: true });
-                        let dataCid = toHex(Buffer.from(newTask.dataCid), { addPrefix: true });
-                        let payment = newTask.payment;
+                        let refNum = toHex(newTask.task.refNum, { addPrefix: true });
+                        let rsaPub = toHex(newTask.task.rsaPub, { addPrefix: true });
+                        let capCid = toHex(Buffer.from(newTask.task.capCid), { addPrefix: true });
+                        let manifestCid = toHex(Buffer.from(newTask.task.manifestCid), { addPrefix: true });
+                        let wasmCid = toHex(Buffer.from(newTask.task.wasmCid), { addPrefix: true });
+                        let modelCid = toHex(Buffer.from(newTask.task.modelCid), { addPrefix: true });
+                        let dataCid = toHex(Buffer.from(newTask.task.dataCid), { addPrefix: true });
+                        let payment = newTask.task.payment;
 
                         await api.tx.tea.addNewTask(teaId, refNum, rsaPub, capCid, manifestCid, wasmCid, modelCid, dataCid, payment)
                               .signAndSend(alice, ({ events = [], status }) => {

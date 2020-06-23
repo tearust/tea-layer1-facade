@@ -18,8 +18,7 @@ function get_nodes() {
 }
 
 function add_new_task() {
-      const task = new proto.Protobuf('AddNewTaskRequest');
-      task.payload({
+      const task = {
             teaId: Buffer.from('01', 'hex'),
             refNum: Buffer.from('abcdefg', 'hex'),
             rsaPub: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
@@ -29,16 +28,18 @@ function add_new_task() {
             modelCid: '444',
             dataCid: '555',
             payment: 1000,
-      });
+      }
+      const taskBuf = new proto.Protobuf('AddNewTaskRequest');
+      taskBuf.payload({ task });
 
-      const taskBuf = Buffer.from(task.toBuffer()).toString('base64');
+      const taskBufBase64 = Buffer.from(taskBuf.toBuffer()).toString('base64');
 
       // const protoMsg = Buffer.from(taskBuf, 'base64');
       // const newTaskBuf = new proto.Protobuf('AddNewTaskRequest');
       // const newTask = newTaskBuf.decode(protoMsg);
       // console.log('3', newTask);
 
-      nc.publish('layer1.async.replay.add_new_task', taskBuf, 'layer1.test.result')
+      nc.publish('layer1.async.replay.add_new_task', taskBufBase64, 'layer1.test.result')
 }
 
 function complete_task() {
