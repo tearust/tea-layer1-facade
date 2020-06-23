@@ -1,6 +1,6 @@
 ## tea-layer1-facade
 
-#### Start
+### Start
 
 Run nats service
 ```
@@ -8,7 +8,7 @@ docker pull nats
 docker run -p 4222:4222 -ti nats:latest
 ```
 
-Run layer1
+Run layer1 node
 
 Run layer1 facade
 ```
@@ -16,15 +16,15 @@ npm install
 npm start
 ```
 
-#### Nats Api
+### Nats Api
 > Use nats-box an example of nats.rs for testing
 
-- Get node info
+#### Get node info
 ```bash
 cargo run --example nats-box -- pub layer1.async.layer1_reply.node_info eb628d56ad353cc7a9b4db31aae999c402a02da9da6d2651a8e9aa2f73920b95
 ```
 
-Response:
+Reply Message:
 ```
 Received a Message {
   subject: "layer1_reply.action.node_info",
@@ -32,12 +32,12 @@ Received a Message {
 }
 ```
 
-- Get bootstrap
+#### Get bootstrap
 ```bash
 cargo run --example nats-box -- pub layer1.async.layer1_reply.bootstrap 123
 ```
 
-Response:
+Reply Message:
 ```
 Received a Message {
   subject: "layer1_reply.action.bootstrap",
@@ -45,12 +45,12 @@ Received a Message {
 }
 ```
 
-- Get block hash
+#### Get block hash
 ```bash
 cargo run --example nats-box -- pub layer1.async.layer1_reply.get_block_hash 10
 ```
 
-Response:
+Reply Message:
 ```
 Received a Message {
   subject: "layer1_reply.action.get_block_hash",
@@ -58,7 +58,7 @@ Received a Message {
 }
 ```
 
-- Add new node
+#### Add new node
 ```
 const task = {
       teaId: Buffer.from('01', 'hex'),
@@ -78,7 +78,7 @@ const taskBufBase64 = Buffer.from(taskBuf.toBuffer()).toString('base64');
 nc.publish('layer1.async.replay.add_new_task', taskBufBase64, 'layer1.test.result')
 ```
 
-Response:
+Reply Message:
 ```
 Received a Message {
   subject: "layer1.test.result",
@@ -86,12 +86,12 @@ Received a Message {
 }
 ```
 
-- Update peer ID
+#### Update peer ID
 ```
 nc.publish('layer1.async.replay.update_peer_id', '0x02b40e313842e45574e0ca5b37cb0580cc3378ceb096b562a9828b2137b98f5f__0x1fbb8d02600f4931fbed2e4f998d9e16d1a95e6d4586b5787310a95d2f8a6ed4_0xa555a7e72e9810dde46ca653d56956a2d6e88bb3896038f19674bd3b02d94d18', 'layer1.test.result')
 ```
 
-Response:
+Reply Message:
 ```
 Received a Message {
   subject: "layer1.test.result",
@@ -99,12 +99,12 @@ Received a Message {
 }
 ```
 
-- Get node list
+#### Get node list
 ```
 nc.publish('layer1.async.replay.get_nodes', '', 'layer1.test.result')
 ```
 
-Response:
+Reply Message:
 ```
 Received a Message {
   subject: "layer1.test.result",
@@ -112,7 +112,7 @@ Received a Message {
 }
 ```
 
-- Add new task
+#### Add new task
 
 Message format: {tea_id}_{ref_num}_{rsa_pub}_{cap_cid}_{model_cid}_{data_cid}_{payment}
 
@@ -122,7 +122,7 @@ Note: `tea_id` must already exsit in the layer1.
 nc.publish('layer1.async.replay.add_new_task', '0x04_0x10_0x11_0x01_0x02_0x03_10', 'layer1.test.result')
 ```
 
-- Complete task
+#### Complete task
 
 Message format: {task_id}
 
@@ -134,12 +134,12 @@ nc.publish('layer1.async.replay.complete_task', '0x25484d12f935dbf24d116585edf4c
 
 ### Listener
 
-- Listen new block
+#### Listen new block
 ```bash
 cargo run --example nats-box -- sub 'layer1.chain.newheader.>'
 ```
 
-Response:
+Reply Message:
 ```
 Received a Message {
   subject: "layer1.chain.newheader.11504",
@@ -147,14 +147,15 @@ Received a Message {
 }
 ```
 
-- Listen new event
+#### Listen new event
 
 ```bash
 cargo run --example nats-box -- sub 'layer1.event.tea.NewTaskAdded'
 ```
 
 Subject format: layer1.event.{layer1_module}.{event}
-Response format: https://github.com/tearust/tea-codec/blob/master/proto/libp2p-delegate.proto#L63
+
+Message format: https://github.com/tearust/tea-codec/blob/master/proto/libp2p-delegate.proto#L63
 
 Sample:
 ```
@@ -184,7 +185,7 @@ const response = {
 }
 ```
 
-Response:
+Message Body:
 ```
 CgMSNFYSEgoBARIDEinfEgNcg9gSAzFdDhpGCgEBEgOrze8aIMfgFvrQeWu2hZTkmm7xlCz35zSX5p7bMtGbovqzaWWWIgMxMTEqAzIyMjIDMzMzOgM0NDRCAzU1NUjoBw==
 ```
