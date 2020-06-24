@@ -13,19 +13,15 @@ describe('layer1::api', function() {
 });
 
 describe('protobuf test suit', () => {
-      it('AddNewTaskRequest test', () => {
-            const task = {
-                  teaId: Buffer.from('01', 'hex'),
-                  refNum: Buffer.from('abcdefg', 'hex'),
-                  rsaPub: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
-                  capCid: '111',
-                  manifestCid: '222',
-                  wasmCid: '333',
-                  modelCid: '444',
-                  dataCid: '555',
-                  payment: 1000,
-            }
 
+      const task = {
+            delegateId: Buffer.from('01', 'hex'),
+            modelCid: '444',
+            payment: 1000,
+            bodyCid: '555',
+      }
+
+      it('AddNewTaskRequest test', () => {
             const taskBuf = new proto.Protobuf('AddNewTaskRequest');
             taskBuf.payload({task});
             const taskBufBase64 = Buffer.from(taskBuf.toBuffer()).toString('base64');
@@ -37,17 +33,6 @@ describe('protobuf test suit', () => {
       });
 
       it('AddNewTaskResponse test', () => {
-            const task = {
-                  teaId: Buffer.from('01', 'hex'),
-                  refNum: Buffer.from('abcdefg', 'hex'),
-                  rsaPub: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
-                  capCid: '111',
-                  manifestCid: '222',
-                  wasmCid: '333',
-                  modelCid: '444',
-                  dataCid: '555',
-                  payment: 1000,
-            }
             const node = {
                   teaId: Buffer.from('01', 'hex'),
                   peers: [
