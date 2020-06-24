@@ -32,13 +32,8 @@ async function main() {
                   },
                   Task: {
                         "delegate_node": "TeaId",
-                        "ref_num": "Bytes",
-                        "rsa_pub": "Bytes",
-                        "cap_cid": "Bytes",
-                        "manifest_cid": "Bytes",
-                        "wasm_cid": "Bytes",
                         "model_cid": "Bytes",
-                        "data_cid": "Bytes",
+                        "body_cid": "Bytes",
                         "payment": "Balance"
                   }
             }
@@ -140,20 +135,15 @@ async function main() {
                         const protoMsg = Buffer.from(msg, 'base64');
                         const newTaskBuf = new proto.Protobuf('AddNewTaskRequest');
                         const newTask = newTaskBuf.decode(protoMsg);
-                        console.log(newTask);
+                        // console.log(newTask);
                         
-                        var teaId = toHex(newTask.task.teaId, { addPrefix: true });
-                        console.log(teaId);
-                        let refNum = toHex(newTask.task.refNum, { addPrefix: true });
-                        let rsaPub = toHex(newTask.task.rsaPub, { addPrefix: true });
-                        let capCid = toHex(Buffer.from(newTask.task.capCid), { addPrefix: true });
-                        let manifestCid = toHex(Buffer.from(newTask.task.manifestCid), { addPrefix: true });
-                        let wasmCid = toHex(Buffer.from(newTask.task.wasmCid), { addPrefix: true });
+                        var delegateId = toHex(newTask.task.delegateId, { addPrefix: true });
+                        // console.log(delegateId);
                         let modelCid = toHex(Buffer.from(newTask.task.modelCid), { addPrefix: true });
-                        let dataCid = toHex(Buffer.from(newTask.task.dataCid), { addPrefix: true });
                         let payment = newTask.task.payment;
+                        let bodyCid = toHex(Buffer.from(newTask.task.bodyCid), { addPrefix: true })
 
-                        await api.tx.tea.addNewTask(teaId, refNum, rsaPub, capCid, manifestCid, wasmCid, modelCid, dataCid, payment)
+                        await api.tx.tea.addNewTask(delegateId, modelCid, payment, bodyCid)
                               .signAndSend(alice, ({ events = [], status }) => {
                                     if (status.isInBlock) {
                                           console.log('Included at block hash', status.asInBlock.toHex());
@@ -219,21 +209,28 @@ function handle_events(events) {
 
                   switch (event.method) {
                         case 'NewTaskAdded':
-                              var msg = {}
-                              msg['account_id'] = eventData.AccountId
-                              msg['delegate_node'] = {
-                                    tea_id: eventData.Node.TeaId,
-                                    peers: eventData.Node.Peers
+                              const task = {
+                                    delegateId: Buffer.from(eventData.Node.TeaId, 'hex'),
+                                    modelCid: eventData.Task.model_cid.toString(),
+                                    bodyCid: eventData.Task.body_cid.toString(),
+                                    payment: parseInt(eventData.Task.payment),
                               }
-                              msg['ref_num'] = eventData.Task.ref_num
-                              msg['rsa_pub'] = eventData.Task.rsa_pub
-                              msg['cap_cid'] = eventData.Task.cap_cid
-                              msg['model_cid'] = eventData.Task.model_cid
-                              msg['data_cid'] = eventData.Task.data_cid
-                              msg['payment'] = eventData.Task.payment
+                              const node = {
+                                    teaId: Buffer.from(eventData.Node.TeaId, 'hex'),
+                                    peers: eventData.Node.Peers,
+                              }
+                              const response = {
+                                    accountId: Buffer.from(eventData.AccountId, 'hex'),
+                                    delegateNode: node,
+                                    task,
+                              }
 
-                              console.log(JSON.stringify(msg))
-                              nc.publish(`layer1.event.${event.section}.${event.method}`, JSON.stringify(msg))
+                              const responseBuf = new proto.Protobuf('AddNewTaskResponse');
+                              responseBuf.payload(response);
+                              const newTaskResponseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
+                              console.log("TaskResponseBase64:", newTaskResponseBase64);
+
+                              nc.publish(`layer1.event.${event.section}.${event.method}`, newTaskResponseBase64)
                               break
                         case 'NewModelAdded':
                               var msg = {}

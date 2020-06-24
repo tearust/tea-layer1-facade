@@ -21,14 +21,9 @@ async function main() {
                   },
                   Task: {
                         "delegate_node": "TeaId",
-                        "ref_num": "u32",
-                        "rsa_pub": "Bytes",
-                        "cap_cid": "Bytes",
-                        "manifest_cid": "Bytes",
-                        "wasm_cid": "Bytes",
                         "model_cid": "Bytes",
-                        "data_cid": "Bytes",
-                        "payment": "u32"
+                        "body_cid": "Bytes",
+                        "payment": "Balance"
                   }
             }
       })
@@ -38,17 +33,20 @@ async function main() {
       const keyring = new Keyring({ type: 'sr25519' });
       const alice = keyring.addFromUri('//Alice', { name: 'Alice default' });
 
+      // The following fields need not put into layer1 any more.
+      // Use a cid on IPFS named bodyCid instead of the following fields. 
+      // let refNum = '0x02';
+      // let rsaPub = '0x03';
+      // let capCid = toHex(Buffer.from('111'), { addPrefix: true });
+      // let manifestCid = toHex(Buffer.from('222'), { addPrefix: true });
+      // let wasmCid = toHex(Buffer.from('333'), { addPrefix: true });
+
       let teaId = '0x01';
-      let refNum = '0x02';
-      let rsaPub = '0x03';
-      let capCid = toHex(Buffer.from('111'), { addPrefix: true });
-      let manifestCid = toHex(Buffer.from('222'), { addPrefix: true });
-      let wasmCid = toHex(Buffer.from('333'), { addPrefix: true });
       let modelCid = toHex(Buffer.from('444'), { addPrefix: true });
-      let dataCid = toHex(Buffer.from('555'), { addPrefix: true });
+      let bodyCid = toHex(Buffer.from('555'), { addPrefix: true });
       let payment = 50;
 
-      await api.tx.tea.addNewTask(teaId, refNum, rsaPub, capCid, manifestCid, wasmCid, modelCid, dataCid, payment)
+      await api.tx.tea.addNewTask(teaId, modelCid, bodyCid, payment)
             .signAndSend(alice, ({ events = [], status }) => {
                   if (status.isInBlock) {
                         console.log('Included at block hash', status.asInBlock.toHex());
