@@ -1,6 +1,6 @@
 {
   "nested": {
-    "libp2p_delegate": {
+    "actor_delegate": {
       "nested": {
         "CidHash": {
           "fields": {
@@ -116,6 +116,14 @@
               "rule": "required",
               "type": "bytes",
               "id": 2
+            },
+            "TeaId": {
+              "type": "bytes",
+              "id": 3
+            },
+            "Signature": {
+              "type": "bytes",
+              "id": 4
             }
           },
           "nested": {
@@ -129,15 +137,15 @@
         },
         "ApplyToExecuteTaskRequest": {
           "fields": {
-            "TpmSignature": {
+            "RsaPubKey": {
               "rule": "required",
               "type": "bytes",
-              "id": 1
+              "id": 3
             },
-            "TeaId": {
-              "rule": "required",
+            "CapCheckers": {
+              "rule": "repeated",
               "type": "bytes",
-              "id": 2
+              "id": 5
             }
           }
         },

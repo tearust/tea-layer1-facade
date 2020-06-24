@@ -6,7 +6,7 @@ const root = protobuf.Root.fromJSON(protobufJSON);
 class Protobuf {
   constructor(KEY){
     this.key = KEY;
-    this.obj = root.lookup(`libp2p_delegate.${KEY}`);
+    this.obj = root.lookup(`actor_delegate.${KEY}`);
     this._payload = null;
   }
   payload(payload){
