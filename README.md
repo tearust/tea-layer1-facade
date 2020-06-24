@@ -162,15 +162,10 @@ Message format: https://github.com/tearust/tea-codec/blob/master/proto/libp2p-de
 Sample:
 ```
 const task = {
-      teaId: Buffer.from('01', 'hex'),
-      refNum: Buffer.from('abcdefg', 'hex'),
-      rsaPub: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
-      capCid: '111',
-      manifestCid: '222',
-      wasmCid: '333',
+      delegateId: Buffer.from('01', 'hex'),
       modelCid: '444',
-      dataCid: '555',
       payment: 1000,
+      bodyCid: '555',
 }
 const node = {
       teaId: Buffer.from('01', 'hex'),
@@ -189,6 +184,6 @@ const response = {
 
 Message Body:
 ```
-CgMSNFYSEgoBARIDEinfEgNcg9gSAzFdDhpGCgEBEgOrze8aIMfgFvrQeWu2hZTkmm7xlCz35zSX5p7bMtGbovqzaWWWIgMxMTEqAzIyMjIDMzMzOgM0NDRCAzU1NUjoBw==
+CgMSNFYSEgoBARIDEinfEgNcg9gSAzFdDhoQCgEBEgM0NDQY6AciAzU1NQ==
 //this is the base64 of a protobuf Task message
 ```
