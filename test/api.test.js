@@ -41,20 +41,38 @@ describe('protobuf test suit', () => {
                         Buffer.from('315d0ec', 'hex'),
                   ]
             }
-            const response = {
+            const addNewTaskResponse = {
                   accountId: Buffer.from('1234567', 'hex'),
                   delegateNode: node,
                   task,
             }
 
             const responseBuf = new proto.Protobuf('AddNewTaskResponse');
-            responseBuf.payload(response);
-            const newTaskResponseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
-            console.log("newTaskResponseBase64", newTaskResponseBase64);
+            responseBuf.payload(addNewTaskResponse);
+            const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
+            console.log("responseBase64", responseBase64);
 
             const newResponseBuf = new proto.Protobuf('AddNewTaskResponse');
-            const newResponse = newResponseBuf.decode(Buffer.from(newTaskResponseBase64, 'base64'));
+            const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'));
             // console.log('decode:', newResponse);
-            assert.deepEqual(response, newResponse);
+            assert.deepEqual(addNewTaskResponse, newResponse);
+      })
+
+      it('CompleteTaskResponse test', () => {
+            const completeTaskResponse = {
+                  accountId: Buffer.from('111', 'hex'),
+                  taskId: Buffer.from('222', 'hex'),
+                  result: Buffer.from('333', 'hex'),
+            }
+
+            const responseBuf = new proto.Protobuf('CompleteTaskResponse');
+            responseBuf.payload(completeTaskResponse);
+            const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
+            console.log("responseBase64", responseBase64);
+
+            const newResponseBuf = new proto.Protobuf('CompleteTaskResponse');
+            const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'));
+            // console.log('decode:', newResponse);
+            assert.deepEqual(completeTaskResponse, newResponse); 
       })
 })

@@ -130,13 +130,18 @@
             "MessageType": {
               "values": {
                 "ApplyToExecuteTaskRequest": 0,
-                "ApplyToExecuteTaskResponse": 1
+                "WinnerExecutorCert": 1
               }
             }
           }
         },
         "ApplyToExecuteTaskRequest": {
           "fields": {
+            "refNum": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
             "RsaPubKey": {
               "rule": "required",
               "type": "bytes",
@@ -250,6 +255,53 @@
             "task": {
               "rule": "required",
               "type": "Task",
+              "id": 3
+            }
+          }
+        },
+        "CompleteTaskRequest": {
+          "fields": {
+            "teaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            }
+          }
+        },
+        "CompleteTaskResponse": {
+          "fields": {
+            "accountId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "taskId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "result": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            }
+          }
+        },
+        "WinnerExecutorCert": {
+          "fields": {
+            "refNum": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "winnerTeaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "executorRsaPubKey": {
+              "rule": "required",
+              "type": "bytes",
               "id": 3
             }
           }

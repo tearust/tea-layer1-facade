@@ -4,6 +4,7 @@ const { cryptoWaitReady } = require('@polkadot/util-crypto')
 const _ = require('lodash');
 const proto = require('./proto');
 const toHex = require('to-hex');
+const types = require('./types');
 
 const nc = NATS.connect();
 
@@ -16,27 +17,7 @@ const cache = {
 
 async function main() {
       const api = await ApiPromise.create({
-            types: {
-                  Weight: "u32",
-                  Address: "AccountId",
-                  TeaId: "Bytes",
-                  PeerId: "Bytes",
-                  Node: {
-                        "TeaId": "TeaId",
-                        "Peers": "Vec<PeerId>"
-                  },
-                  Model: {
-                        "account": "AccountId",
-                        "payment": "u32",
-                        "cid": "H256"
-                  },
-                  Task: {
-                        "delegate_node": "TeaId",
-                        "model_cid": "Bytes",
-                        "body_cid": "Bytes",
-                        "payment": "Balance"
-                  }
-            }
+            types: types
       })
 
       await cryptoWaitReady()
@@ -259,17 +240,20 @@ function handle_events(events) {
                               nc.publish(`layer1.event.${event.section}.${event.method}`, JSON.stringify(msg))
                               break
                         case 'CompleteTask':
-                              var msg = {}
-                              msg['account_id'] = eventData.AccountId
-                              msg['ref_num'] = eventData.Task.ref_num
-                              msg['rsa_pub'] = eventData.Task.rsa_pub
-                              msg['cap_cid'] = eventData.Task.cap_cid
-                              msg['model_cid'] = eventData.Task.model_cid
-                              msg['data_cid'] = eventData.Task.data_cid
-                              msg['payment'] = eventData.Task.payment
+                              console.log('eventData:', JSON.stringify(eventData));
 
-                              console.log(JSON.stringify(msg))
-                              nc.publish(`layer1.event.${event.section}.${event.method}`, JSON.stringify(msg))
+                              const completeTaskResponse = {
+                                    accountId: Buffer.from(eventData.AccountId, 'hex'),
+                                    taskId: Buffer.from(eventData.TaskId, 'hex'),
+                                    result: Buffer.from(eventData.Result, 'hex'),
+                              }
+                  
+                              const responseBu = new proto.Protobuf('CompleteTaskResponse');
+                              responseBu.payload(completeTaskResponse);
+                              const responseBase64 = Buffer.from(responseBu.toBuffer()).toString('base64');
+                              console.log("responseBase64", responseBase64);
+
+                              nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
                               break
                         default:
                   }

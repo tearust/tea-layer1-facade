@@ -1,31 +1,11 @@
 const toHex = require('to-hex');
 const { ApiPromise, Keyring } = require('@polkadot/api')
 const { cryptoWaitReady } = require('@polkadot/util-crypto')
+const types = require('../src/types');
 
 async function main() {
       const api = await ApiPromise.create({
-            types: {
-                  Weight: "u32",
-                  Address: "AccountId",
-                  TeaId: "Bytes",
-                  PeerId: "Bytes",
-                  TaskIndex: "u32",
-                  Node: {
-                        "TeaId": "TeaId",
-                        "Peers": "Vec<PeerId>"
-                  },
-                  Model: {
-                        "account": "AccountId",
-                        "payment": "u32",
-                        "cid": "H256"
-                  },
-                  Task: {
-                        "delegate_node": "TeaId",
-                        "model_cid": "Bytes",
-                        "body_cid": "Bytes",
-                        "payment": "Balance"
-                  }
-            }
+            types: types
       })
 
       await cryptoWaitReady()
