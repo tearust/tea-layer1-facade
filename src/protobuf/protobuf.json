@@ -156,11 +156,6 @@
         },
         "TaskBody": {
           "fields": {
-            "refNum": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 1
-            },
             "rsaPub": {
               "rule": "required",
               "type": "bytes",
@@ -195,25 +190,30 @@
         },
         "Task": {
           "fields": {
-            "delegateId": {
+            "refNum": {
               "rule": "required",
               "type": "bytes",
               "id": 1
             },
+            "delegateId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
             "modelCid": {
               "rule": "required",
               "type": "string",
-              "id": 2
-            },
-            "payment": {
-              "rule": "required",
-              "type": "uint32",
               "id": 3
             },
             "bodyCid": {
               "rule": "required",
               "type": "string",
               "id": 4
+            },
+            "payment": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 5
             }
           }
         },
@@ -247,35 +247,55 @@
               "type": "bytes",
               "id": 1
             },
+            "refNum": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
             "delegateNode": {
               "rule": "required",
               "type": "Node",
-              "id": 2
-            },
-            "task": {
-              "rule": "required",
-              "type": "Task",
               "id": 3
             }
           }
         },
         "CompleteTaskRequest": {
           "fields": {
-            "teaId": {
+            "refNum": {
               "rule": "required",
               "type": "bytes",
               "id": 1
+            },
+            "teaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "delegateSig": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            },
+            "result": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 4
+            },
+            "resultSig": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 5
             }
           }
         },
         "CompleteTaskResponse": {
           "fields": {
-            "accountId": {
+            "refNum": {
               "rule": "required",
               "type": "bytes",
               "id": 1
             },
-            "taskId": {
+            "accountId": {
               "rule": "required",
               "type": "bytes",
               "id": 2
@@ -303,6 +323,19 @@
               "rule": "required",
               "type": "bytes",
               "id": 3
+            }
+          }
+        },
+        "WinnerExecutorCertPayload": {
+          "fields": {
+            "cert": {
+              "rule": "required",
+              "type": "WinnerExecutorCert",
+              "id": 1
+            },
+            "secKeysRsaBytes": {
+              "type": "bytes",
+              "id": 2
             }
           }
         }

@@ -32,10 +32,13 @@ function handle_events(events) {
                         // console.log(`\t\t\t${types[index].type}: ${data.toString()}`);
                         eventData[types[index].type] = data
                   });
+                  console.log('eventData:', JSON.stringify(eventData));
 
                   switch (event.method) {
                         case 'CompleteTask':
-                              console.log('eventData:', JSON.stringify(eventData));
+
+                              console.log('CompleteTask:', JSON.stringify(eventData.RefNum));
+                              
                               break
                         default:
                   }

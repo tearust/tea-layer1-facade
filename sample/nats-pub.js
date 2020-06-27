@@ -19,6 +19,7 @@ function get_nodes() {
 
 function add_new_task() {
       const task = {
+            refNum: Buffer.from('03', 'hex'),
             delegateId: Buffer.from('01', 'hex'),
             modelCid: '444',
             bodyCid: '555',

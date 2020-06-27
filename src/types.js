@@ -3,7 +3,7 @@ const types = {
       Address: "AccountId",
       TeaId: "Bytes",
       PeerId: "Bytes",
-      TaskId: "H256",
+      RefNum: "Bytes",
       Result: "Bytes",
       Node: {
             "TeaId": "TeaId",
@@ -15,6 +15,7 @@ const types = {
             "cid": "H256"
       },
       Task: {
+            "ref_num": "Bytes",
             "delegate_node": "TeaId",
             "model_cid": "Bytes",
             "body_cid": "Bytes",

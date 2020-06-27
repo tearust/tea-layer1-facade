@@ -15,10 +15,11 @@ describe('layer1::api', function() {
 describe('protobuf test suit', () => {
 
       const task = {
-            delegateId: Buffer.from('01', 'hex'),
+            refNum: Buffer.from('01', 'hex'),
+            delegateId: Buffer.from('02', 'hex'),
             modelCid: '444',
-            payment: 1000,
             bodyCid: '555',
+            payment: 1000,
       }
 
       it('AddNewTaskRequest test', () => {
@@ -43,8 +44,8 @@ describe('protobuf test suit', () => {
             }
             const addNewTaskResponse = {
                   accountId: Buffer.from('1234567', 'hex'),
+                  refNum: task.refNum,
                   delegateNode: node,
-                  task,
             }
 
             const responseBuf = new proto.Protobuf('AddNewTaskResponse');
@@ -60,8 +61,8 @@ describe('protobuf test suit', () => {
 
       it('CompleteTaskResponse test', () => {
             const completeTaskResponse = {
+                  refNum: Buffer.from('222', 'hex'),
                   accountId: Buffer.from('111', 'hex'),
-                  taskId: Buffer.from('222', 'hex'),
                   result: Buffer.from('333', 'hex'),
             }
 

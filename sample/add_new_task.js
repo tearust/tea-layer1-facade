@@ -15,18 +15,18 @@ async function main() {
 
       // The following fields need not put into layer1 any more.
       // Use a cid on IPFS named bodyCid instead of the following fields. 
-      // let refNum = '0x02';
       // let rsaPub = '0x03';
       // let capCid = toHex(Buffer.from('111'), { addPrefix: true });
       // let manifestCid = toHex(Buffer.from('222'), { addPrefix: true });
       // let wasmCid = toHex(Buffer.from('333'), { addPrefix: true });
+      
+      const refNum = '0x02';
+      const teaId = '0x01';
+      const modelCid = toHex(Buffer.from('444'), { addPrefix: true });
+      const bodyCid = toHex(Buffer.from('555'), { addPrefix: true });
+      const payment = 50;
 
-      let teaId = '0x01';
-      let modelCid = toHex(Buffer.from('444'), { addPrefix: true });
-      let bodyCid = toHex(Buffer.from('555'), { addPrefix: true });
-      let payment = 50;
-
-      await api.tx.tea.addNewTask(teaId, modelCid, bodyCid, payment)
+      await api.tx.tea.addNewTask(refNum, teaId, modelCid, bodyCid, payment)
             .signAndSend(alice, ({ events = [], status }) => {
                   if (status.isInBlock) {
                         console.log('Included at block hash', status.asInBlock.toHex());
