@@ -201,8 +201,8 @@ function handle_events(events) {
                   switch (event.method) {
                         case 'NewTaskAdded':
                               const node = {
-                                    teaId: Buffer.from(eventData.Node.TeaId, 'hex'),
-                                    peers: eventData.Node.Peers,
+                                    teaId: Buffer.from(eventData.Node.teaId, 'hex'),
+                                    peers: eventData.Node.peers,
                               }
                               const response = {
                                     accountId: Buffer.from(eventData.AccountId, 'hex'),
@@ -228,8 +228,8 @@ function handle_events(events) {
                               var msg = {}
                               msg['account_id'] = eventData.AccountId
                               msg['node'] = {
-                                    'tea_id': eventData.Node.TeaId,
-                                    'peers': eventData.Node.Peers
+                                    'tea_id': eventData.Node.teaId,
+                                    'peers': eventData.Node.peers
                               }
 
                               console.log(JSON.stringify(msg))
@@ -238,7 +238,7 @@ function handle_events(events) {
                         case 'NewNodeJoined':
                               var msg = {}
                               msg['account_id'] = eventData.AccountId
-                              msg['tea_id'] = eventData.Node.TeaId
+                              msg['tea_id'] = eventData.Node.teaId
 
                               console.log(JSON.stringify(msg))
                               nc.publish(`layer1.event.${event.section}.${event.method}`, JSON.stringify(msg))
