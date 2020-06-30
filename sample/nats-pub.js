@@ -39,15 +39,32 @@ function add_new_task() {
 }
 
 function complete_task() {
-      nc.publish('layer1.async.replay.complete_task', '0x25484d12f935dbf24d116585edf4ce4936f3659390ea897b5081c66ac665f16e', 'layer1.test.result')
+      const completeTaskRequest = {
+            refNum: Buffer.from('01', 'hex'),
+            teaId: Buffer.from('01', 'hex'),
+            delegateSig: Buffer.from('22', 'hex'),
+            result: Buffer.from('33', 'hex'),
+            resultSig: Buffer.from('44', 'hex'),
+      }
+
+      const requestBuf = new proto.Protobuf('CompleteTaskRequest');
+      requestBuf.payload(completeTaskRequest);
+      const requestBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64');
+      console.log("CompleteTaskRequest Base64", requestBase64);
+
+      // const newRequestBuf = new proto.Protobuf('CompleteTaskRequest');
+      // const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'));
+      // console.log('decode:', newRequest);
+
+      nc.publish('layer1.async.replay.complete_task', requestBase64, 'layer1.test.result')
 }
 
 async function main() {
       // add_new_node()
       // update_peer_id()
       // get_nodes()
-      add_new_task()
-      // complete_task()
+      // add_new_task()
+      complete_task()
 }
 
 main().catch((error) => {

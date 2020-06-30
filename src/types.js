@@ -6,8 +6,8 @@ const types = {
       RefNum: "Bytes",
       Result: "Bytes",
       Node: {
-            "TeaId": "TeaId",
-            "Peers": "Vec<PeerId>"
+            "teaId": "TeaId",
+            "peers": "Vec<PeerId>"
       },
       Model: {
             "account": "AccountId",
@@ -15,10 +15,10 @@ const types = {
             "cid": "H256"
       },
       Task: {
-            "ref_num": "Bytes",
-            "delegate_node": "TeaId",
-            "model_cid": "Bytes",
-            "body_cid": "Bytes",
+            "refNum": "Bytes",
+            "delegateNode": "TeaId",
+            "modelCid": "Bytes",
+            "bodyCid": "Bytes",
             "payment": "Balance"
       }
 }

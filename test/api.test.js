@@ -51,12 +51,32 @@ describe('protobuf test suit', () => {
             const responseBuf = new proto.Protobuf('AddNewTaskResponse');
             responseBuf.payload(addNewTaskResponse);
             const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
-            console.log("responseBase64", responseBase64);
+            console.log("AddNewTaskResponse Base64", responseBase64);
 
             const newResponseBuf = new proto.Protobuf('AddNewTaskResponse');
             const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'));
             // console.log('decode:', newResponse);
             assert.deepEqual(addNewTaskResponse, newResponse);
+      })
+
+      it('CompleteTaskRequest test', () => {
+            const completeTaskRequest = {
+                  refNum: Buffer.from('111', 'hex'),
+                  teaId: Buffer.from('01', 'hex'),
+                  delegateSig: Buffer.from('222', 'hex'),
+                  result: Buffer.from('333', 'hex'),
+                  resultSig: Buffer.from('444', 'hex'),
+            }
+
+            const requestBuf = new proto.Protobuf('CompleteTaskRequest');
+            requestBuf.payload(completeTaskRequest);
+            const requestBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64');
+            console.log("CompleteTaskRequest Base64", requestBase64);
+
+            const newRequestBuf = new proto.Protobuf('CompleteTaskRequest');
+            const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'));
+            // console.log('decode:', newRequest);
+            assert.deepEqual(completeTaskRequest, newRequest); 
       })
 
       it('CompleteTaskResponse test', () => {
@@ -69,7 +89,7 @@ describe('protobuf test suit', () => {
             const responseBuf = new proto.Protobuf('CompleteTaskResponse');
             responseBuf.payload(completeTaskResponse);
             const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
-            console.log("responseBase64", responseBase64);
+            console.log("CompleteTaskResponse Base64", responseBase64);
 
             const newResponseBuf = new proto.Protobuf('CompleteTaskResponse');
             const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'));

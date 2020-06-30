@@ -140,8 +140,16 @@ async function main() {
                         console.log('send add_new_task tx')
                         break
                   case 'complete_task':
-                        const taskId = msg;
-                        await api.tx.tea.completeTask(taskId)
+                        const newRequestBuf = new proto.Protobuf('CompleteTaskRequest');
+                        const newRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'));
+
+                        var refNum = toHex(newRequest.refNum, { addPrefix: true });
+                        var teaId = toHex(newRequest.teaId, { addPrefix: true });
+                        let delegateSig = toHex(Buffer.from(newRequest.delegateSig), { addPrefix: true });
+                        let result = toHex(Buffer.from(newRequest.result), { addPrefix: true });
+                        let resultSig = toHex(Buffer.from(newRequest.resultSig), { addPrefix: true });
+
+                        await api.tx.tea.completeTask(refNum, teaId, delegateSig, result, resultSig)
                               .signAndSend(alice, ({ events = [], status }) => {
                                     if (status.isInBlock) {
                                           console.log('Included at block hash', status.asInBlock.toHex());
