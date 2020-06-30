@@ -140,8 +140,16 @@ async function main() {
                         console.log('send add_new_task tx')
                         break
                   case 'complete_task':
-                        const taskId = msg;
-                        await api.tx.tea.completeTask(taskId)
+                        const newRequestBuf = new proto.Protobuf('CompleteTaskRequest');
+                        const newRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'));
+
+                        var refNum = toHex(newRequest.refNum, { addPrefix: true });
+                        var teaId = toHex(newRequest.teaId, { addPrefix: true });
+                        let delegateSig = toHex(Buffer.from(newRequest.delegateSig), { addPrefix: true });
+                        let result = toHex(Buffer.from(newRequest.result), { addPrefix: true });
+                        let resultSig = toHex(Buffer.from(newRequest.resultSig), { addPrefix: true });
+
+                        await api.tx.tea.completeTask(refNum, teaId, delegateSig, result, resultSig)
                               .signAndSend(alice, ({ events = [], status }) => {
                                     if (status.isInBlock) {
                                           console.log('Included at block hash', status.asInBlock.toHex());
@@ -193,8 +201,8 @@ function handle_events(events) {
                   switch (event.method) {
                         case 'NewTaskAdded':
                               const node = {
-                                    teaId: Buffer.from(eventData.Node.TeaId, 'hex'),
-                                    peers: eventData.Node.Peers,
+                                    teaId: Buffer.from(eventData.Node.teaId, 'hex'),
+                                    peers: eventData.Node.peers,
                               }
                               const response = {
                                     accountId: Buffer.from(eventData.AccountId, 'hex'),
@@ -220,8 +228,8 @@ function handle_events(events) {
                               var msg = {}
                               msg['account_id'] = eventData.AccountId
                               msg['node'] = {
-                                    'tea_id': eventData.Node.TeaId,
-                                    'peers': eventData.Node.Peers
+                                    'tea_id': eventData.Node.teaId,
+                                    'peers': eventData.Node.peers
                               }
 
                               console.log(JSON.stringify(msg))
@@ -230,7 +238,7 @@ function handle_events(events) {
                         case 'NewNodeJoined':
                               var msg = {}
                               msg['account_id'] = eventData.AccountId
-                              msg['tea_id'] = eventData.Node.TeaId
+                              msg['tea_id'] = eventData.Node.teaId
 
                               console.log(JSON.stringify(msg))
                               nc.publish(`layer1.event.${event.section}.${event.method}`, JSON.stringify(msg))

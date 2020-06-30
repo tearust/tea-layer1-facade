@@ -116,14 +116,6 @@
               "rule": "required",
               "type": "bytes",
               "id": 2
-            },
-            "TeaId": {
-              "type": "bytes",
-              "id": 3
-            },
-            "Signature": {
-              "type": "bytes",
-              "id": 4
             }
           },
           "nested": {
@@ -135,22 +127,60 @@
             }
           }
         },
-        "ApplyToExecuteTaskRequest": {
+        "WinnerExecutorCertPayload": {
           "fields": {
             "refNum": {
               "rule": "required",
-              "type": "string",
+              "type": "bytes",
               "id": 1
             },
-            "RsaPubKey": {
+            "winnerTeaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "signature": {
               "rule": "required",
               "type": "bytes",
               "id": 3
             },
-            "CapCheckers": {
+            "secKeysRsaBytes": {
+              "type": "bytes",
+              "id": 4
+            }
+          }
+        },
+        "ApplyToExecuteTaskRequest": {
+          "fields": {
+            "refNum": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "taskBodyCid": {
+              "rule": "required",
+              "type": "string",
+              "id": 2
+            },
+            "rsaPubKey": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            },
+            "capCheckers": {
               "rule": "repeated",
               "type": "bytes",
               "id": 5
+            },
+            "executorTeaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 6
+            },
+            "signature": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 7
             }
           }
         },
@@ -304,38 +334,6 @@
               "rule": "required",
               "type": "bytes",
               "id": 3
-            }
-          }
-        },
-        "WinnerExecutorCert": {
-          "fields": {
-            "refNum": {
-              "rule": "required",
-              "type": "string",
-              "id": 1
-            },
-            "winnerTeaId": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 2
-            },
-            "executorRsaPubKey": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 3
-            }
-          }
-        },
-        "WinnerExecutorCertPayload": {
-          "fields": {
-            "cert": {
-              "rule": "required",
-              "type": "WinnerExecutorCert",
-              "id": 1
-            },
-            "secKeysRsaBytes": {
-              "type": "bytes",
-              "id": 2
             }
           }
         }
