@@ -157,9 +157,9 @@
               "type": "bytes",
               "id": 1
             },
-            "taskBodyCid": {
+            "ekey1": {
               "rule": "required",
-              "type": "string",
+              "type": "bytes",
               "id": 2
             },
             "rsaPubKey": {
@@ -186,16 +186,6 @@
         },
         "TaskBody": {
           "fields": {
-            "rsaPub": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 2
-            },
-            "capCid": {
-              "rule": "required",
-              "type": "string",
-              "id": 3
-            },
             "manifestCid": {
               "rule": "required",
               "type": "string",
@@ -277,15 +267,10 @@
               "type": "bytes",
               "id": 1
             },
-            "refNum": {
+            "task": {
               "rule": "required",
-              "type": "bytes",
+              "type": "Task",
               "id": 2
-            },
-            "delegateNode": {
-              "rule": "required",
-              "type": "Node",
-              "id": 3
             }
           }
         },

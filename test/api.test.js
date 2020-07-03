@@ -34,18 +34,18 @@ describe('protobuf test suit', () => {
       });
 
       it('AddNewTaskResponse test', () => {
-            const node = {
-                  teaId: Buffer.from('01', 'hex'),
-                  peers: [
-                        Buffer.from('1229df2', 'hex'),
-                        Buffer.from('5c83d8c', 'hex'),
-                        Buffer.from('315d0ec', 'hex'),
-                  ]
-            }
+            // const node = {
+            //       teaId: Buffer.from('01', 'hex'),
+            //       peers: [
+            //             Buffer.from('1229df2', 'hex'),
+            //             Buffer.from('5c83d8c', 'hex'),
+            //             Buffer.from('315d0ec', 'hex'),
+            //       ]
+            // }
             const addNewTaskResponse = {
                   accountId: Buffer.from('1234567', 'hex'),
-                  refNum: task.refNum,
-                  delegateNode: node,
+                  task,
+                  // delegateNode: node,
             }
 
             const responseBuf = new proto.Protobuf('AddNewTaskResponse');

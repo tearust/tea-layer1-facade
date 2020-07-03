@@ -200,16 +200,24 @@ function handle_events(events) {
                   
                   switch (event.method) {
                         case 'NewTaskAdded':
-                              const node = {
-                                    teaId: Buffer.from(eventData.Node.teaId, 'hex'),
-                                    peers: eventData.Node.peers,
+                              // const node = {
+                              //       teaId: Buffer.from(eventData.Node.teaId, 'hex'),
+                              //       peers: eventData.Node.peers,
+                              // }
+                              const task = {
+                                    refNum: Buffer.from(eventData.Task.refNum, 'hex'),
+                                    delegateId: Buffer.from(eventData.Task.delegateTeaId, 'hex'),
+                                    modelCid: eventData.Task.modelCid.toString(),
+                                    bodyCid: eventData.Task.bodyCid.toString(),
+                                    payment: parseInt(eventData.Task.payment),
                               }
                               const response = {
                                     accountId: Buffer.from(eventData.AccountId, 'hex'),
-                                    refNum: eventData.RefNum,
-                                    delegateNode: node,
+                                    task,
+                                    // delegateNode: node,
                               }
 
+                              console.log('response:', JSON.stringify(response));
                               const responseBuf = new proto.Protobuf('AddNewTaskResponse');
                               responseBuf.payload(response);
                               const newTaskResponseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
