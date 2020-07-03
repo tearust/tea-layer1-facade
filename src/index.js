@@ -208,7 +208,7 @@ function handle_events(events) {
                                     refNum: Buffer.from(eventData.Task.refNum, 'hex'),
                                     delegateId: Buffer.from(eventData.Task.delegateTeaId, 'hex'),
                                     modelCid: eventData.Task.modelCid.toString(),
-                                    bodyCid: eventData.Task.bodyCid.toString(),
+                                    bodyCid: Buffer.from(eventData.Task.bodyCid, 'hex').toString(),
                                     payment: parseInt(eventData.Task.payment),
                               }
                               const response = {
