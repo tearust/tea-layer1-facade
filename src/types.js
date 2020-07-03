@@ -1,9 +1,9 @@
 const types = {
       Weight: "u32",
       Address: "AccountId",
-      TeaId: "Bytes",
+      TeaId: "[u8; 32]",
       PeerId: "Bytes",
-      RefNum: "Bytes",
+      RefNum: "H256",
       Result: "Bytes",
       Node: {
             "teaId": "TeaId",
@@ -12,11 +12,11 @@ const types = {
       Model: {
             "account": "AccountId",
             "payment": "u32",
-            "cid": "H256"
+            "cid": "Bytes"
       },
       Task: {
-            "refNum": "Bytes",
-            "delegateNode": "TeaId",
+            "refNum": "RefNum",
+            "delegateTeaId": "TeaId",
             "modelCid": "Bytes",
             "bodyCid": "Bytes",
             "payment": "Balance"
