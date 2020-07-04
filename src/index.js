@@ -204,6 +204,7 @@ function handle_events(events) {
                               //       teaId: Buffer.from(eventData.Node.teaId, 'hex'),
                               //       peers: eventData.Node.peers,
                               // }
+
                               const task = {
                                     refNum: Buffer.from(eventData.Task.refNum, 'hex'),
                                     delegateId: Buffer.from(eventData.Task.delegateTeaId, 'hex'),
