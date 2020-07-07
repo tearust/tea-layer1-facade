@@ -40,10 +40,10 @@ function add_new_task() {
 
 function complete_task() {
       const completeTaskRequest = {
-            refNum: Buffer.from('01', 'hex'),
-            teaId: Buffer.from('01', 'hex'),
-            delegateSig: Buffer.from('22', 'hex'),
-            result: Buffer.from('33', 'hex'),
+            refNum: Buffer.from('0c6123c17c95bd6617a01ef899f5895ddb190eb3265f341687f4c0ad1b1f366f', 'hex'),
+            teaId: Buffer.from('e9889b1c54ccd6cf184901ded892069921d76f7749b6f73bed6cf3b9be1a8a44', 'hex'),
+            delegateSig: Buffer.from('577ca5104490756b320da325aa81e272049fcee7bb63fe1f92220201a15c47025e3032b85366fcf85b3a2f24418a933b9d6c4fcd94e145b783e2364980a93c0d', 'hex'),
+            result: Buffer.from('0xe9889b1c54ccd6cf184901ded892069921d76f7749b6f73bed6cf3b9be1a8a440c6123c17c95bd6617a01ef899f5895ddb190eb3265f341687f4c0ad1b1f366f', 'hex'),
             resultSig: Buffer.from('44', 'hex'),
       }
 
@@ -63,8 +63,8 @@ async function main() {
       // add_new_node()
       // update_peer_id()
       // get_nodes()
-      add_new_task()
-      // complete_task()
+      // add_new_task()
+      complete_task()
 }
 
 main().catch((error) => {

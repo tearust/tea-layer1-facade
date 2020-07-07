@@ -79,6 +79,7 @@ describe('protobuf test suit', () => {
             assert.deepEqual(completeTaskRequest, newRequest); 
       })
 
+      // CiC6kUe6UPrKaURS23xFjjOpoDIqy6rCS/Ndt7tRZd/zrBIg6YibHFTM1s8YSQHe2JIGmSHXb3dJtvc77Wzzub4aikQaQE9i53WmGskE1s/BhHMgN2G3fvYCVcdF6nElVgaVZZbwURymHRss0DnXifAamPHXRrttxY/rB/lFzEwFMFCrAQMiJXsicmVzdWx0IjoibGlvbiAtIDY1Ljg2JSIsInN0YXR1cyI6MX0qQFOD5/6c0ordhvqYy3kLNEZHd8IwnaUENUaRxfLtESqu4+gIAv2kHF4LAWgyiGjavLpzdrlViAKw/EXrw91m/AA=
       it('CompleteTaskResponse test', () => {
             const completeTaskResponse = {
                   refNum: Buffer.from('222', 'hex'),
@@ -97,3 +98,21 @@ describe('protobuf test suit', () => {
             assert.deepEqual(completeTaskResponse, newResponse); 
       })
 })
+
+describe('debug', function() {
+      it('CompleteTaskRequest debug', () => {
+            const requestBase64 = 'CiC6kUe6UPrKaURS23xFjjOpoDIqy6rCS/Ndt7tRZd/zrBIg6YibHFTM1s8YSQHe2JIGmSHXb3dJtvc77Wzzub4aikQaQE9i53WmGskE1s/BhHMgN2G3fvYCVcdF6nElVgaVZZbwURymHRss0DnXifAamPHXRrttxY/rB/lFzEwFMFCrAQMiJXsicmVzdWx0IjoibGlvbiAtIDY1Ljg2JSIsInN0YXR1cyI6MX0qQFOD5/6c0ordhvqYy3kLNEZHd8IwnaUENUaRxfLtESqu4+gIAv2kHF4LAWgyiGjavLpzdrlViAKw/EXrw91m/AA='
+
+            const newRequestBuf = new proto.Protobuf('CompleteTaskRequest');
+            const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'));
+            console.log('decode:', newRequest);
+
+            console.log("refNum", Buffer.from(newRequest.refNum).toString('hex'))
+            console.log("teaId", Buffer.from(newRequest.teaId).toString('hex'))
+            console.log("delegateSig", Buffer.from(newRequest.delegateSig).toString('hex'))
+            console.log("result", Buffer.from(newRequest.result).toString('hex'))
+            console.log("resultSig", Buffer.from(newRequest.resultSig).toString('hex'))
+
+            // assert.deepEqual(completeTaskRequest, newRequest); 
+      })
+});
