@@ -89,7 +89,15 @@ Received a Message {
 #### Update tea node profile
 Nats subject: layer1.async.replay.update_node_profile
 Nats body: protobuf encoded [u8]. The message is actor-ra.proto TeaNodeUpdateProfileRequest
-
+Sample data structure:
+```
+//TeaNodeUpdateProfileRequest
+{ 
+  ephemeral_public_key: [233, 136, 155, 28, 84, 204, 214, 207, 24, 73, 1, 222, 216, 146, 6, 153, 33, 215, 111, 119, 73, 182, 247, 59, 237, 108, 243, 185, 190, 26, 138, 68],//this is the Ed25519 pub key
+  public_urls: ["placeholder_url1", "placeholder_url2"], //the list of public URL that this delegate allow web client to access to
+  profile_cid: "QmfL6ry4YRKD4joa3RMQZ1qYGKGBWJqHYtEiJEjBmQrASB" //the IPFS Cid of the profile data
+}
+```
 No response needed
 
 
