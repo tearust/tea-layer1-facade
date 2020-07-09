@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "test": "mocha",
-    "protobuf": "pbjs -t json ../tea-codec/proto/actor-delegate.proto > ./src/protobuf/protobuf.json"
+    "protobuf": "pbjs -t json ../tea-codec/proto/actor-*.proto > ./src/protobuf/protobuf.json"
   },
   "author": "",
   "license": "ISC",

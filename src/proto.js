@@ -4,9 +4,9 @@ const protobufJSON = require('./protobuf/protobuf.json');
 const root = protobuf.Root.fromJSON(protobufJSON);
 
 class Protobuf {
-  constructor(KEY){
-    this.key = KEY;
-    this.obj = root.lookup(`actor_delegate.${KEY}`);
+  constructor(key, obj){
+    this.key = key;
+    this.obj = root.lookup(`${obj}.${key}`);
     this._payload = null;
   }
   payload(payload){
@@ -26,8 +26,21 @@ class Protobuf {
   }
 }
 
+class DelegateProtobuf extends Protobuf {
+  constructor(key) {
+    super(key, 'actor_delegate');
+  }
+}
+
+class RAProtobuf extends Protobuf {
+  constructor(key) {
+    super(key, 'actor_ra');
+  }
+}
+
 const F = {
-  Protobuf,
+  DelegateProtobuf,
+  RAProtobuf,
   stringToU8(str){
     var arr = [];
     for (var i = 0, j = str.length; i < j; ++i) {

@@ -167,11 +167,6 @@
               "type": "bytes",
               "id": 3
             },
-            "capCheckers": {
-              "rule": "repeated",
-              "type": "bytes",
-              "id": 5
-            },
             "executorTeaId": {
               "rule": "required",
               "type": "bytes",
@@ -190,6 +185,11 @@
               "rule": "required",
               "type": "string",
               "id": 4
+            },
+            "capCid": {
+              "rule": "required",
+              "type": "string",
+              "id": 3
             },
             "wasmCid": {
               "rule": "required",
@@ -319,6 +319,239 @@
               "rule": "required",
               "type": "bytes",
               "id": 3
+            }
+          }
+        }
+      }
+    },
+    "actor_executor": {
+      "nested": {
+        "CidHash": {
+          "fields": {
+            "cid": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "hash": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            }
+          }
+        },
+        "TaskRegisterRequest": {
+          "fields": {
+            "cidHash": {
+              "rule": "repeated",
+              "type": "CidHash",
+              "id": 1
+            },
+            "ekey1": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "blockChainAccount": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            }
+          }
+        },
+        "TaskRegisterResponse": {
+          "fields": {
+            "RefNum": {
+              "type": "uint32",
+              "id": 1
+            },
+            "Error": {
+              "type": "string",
+              "id": 2
+            }
+          }
+        }
+      }
+    },
+    "actor_ra": {
+      "nested": {
+        "LibP2PInitInfo": {
+          "fields": {
+            "encodedBytes": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "tpmSignature": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "teaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            },
+            "blockHeightAtSign": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 4
+            },
+            "blockHashAtSign": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 5
+            }
+          }
+        },
+        "VerifyIdRequest": {
+          "fields": {
+            "nonce": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 1
+            },
+            "tpmSignature": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "teaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            },
+            "blockHeightAtSign": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 4
+            },
+            "blockHashAtSign": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 5
+            },
+            "publicKey": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 7
+            },
+            "replyTo": {
+              "rule": "required",
+              "type": "string",
+              "id": 6
+            }
+          }
+        },
+        "VerifyIdResponse": {
+          "fields": {
+            "nonce": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 1
+            },
+            "publicKey": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "result": {
+              "rule": "required",
+              "type": "bool",
+              "id": 3
+            },
+            "blockHeightAtSign": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 4
+            },
+            "blockHeightAtVerify": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 6
+            },
+            "error": {
+              "type": "string",
+              "id": 5
+            }
+          }
+        },
+        "PutPeerUrlResponse": {
+          "fields": {
+            "list": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 1
+            }
+          }
+        },
+        "TeaNodeProfile": {
+          "fields": {
+            "profileVersion": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 1
+            },
+            "body": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            }
+          }
+        },
+        "TeaNodeProfileV1": {
+          "fields": {
+            "pcrValues": {
+              "rule": "repeated",
+              "type": "bytes",
+              "id": 1
+            }
+          }
+        },
+        "NodeProfile": {
+          "fields": {
+            "ephemeralPublicKey": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "profileCid": {
+              "rule": "required",
+              "type": "string",
+              "id": 2
+            },
+            "teaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            },
+            "publicUrls": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 4
+            }
+          }
+        },
+        "TeaNodeUpdateProfileRequest": {
+          "fields": {
+            "nodeProfile": {
+              "rule": "required",
+              "type": "NodeProfile",
+              "id": 1
+            },
+            "signature": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            }
+          }
+        },
+        "TeaNodeResponse": {
+          "fields": {
+            "nodeProfile": {
+              "rule": "required",
+              "type": "NodeProfile",
+              "id": 1
             }
           }
         }
