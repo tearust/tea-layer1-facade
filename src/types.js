@@ -1,13 +1,15 @@
 const types = {
       Weight: "u32",
       Address: "AccountId",
-      TeaId: "[u8; 32]",
-      PeerId: "Bytes",
+      TeaPubKey: "[u8; 32]",
+      Url: "Bytes",
       RefNum: "H256",
       Result: "Bytes",
       Node: {
-            "teaId": "TeaId",
-            "peers": "Vec<PeerId>"
+            "teaId": "TeaPubKey",
+            "ephemeralId": "TeaPubKey",
+            "profileCid": "Bytes",
+            "urls": "Vec<Url>"
       },
       Model: {
             "account": "AccountId",
@@ -16,7 +18,7 @@ const types = {
       },
       Task: {
             "refNum": "RefNum",
-            "delegateTeaId": "TeaId",
+            "delegateTeaId": "TeaPubKey",
             "modelCid": "Bytes",
             "bodyCid": "Bytes",
             "payment": "Balance"
