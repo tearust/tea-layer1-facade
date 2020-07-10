@@ -49,6 +49,7 @@ Received a Message {
 Nats subject: layer1.async.replay.update_node_profile
 Nats body: base64 encoded protobuf encoded [u8]. The message is actor-ra.proto TeaNodeUpdateProfileRequest
 Sample data structure: (need to base64 encoded, protobuf encode before sending)
+Sample data structure:
 ```
 //TeaNodeUpdateProfileRequest
 { 
