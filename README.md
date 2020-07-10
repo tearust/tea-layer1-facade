@@ -47,8 +47,8 @@ Received a Message {
 
 #### Update tea node profile
 Nats subject: layer1.async.replay.update_node_profile
-Nats body: protobuf encoded [u8]. The message is actor-ra.proto TeaNodeUpdateProfileRequest
-Sample data structure:
+Nats body: base64 encoded protobuf encoded [u8]. The message is actor-ra.proto TeaNodeUpdateProfileRequest
+Sample data structure: (need to base64 encoded, protobuf encode before sending)
 ```
 //TeaNodeUpdateProfileRequest
 { 
@@ -57,8 +57,8 @@ Sample data structure:
   profile_cid: "QmfL6ry4YRKD4joa3RMQZ1qYGKGBWJqHYtEiJEjBmQrASB" //the IPFS Cid of the profile data
 }
 ```
-No response needed
-
+Reply_to subject:       actor.ra.inbox.tea_node_update_profile_response
+Body: Error message string
 ```
 let nodeProfile = {
       ephemeralPublicKey: Buffer.from('111', 'hex'),
