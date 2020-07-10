@@ -106,7 +106,6 @@ async function main() {
                               .signAndSend(alice, ({ events = [], status }) => {
                                     if (status.isInBlock) {
                                           console.log('Successful add new node with teaId ' + teaId);
-                                          nc.publish(reply, JSON.stringify({status, teaId}))
                                     } else {
                                           console.log('Status of transfer: ' + status.type);
                                     }
