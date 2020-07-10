@@ -50,9 +50,6 @@ async function main() {
             const alice = keyring.addFromUri('//Alice', { name: 'Alice default' });
 
             switch(action) {
-                  case 'bootstrap':
-                        nc.publish(reply, JSON.stringify(['tea-node1', 'tea-node2']))
-                        break
                   case 'node_info':
                         const nodeInfo = await api.query.tea.nodes(msg)
                         nc.publish(reply, JSON.stringify(nodeInfo))
@@ -93,11 +90,19 @@ async function main() {
                         });
                         console.log('send add_new_node tx')
                         break
-                  case 'update_peer_id':
-                        var teaInfo = msg.split('__')
-                        var teaId = teaInfo[0]
-                        let peers = teaInfo[1].split('_')
-                        await api.tx.tea.updatePeerId(teaId, peers)
+                  case 'update_node_profile':
+                        const uProtoMsg = Buffer.from(msg, 'base64');
+                        const updateProfileBuf = new proto.RAProtobuf('TeaNodeUpdateProfileRequest');
+                        const updateProfile = updateProfileBuf.decode(uProtoMsg);
+                        console.log(updateProfile);
+                        
+                        var teaId = toHex(updateProfile.nodeProfile.teaId, { addPrefix: true });
+                        var ephemeralPublicKey = toHex(updateProfile.nodeProfile.ephemeralPublicKey, { addPrefix: true });
+                        let profileCid = toHex(Buffer.from(updateProfile.nodeProfile.profileCid), { addPrefix: true });
+                        let publicUrls = toHex(Buffer.from(updateProfile.nodeProfile.publicUrls), { addPrefix: true });
+                        let signature = toHex(Buffer.from(updateProfile.signature), { addPrefix: true })
+
+                        await api.tx.tea.updateNodeProfile(teaId, ephemeralPublicKey, profileCid, publicUrls, signature)
                               .signAndSend(alice, ({ events = [], status }) => {
                                     if (status.isInBlock) {
                                           console.log('Successful add new node with teaId ' + teaId);

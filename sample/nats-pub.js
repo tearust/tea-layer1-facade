@@ -9,8 +9,25 @@ function add_new_node() {
       nc.publish('layer1.async.reply.add_new_node', '0x02b40e313842e45574e0ca5b37cb0580cc3378ceb096b562a9828b2137b98f5f', 'layer1.test.result')
 }
 
-function update_peer_id() {
-      nc.publish('layer1.async.reply.update_peer_id', '0x02b40e313842e45574e0ca5b37cb0580cc3378ceb096b562a9828b2137b98f5f__0x1fbb8d02600f4931fbed2e4f998d9e16d1a95e6d4586b5787310a95d2f8a6ed4_0xa555a7e72e9810dde46ca653d56956a2d6e88bb3896038f19674bd3b02d94d18', 'layer1.test.result')
+function update_node_profile() {
+      let nodeProfile = {
+            ephemeralPublicKey: Buffer.from('111', 'hex'),
+            profileCid: '222',
+            teaId: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
+            publicUrls: ['1','2'],
+      }
+
+      const updateProfileRequest = {
+            nodeProfile,
+            signature: Buffer.from('666', 'hex'),
+      }
+
+      const buf = new proto.RAProtobuf('TeaNodeUpdateProfileRequest');
+      buf.payload(updateProfileRequest);
+      const requestBase64 = Buffer.from(buf.toBuffer()).toString('base64');
+      console.log("TeaNodeUpdateProfileRequest Base64", requestBase64);
+
+      nc.publish('layer1.async.reply.update_node_profile', requestBase64, 'layer1.test.result')
 }
 
 function get_nodes() {
@@ -61,10 +78,11 @@ function complete_task() {
 
 async function main() {
       // add_new_node()
-      // update_peer_id()
+      // update_node_profile()
       // get_nodes()
       // add_new_task()
-      complete_task()
+      // complete_task()
+      update_node_profile()
 }
 
 main().catch((error) => {

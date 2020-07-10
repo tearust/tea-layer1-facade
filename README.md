@@ -32,19 +32,6 @@ Received a Message {
 }
 ```
 
-#### Get bootstrap
-```bash
-cargo run --example nats-box -- pub layer1.async.layer1_reply.bootstrap 123
-```
-
-Reply Message:
-```
-Received a Message {
-  subject: "layer1_reply.action.bootstrap",
-  data: "["tea-node1","tea-node2"]"
-}
-```
-
 #### Get block hash
 ```bash
 cargo run --example nats-box -- pub layer1.async.layer1_reply.get_block_hash 10
@@ -55,34 +42,6 @@ Reply Message:
 Received a Message {
   subject: "layer1_reply.action.get_block_hash",
   data: "\"0x7a3cb3d654df28ccc328c2760a6dd7036a13b232f5639d5c1626795a03c44b88\""
-}
-```
-
-#### Add new node
-```
-const task = {
-      teaId: Buffer.from('01', 'hex'),
-      refNum: Buffer.from('abcdefg', 'hex'),
-      rsaPub: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
-      capCid: '111',
-      manifestCid: '222',
-      wasmCid: '333',
-      modelCid: '444',
-      dataCid: '555',
-      payment: 1000,
-}
-
-const taskBuf = new proto.Protobuf('AddNewTaskRequest');
-taskBuf.payload({task});
-const taskBufBase64 = Buffer.from(taskBuf.toBuffer()).toString('base64');
-nc.publish('layer1.async.replay.add_new_task', taskBufBase64, 'layer1.test.result')
-```
-
-Reply Message:
-```
-Received a Message {
-  subject: "layer1.test.result",
-  data: "{"status":{"InBlock":"0x2d00885753cfe9988e21dbfe86cfe7d1a7fb4f52df937cb7682a46f88bc6e10b"},"tea_id":"0x02b40e313842e45574e0ca5b37cb0580cc3378ceb096b562a9828b2137b98f5f"}"
 }
 ```
 
@@ -100,18 +59,24 @@ Sample data structure:
 ```
 No response needed
 
-
-#### Update peer ID
 ```
-nc.publish('layer1.async.replay.update_peer_id', '0x02b40e313842e45574e0ca5b37cb0580cc3378ceb096b562a9828b2137b98f5f__0x1fbb8d02600f4931fbed2e4f998d9e16d1a95e6d4586b5787310a95d2f8a6ed4_0xa555a7e72e9810dde46ca653d56956a2d6e88bb3896038f19674bd3b02d94d18', 'layer1.test.result')
-```
-
-Reply Message:
-```
-Received a Message {
-  subject: "layer1.test.result",
-  data: "{"status":{"InBlock":"0x269d352a5c5cd1776ebd72750e44e08b1caad309862fd571b4ac87575ae0f10c"},"tea_id":"0x02b40e313842e45574e0ca5b37cb0580cc3378ceb096b562a9828b2137b98f5f"}"
+let nodeProfile = {
+      ephemeralPublicKey: Buffer.from('111', 'hex'),
+      profileCid: '222',
+      teaId: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
+      publicUrls: ['1','2'],
 }
+
+const updateProfileRequest = {
+      nodeProfile,
+      signature: Buffer.from('666', 'hex'),
+}
+
+const buf = new proto.RAProtobuf('TeaNodeUpdateProfileRequest');
+buf.payload(updateProfileRequest);
+const requestBase64 = Buffer.from(buf.toBuffer()).toString('base64');
+
+nc.publish('layer1.async.reply.update_node_profile', requestBase64, 'layer1.test.result')
 ```
 
 #### Get node list
@@ -129,22 +94,40 @@ Received a Message {
 
 #### Add new task
 
-Message format: {tea_id}_{ref_num}_{rsa_pub}_{cap_cid}_{model_cid}_{data_cid}_{payment}
-
-Note: `tea_id` must already exsit in the layer1.
+Note: `tea_id`(delegateId ) must already exsit in the layer1.
 
 ```
-nc.publish('layer1.async.replay.add_new_task', '0x04_0x10_0x11_0x01_0x02_0x03_10', 'layer1.test.result')
+const task = {
+      refNum: Buffer.from('01', 'hex'),
+      delegateId: Buffer.from('01', 'hex'),
+      modelCid: '444',
+      bodyCid: '555',
+      payment: 1000,
+}
+const taskBuf = new proto.Protobuf('AddNewTaskRequest');
+taskBuf.payload({ task });
+
+const taskBufBase64 = Buffer.from(taskBuf.toBuffer()).toString('base64');
+nc.publish('layer1.async.reply.add_new_task', taskBufBase64, 'layer1.test.result')
 ```
 
 #### Complete task
 
-Message format: {task_id}
-
-Note: `task_id` must already exsit in the layer1.
+Note: `ref_num` must already exsit in the layer1.
 
 ```
-nc.publish('layer1.async.replay.complete_task', '0x25484d12f935dbf24d116585edf4ce4936f3659390ea897b5081c66ac665f16e', 'layer1.test.result')
+const completeTaskRequest = {
+      refNum: Buffer.from('0c6123c17c95bd6617a01ef899f5895ddb190eb3265f341687f4c0ad1b1f366f', 'hex'),
+      teaId: Buffer.from('e9889b1c54ccd6cf184901ded892069921d76f7749b6f73bed6cf3b9be1a8a44', 'hex'),
+      delegateSig: Buffer.from('577ca5104490756b320da325aa81e272049fcee7bb63fe1f92220201a15c47025e3032b85366fcf85b3a2f24418a933b9d6c4fcd94e145b783e2364980a93c0d', 'hex'),
+      result: Buffer.from('0xe9889b1c54ccd6cf184901ded892069921d76f7749b6f73bed6cf3b9be1a8a440c6123c17c95bd6617a01ef899f5895ddb190eb3265f341687f4c0ad1b1f366f', 'hex'),
+      resultSig: Buffer.from('44', 'hex'),
+}
+
+const requestBuf = new proto.Protobuf('CompleteTaskRequest');
+requestBuf.payload(completeTaskRequest);
+const requestBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64');
+nc.publish('layer1.async.reply.complete_task', requestBase64, 'layer1.test.result')
 ```
 
 ### Listener
