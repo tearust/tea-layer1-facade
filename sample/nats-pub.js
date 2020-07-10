@@ -42,13 +42,13 @@ function add_new_task() {
             bodyCid: '555',
             payment: 1000,
       }
-      const taskBuf = new proto.Protobuf('AddNewTaskRequest');
+      const taskBuf = new proto.DelegateProtobuf('AddNewTaskRequest');
       taskBuf.payload({ task });
 
       const taskBufBase64 = Buffer.from(taskBuf.toBuffer()).toString('base64');
 
       // const protoMsg = Buffer.from(taskBuf, 'base64');
-      // const newTaskBuf = new proto.Protobuf('AddNewTaskRequest');
+      // const newTaskBuf = new proto.DelegateProtobuf('AddNewTaskRequest');
       // const newTask = newTaskBuf.decode(protoMsg);
       // console.log('3', newTask);
 
@@ -64,12 +64,12 @@ function complete_task() {
             resultSig: Buffer.from('44', 'hex'),
       }
 
-      const requestBuf = new proto.Protobuf('CompleteTaskRequest');
+      const requestBuf = new proto.DelegateProtobuf('CompleteTaskRequest');
       requestBuf.payload(completeTaskRequest);
       const requestBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64');
       console.log("CompleteTaskRequest Base64", requestBase64);
 
-      // const newRequestBuf = new proto.Protobuf('CompleteTaskRequest');
+      // const newRequestBuf = new proto.DelegateProtobuf('CompleteTaskRequest');
       // const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'));
       // console.log('decode:', newRequest);
 
@@ -81,8 +81,8 @@ async function main() {
       // update_node_profile()
       // get_nodes()
       // add_new_task()
-      // complete_task()
-      update_node_profile()
+      complete_task()
+      // update_node_profile()
 }
 
 main().catch((error) => {

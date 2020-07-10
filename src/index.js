@@ -94,7 +94,7 @@ async function main() {
                         const uProtoMsg = Buffer.from(msg, 'base64');
                         const updateProfileBuf = new proto.RAProtobuf('TeaNodeUpdateProfileRequest');
                         const updateProfile = updateProfileBuf.decode(uProtoMsg);
-                        console.log(updateProfile);
+                        // console.log(updateProfile);
                         
                         var teaId = toHex(updateProfile.nodeProfile.teaId, { addPrefix: true });
                         var ephemeralPublicKey = toHex(updateProfile.nodeProfile.ephemeralPublicKey, { addPrefix: true });
@@ -118,7 +118,7 @@ async function main() {
                         break
                   case 'add_new_task':
                         const protoMsg = Buffer.from(msg, 'base64');
-                        const newTaskBuf = new proto.Protobuf('AddNewTaskRequest');
+                        const newTaskBuf = new proto.DelegateProtobuf('AddNewTaskRequest');
                         const newTask = newTaskBuf.decode(protoMsg);
                         // console.log(newTask);
                         
@@ -144,7 +144,7 @@ async function main() {
                         console.log('send add_new_task tx')
                         break
                   case 'complete_task':
-                        const newRequestBuf = new proto.Protobuf('CompleteTaskRequest');
+                        const newRequestBuf = new proto.DelegateProtobuf('CompleteTaskRequest');
                         const newRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'));
 
                         var refNum = toHex(newRequest.refNum, { addPrefix: true });
@@ -204,11 +204,6 @@ function handle_events(events) {
                   
                   switch (event.method) {
                         case 'NewTaskAdded':
-                              // const node = {
-                              //       teaId: Buffer.from(eventData.Node.teaId, 'hex'),
-                              //       peers: eventData.Node.peers,
-                              // }
-
                               const task = {
                                     refNum: Buffer.from(eventData.Task.refNum, 'hex'),
                                     delegateId: Buffer.from(eventData.Task.delegateTeaId, 'hex'),
@@ -219,11 +214,10 @@ function handle_events(events) {
                               const response = {
                                     accountId: Buffer.from(eventData.AccountId, 'hex'),
                                     task,
-                                    // delegateNode: node,
                               }
 
                               console.log('response:', JSON.stringify(response));
-                              const responseBuf = new proto.Protobuf('AddNewTaskResponse');
+                              const responseBuf = new proto.DelegateProtobuf('AddNewTaskResponse');
                               responseBuf.payload(response);
                               const newTaskResponseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
                               console.log("TaskResponseBase64:", newTaskResponseBase64);
@@ -263,7 +257,7 @@ function handle_events(events) {
                                     result: Buffer.from(eventData.Result, 'hex'),
                               }
                   
-                              const responseBu = new proto.Protobuf('CompleteTaskResponse');
+                              const responseBu = new proto.DelegateProtobuf('CompleteTaskResponse');
                               responseBu.payload(completeTaskResponse);
                               const responseBase64 = Buffer.from(responseBu.toBuffer()).toString('base64');
                               console.log("responseBase64", responseBase64);
