@@ -231,7 +231,7 @@ function handle_events(events) {
                               console.log(JSON.stringify(msg))
                               nc.publish(`layer1.event.${event.section}.${event.method}`, JSON.stringify(msg))
                               break
-                        case 'UpdateNodePeer':
+                        case 'UpdateNodeProfile':
                               var msg = {}
                               msg['account_id'] = eventData.AccountId
                               msg['node'] = {
