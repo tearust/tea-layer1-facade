@@ -79,6 +79,11 @@ const requestBase64 = Buffer.from(buf.toBuffer()).toString('base64');
 
 nc.publish('layer1.async.reply.update_node_profile', requestBase64, 'layer1.test.result')
 ```
+#### Look up tea node profile
+Nats subject: layer1.async.replay.lookup_node_profile
+Nats body: base64 ephemeral_public_key
+Reply_to subject: As request msg's reply_to field
+Reply body: base64 of encoded actor-ra.proto NodeProfile
 
 #### Get node list
 ```
