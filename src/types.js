@@ -1,5 +1,4 @@
 const types = {
-      Weight: "u32",
       Address: "AccountId",
       TeaPubKey: "[u8; 32]",
       Url: "Bytes",

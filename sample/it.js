@@ -2,6 +2,7 @@ const toHex = require('to-hex');
 const { ApiPromise, Keyring } = require('@polkadot/api')
 const { cryptoWaitReady } = require('@polkadot/util-crypto')
 const types = require('../src/types');
+const rpc = require('../src/rpc');
 const NATS = require('nats');
 const proto = require('../src/proto');
 
@@ -70,17 +71,7 @@ function complete_task() {
       nc.publish('layer1.async.reply.complete_task', requestBase64, 'layer1.test.result')
 }
 
-async function main() {
-      const api = await ApiPromise.create({
-            types: types
-      })
-
-      await cryptoWaitReady()
-
-      const keyring = new Keyring({ type: 'sr25519' });
-      const alice = keyring.addFromUri('//Alice', { name: 'Alice default' });
-
-            
+function test_action() {
       update_node_profile();
 
       nc.subscribe('layer1.event.*.>', (msg, reply, subject, sid) => {
@@ -101,6 +92,33 @@ async function main() {
 
             }
       })
+}
+
+async function test_rpc(api) {
+      const r = await api.rpc.tea.getNodeByEphemeralId('2754d7e9c73ced5b302e12464594110850980027f8f83c469e8145eef59220b6');
+
+      if (r.isNone) {
+            return null;
+      }
+
+      return r.unwrap();
+}
+
+async function main() {
+      const api = await ApiPromise.create({
+            types,
+            rpc,
+      })
+
+      await cryptoWaitReady()
+
+      const keyring = new Keyring({ type: 'sr25519' });
+      const alice = keyring.addFromUri('//Alice', { name: 'Alice default' });
+
+      const r = await test_rpc(api);
+      console.log(JSON.stringify(r));
+
+      // test_action();
 }
 
 main()

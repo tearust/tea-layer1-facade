@@ -5,6 +5,7 @@ const _ = require('lodash');
 const proto = require('./proto');
 const toHex = require('to-hex');
 const types = require('./types');
+const rpc = require('./rpc');
 
 const nc = NATS.connect();
 
@@ -17,7 +18,8 @@ const cache = {
 
 async function main() {
       const api = await ApiPromise.create({
-            types: types
+            types,
+            rpc
       })
 
       await cryptoWaitReady()
