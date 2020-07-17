@@ -122,7 +122,8 @@
             "MessageType": {
               "values": {
                 "ApplyToExecuteTaskRequest": 0,
-                "WinnerExecutorCert": 1
+                "WinnerExecutorCert": 1,
+                "ExecutorCompleteTask": 3
               }
             }
           }
@@ -321,53 +322,13 @@
               "id": 3
             }
           }
-        }
-      }
-    },
-    "actor_executor": {
-      "nested": {
-        "CidHash": {
-          "fields": {
-            "cid": {
-              "rule": "required",
-              "type": "string",
-              "id": 1
-            },
-            "hash": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 2
-            }
-          }
         },
-        "TaskRegisterRequest": {
+        "NotifyDelegateTaskComplete": {
           "fields": {
-            "cidHash": {
-              "rule": "repeated",
-              "type": "CidHash",
-              "id": 1
-            },
-            "ekey1": {
+            "refNum": {
               "rule": "required",
               "type": "bytes",
-              "id": 2
-            },
-            "blockChainAccount": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 3
-            }
-          }
-        },
-        "TaskRegisterResponse": {
-          "fields": {
-            "RefNum": {
-              "type": "uint32",
               "id": 1
-            },
-            "Error": {
-              "type": "string",
-              "id": 2
             }
           }
         }
@@ -551,6 +512,15 @@
             "nodeProfile": {
               "rule": "required",
               "type": "NodeProfile",
+              "id": 1
+            }
+          }
+        },
+        "VerifyTeaNodeProfileIntegrityResponse": {
+          "fields": {
+            "success": {
+              "rule": "required",
+              "type": "bool",
               "id": 1
             }
           }

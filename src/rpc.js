@@ -4,7 +4,7 @@ const rpc = {
                   description: 'Just a test method',
                   params: [
                     {
-                      name: 'key_hex',
+                      name: 'ephemeralId',
                       type: 'String'
                     },
                     {

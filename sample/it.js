@@ -10,10 +10,10 @@ const nc = NATS.connect();
 
 function update_node_profile() {
       let nodeProfile = {
-            ephemeralPublicKey: Buffer.from('111', 'hex'),
-            profileCid: '222',
+            ephemeralPublicKey: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696597', 'hex'),
+            profileCid: 'Q3NGI0NzQyNTc0YTcxND',
             teaId: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
-            publicUrls: ['1','2'],
+            publicUrls: ['tearust.com','tearust.io'],
       }
 
       const updateProfileRequest = {
@@ -71,7 +71,7 @@ function complete_task() {
       nc.publish('layer1.async.reply.complete_task', requestBase64, 'layer1.test.result')
 }
 
-function test_action() {
+function test_action(api) {
       update_node_profile();
 
       nc.subscribe('layer1.event.*.>', (msg, reply, subject, sid) => {
@@ -87,6 +87,9 @@ function test_action() {
                   break
                   case 'CompleteTask':
                         console.log('Good !!!');
+
+                        test_rpc(api);
+                        lookup_node_profile();
                   break
                   default: 
 
@@ -94,14 +97,29 @@ function test_action() {
       })
 }
 
+function lookup_node_profile() {
+      const requestBase64 = Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696591', 'hex').toString('base64');
+      console.log("EphemeralId Base64", requestBase64);
+
+      nc.publish('layer1.async.replay.lookup_node_profile', requestBase64, 'layer1.test.result')
+}
+
 async function test_rpc(api) {
-      const r = await api.rpc.tea.getNodeByEphemeralId('2754d7e9c73ced5b302e12464594110850980027f8f83c469e8145eef59220b6');
+      // const r = await api.rpc.tea.getSum();
+      // let ephemeralId = api.createType('TeaPubKey', '0x2754d7e9c73ced5b302e12464594110850980027f8f83c469e8145eef59220b7');
+      // console.log(ephemeralId);
+
+      let r = await api.rpc.tea.getNodeByEphemeralId('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696597');
+      // const r = await api.rpc.chain.getBlock("0xca75a528fee95390a0be5f948665e497fe97fd877791d81f42c2b0d2195fa9b9");
+
+
+      console.log(JSON.stringify(r));
 
       if (r.isNone) {
             return null;
       }
 
-      return r.unwrap();
+      return r;
 }
 
 async function main() {
@@ -115,10 +133,11 @@ async function main() {
       const keyring = new Keyring({ type: 'sr25519' });
       const alice = keyring.addFromUri('//Alice', { name: 'Alice default' });
 
-      const r = await test_rpc(api);
-      console.log(JSON.stringify(r));
+      
+      test_action(api);
 
-      // test_action();
+      // let r =  await test_rpc(api);
+      // console.log(JSON.stringify(r));
 }
 
 main()

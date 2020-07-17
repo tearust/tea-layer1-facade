@@ -176,6 +176,35 @@ async function main() {
                         })
                         nc.publish(reply, JSON.stringify(teaNodes))
                         break
+                  case 'lookup_node_profile':
+                        const ephemeralId = Buffer.from(msg, 'base64').toString('hex');
+                        const nodeObj = await api.rpc.tea.getNodeByEphemeralId(ephemeralId);
+                        let node = nodeObj.toJSON();
+
+                        if (node == null) {
+                              nc.publish(reply, "node_is_not_exist");
+                              break
+                        }
+                        let urls = []
+                        if (node.urls) {
+                              node.urls.forEach((url, i) => {
+                                    urls.push(Buffer.from(url.slice(2), 'hex').toString());
+                              })
+                        }
+                        const nodeProfile = {
+                              ephemeralPublicKey: Buffer.from(node.ephemeralId.slice(2), 'hex'),
+                              profileCid: Buffer.from(node.profileCid.slice(2), 'hex').toString(),
+                              teaId: Buffer.from(node.teaId.slice(2), 'hex'),
+                              publicUrls: urls,
+                        }
+                        console.log('Lookup node profile:', JSON.stringify(nodeProfile));
+                        const nodeBuf = new proto.RAProtobuf('NodeProfile');
+                        nodeBuf.payload(nodeProfile);
+                        const nodeBase64 = Buffer.from(nodeBuf.toBuffer()).toString('base64');
+                        console.log("NodeBase64:", nodeBase64);
+
+                        nc.publish(reply, nodeBase64);
+                        break
                   default:
                         nc.publish(reply, JSON.stringify(['action_does_not_support']))
             }
