@@ -11,14 +11,14 @@ const nc = NATS.connect();
 function update_node_profile() {
       let nodeProfile = {
             ephemeralPublicKey: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696597', 'hex'),
-            profileCid: 'Q3NGI0NzQyNTc0YTcxND',
+            profileCid: 'QmfL6ry4YRKD4joa3RMQZ1qYGKGBWJqHYtEiJEjBmQrASS',
             teaId: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
             publicUrls: ['tearust.com', 'tearust.io'],
       }
 
       const updateProfileRequest = {
             nodeProfile,
-            signature: Buffer.from('666', 'hex'),
+            signature: Buffer.from('0a1440036a457fd023ceac9e7287c8313ad50eff73cf74341e38f843a7a04ddc5be8178f5796bb756ed000e05ee35e19b602cccb95872c6756255ab4c5a91900', 'hex'),
       }
 
       const buf = new proto.RAProtobuf('TeaNodeUpdateProfileRequest');
