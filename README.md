@@ -18,10 +18,14 @@ npm start
 
 ### ENV
 - `FACADE_WSURL` specify a websocket url which layer1 server you wanted. `ws://127.0.0.1:9944` is used by default if not specified.
+
  e.g: `FACADE_WSURL=wss://poc-3.polkadot.io`
 
 - `FACADE_ACCOUNT` specify a account of layer1. `Alice` is used by default if not specified.
+
 e.g: `FACADE_ACCOUNT=Bob`
+
+Currently available values are：Alice, Bob, Charlie, Eve, Ferdie.
 
 ### Nats Api
 
