@@ -13,7 +13,7 @@ function update_node_profile() {
             ephemeralPublicKey: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696597', 'hex'),
             profileCid: 'Q3NGI0NzQyNTc0YTcxND',
             teaId: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
-            publicUrls: ['tearust.com','tearust.io'],
+            publicUrls: ['tearust.com', 'tearust.io'],
       }
 
       const updateProfileRequest = {
@@ -71,27 +71,26 @@ function complete_task() {
       nc.publish('layer1.async.reply.complete_task', requestBase64, 'layer1.test.result')
 }
 
-function test_action(api) {
+function test_action() {
       update_node_profile();
 
       nc.subscribe('layer1.event.*.>', (msg, reply, subject, sid) => {
             console.log('Received a message: ', msg, reply, subject, sid)
             const subSections = subject.split('.');
-            
+
             switch (subSections[3]) {
                   case 'UpdateNodeProfile':
                         add_new_task();
-                  break
+                        break
                   case 'NewTaskAdded':
                         complete_task();
-                  break
+                        break
                   case 'CompleteTask':
                         console.log('Good !!!');
 
-                        test_rpc(api);
                         lookup_node_profile();
-                  break
-                  default: 
+                        break
+                  default:
 
             }
       })
@@ -133,11 +132,7 @@ async function main() {
       const keyring = new Keyring({ type: 'sr25519' });
       const alice = keyring.addFromUri('//Alice', { name: 'Alice default' });
 
-      
-      test_action(api);
-
-      // let r =  await test_rpc(api);
-      // console.log(JSON.stringify(r));
+      test_action();
 }
 
 main()

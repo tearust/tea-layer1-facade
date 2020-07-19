@@ -1,5 +1,5 @@
 const NATS = require('nats')
-const { ApiPromise, Keyring } = require('@polkadot/api')
+const { ApiPromise, WsProvider, Keyring } = require('@polkadot/api')
 const { cryptoWaitReady } = require('@polkadot/util-crypto')
 const _ = require('lodash');
 const proto = require('./proto');
@@ -17,7 +17,14 @@ const cache = {
 };
 
 async function main() {
+      let wsUrl = 'ws://127.0.0.1:9944';
+      if (process.env.FACADE_WSURL != undefined) {
+            wsUrl = process.env.FACADE_WSURL;
+      }
+
+      const wsProvider = new WsProvider(wsUrl);
       const api = await ApiPromise.create({
+            provider: wsProvider,
             types,
             rpc
       })
@@ -49,7 +56,12 @@ async function main() {
             const action = subSections[3]
                   
             const keyring = new Keyring({ type: 'sr25519' });
-            const alice = keyring.addFromUri('//Alice', { name: 'Alice default' });
+
+            let account = 'Alice';
+            if (process.env.FACADE_ACCOUNT != undefined) {
+                  account = process.env.FACADE_ACCOUNT;
+            }
+            const ac = keyring.addFromUri(`//${account}`, { name: `${account} default` });
 
             switch(action) {
                   case 'node_info':
@@ -72,15 +84,15 @@ async function main() {
                         break
                   case 'transfer':
                         const subMsgs = msg.split('_')
-                        await transfer(api, alice, subMsgs[0], parseInt(subMsgs[1]));
+                        await transfer(api, ac, subMsgs[0], parseInt(subMsgs[1]));
                         console.log('send transfer');
                         break
                   case 'add_new_node':
                         var teaId = msg
                         await api.tx.tea.addNewNode(teaId)
-                              .signAndSend(alice, ({ events = [], status }) => {
+                              .signAndSend(ac, ({ events = [], status }) => {
                                     if (status.isInBlock) {
-                                          console.log('Successful add new node with teaId ' + teaId);
+                                          console.log('Add new node with teaId ' + teaId);
                                           nc.publish(reply, JSON.stringify({status, teaId}))
                                     } else {
                                           console.log('Status of transfer: ' + status.type);
@@ -105,9 +117,9 @@ async function main() {
                         let signature = toHex(Buffer.from(updateProfile.signature), { addPrefix: true })
 
                         await api.tx.tea.updateNodeProfile(teaId, ephemeralPublicKey, profileCid, publicUrls, signature)
-                              .signAndSend(alice, ({ events = [], status }) => {
+                              .signAndSend(ac, ({ events = [], status }) => {
                                     if (status.isInBlock) {
-                                          console.log('Successful add new node with teaId ' + teaId);
+                                          console.log('Update node profile with teaId ' + teaId);
                                     } else {
                                           console.log('Status of transfer: ' + status.type);
                                     }
@@ -132,7 +144,7 @@ async function main() {
                         let bodyCid = toHex(Buffer.from(newTask.task.bodyCid), { addPrefix: true })
 
                         await api.tx.tea.addNewTask(refNum, delegateId, modelCid, payment, bodyCid)
-                              .signAndSend(alice, ({ events = [], status }) => {
+                              .signAndSend(ac, ({ events = [], status }) => {
                                     if (status.isInBlock) {
                                           console.log('Included at block hash', status.asInBlock.toHex());
                                           console.log('Events:');
@@ -156,7 +168,7 @@ async function main() {
                         let resultSig = toHex(Buffer.from(newRequest.resultSig), { addPrefix: true });
 
                         await api.tx.tea.completeTask(refNum, teaId, delegateSig, result, resultSig)
-                              .signAndSend(alice, ({ events = [], status }) => {
+                              .signAndSend(ac, ({ events = [], status }) => {
                                     if (status.isInBlock) {
                                           console.log('Included at block hash', status.asInBlock.toHex());
                                           console.log('Events:');
