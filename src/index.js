@@ -7,7 +7,7 @@ const toHex = require('to-hex');
 const types = require('./types');
 const rpc = require('./rpc');
 
-const nc = NATS.connect();
+const nc = NATS.connect(process.env.NATS_URL || "127.0.0.1:4222");
 
 const cache = {
       latest_block_height : 0,
