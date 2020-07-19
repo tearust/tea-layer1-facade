@@ -17,6 +17,8 @@ npm start
 ```
 
 ### ENV
+- `NATS_URL` specity Nats Server URL:Port. If not specified, default value will be `127.0.0.1:4222`
+
 - `FACADE_WSURL` specify a websocket url which layer1 server you wanted. `ws://127.0.0.1:9944` is used by default if not specified.
 
  e.g: `FACADE_WSURL=wss://poc-3.polkadot.io`
