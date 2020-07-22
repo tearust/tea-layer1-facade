@@ -45,7 +45,7 @@ async function main() {
       });
 
       nc.subscribe('layer1.async.*.>', async function (msg, reply, subject, sid) {
-            console.log('Received a message: ', msg, reply, subject, sid)
+            // console.log('Received a message: ', msg, reply, subject, sid)
             const subSections = subject.split('.')
             // console.log(subSections)
             if (subSections.length < 4) {

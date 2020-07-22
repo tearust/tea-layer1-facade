@@ -75,7 +75,7 @@ function test_action() {
       update_node_profile();
 
       nc.subscribe('layer1.event.*.>', (msg, reply, subject, sid) => {
-            console.log('Received a message: ', msg, reply, subject, sid)
+            // console.log('Received a message: ', msg, reply, subject, sid)
             const subSections = subject.split('.');
 
             switch (subSections[3]) {
