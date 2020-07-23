@@ -6,8 +6,12 @@ const proto = require('./proto');
 const toHex = require('to-hex');
 const types = require('./types');
 const rpc = require('./rpc');
+const { timer } = require('rxjs');
 
-const nc = NATS.connect(process.env.NATS_URL || "127.0.0.1:4222");
+const natsUrl = process.env.NATS_URL || "127.0.0.1:4222";
+const nc = NATS.connect(natsUrl, {
+      waitOnFirstConnect: true,
+});
 
 const cache = {
       latest_block_height : 0,
@@ -16,18 +20,26 @@ const cache = {
       peer_url_list: []
 };
 
-async function main() {
-      let wsUrl = 'ws://127.0.0.1:9944';
-      if (process.env.FACADE_WSURL != undefined) {
-            wsUrl = process.env.FACADE_WSURL;
-      }
+function sleep (time) {
+      return new Promise((resolve) => setTimeout(resolve, time));
+}
 
-      const wsProvider = new WsProvider(wsUrl);
-      const api = await ApiPromise.create({
-            provider: wsProvider,
-            types,
-            rpc
-      })
+async function main() {
+      const wsProvider = new WsProvider(process.env.FACADE_WSURL || 'ws://127.0.0.1:9944');
+      let api = {}
+      while(true) {
+            try {
+                  api = await ApiPromise.create({
+                        provider: wsProvider,
+                        types,
+                        rpc
+                  });
+                  break;
+            } catch (e) {
+                 console.log("Try reconnect ...");
+                 await sleep(2000);
+            }
+      }
 
       await cryptoWaitReady()
 
@@ -57,10 +69,7 @@ async function main() {
                   
             const keyring = new Keyring({ type: 'sr25519' });
 
-            let account = 'Alice';
-            if (process.env.FACADE_ACCOUNT != undefined) {
-                  account = process.env.FACADE_ACCOUNT;
-            }
+            let account = process.env.FACADE_ACCOUNT || 'Alice';
             const ac = keyring.addFromUri(`//${account}`, { name: `${account} default` });
 
             switch(action) {
