@@ -122,7 +122,10 @@ async function main() {
                         var teaId = toHex(updateProfile.nodeProfile.teaId, { addPrefix: true });
                         var ephemeralPublicKey = toHex(updateProfile.nodeProfile.ephemeralPublicKey, { addPrefix: true });
                         let profileCid = toHex(Buffer.from(updateProfile.nodeProfile.profileCid), { addPrefix: true });
-                        let publicUrls = toHex(Buffer.from(updateProfile.nodeProfile.publicUrls), { addPrefix: true });
+                        let publicUrls = [];
+                        updateProfile.nodeProfile.publicUrls.forEach((url, i) => {
+                              publicUrls.push(toHex(Buffer.from(url), { addPrefix: true }))
+                        });
                         let signature = toHex(Buffer.from(updateProfile.signature), { addPrefix: true })
 
                         await api.tx.tea.updateNodeProfile(teaId, ephemeralPublicKey, profileCid, publicUrls, signature)
