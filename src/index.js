@@ -221,6 +221,7 @@ async function main() {
                               profileCid: Buffer.from(node.profileCid.slice(2), 'hex').toString(),
                               teaId: Buffer.from(node.teaId.slice(2), 'hex'),
                               publicUrls: urls,
+                              peerId: Buffer.from(node.peerId.slice(2), 'hex').toString(),
                         }
                         console.log('Lookup node profile:', JSON.stringify(nodeProfile));
                         const nodeBuf = new proto.RAProtobuf('NodeProfile');
