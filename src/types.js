@@ -8,7 +8,8 @@ const types = {
             "teaId": "TeaPubKey",
             "ephemeralId": "TeaPubKey",
             "profileCid": "Bytes",
-            "urls": "Vec<Url>"
+            "urls": "Vec<Url>",
+            "peerId": "Bytes"
       },
       Model: {
             "account": "AccountId",

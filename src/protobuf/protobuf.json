@@ -66,6 +66,65 @@
             }
           }
         },
+        "DataRegisterRequest": {
+          "fields": {
+            "depositTxId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "blockChainAccount": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            }
+          }
+        },
+        "DataRegisterResponse": {
+          "oneofs": {
+            "res": {
+              "oneof": [
+                "Error",
+                "RsaPubKey"
+              ]
+            }
+          },
+          "fields": {
+            "Error": {
+              "type": "string",
+              "id": 1
+            },
+            "RsaPubKey": {
+              "type": "string",
+              "id": 2
+            }
+          }
+        },
+        "DataUploadCompletedNotify": {
+          "oneofs": {
+            "Cid": {
+              "oneof": [
+                "CidData",
+                "CidDescription"
+              ]
+            }
+          },
+          "fields": {
+            "CidData": {
+              "type": "string",
+              "id": 1
+            },
+            "CidDescription": {
+              "type": "string",
+              "id": 2
+            },
+            "RsaPubKey": {
+              "rule": "required",
+              "type": "string",
+              "id": 3
+            }
+          }
+        },
         "AddNewTask": {
           "fields": {
             "teaId": {
@@ -331,6 +390,83 @@
               "id": 1
             }
           }
+        },
+        "P2P": {
+          "oneofs": {
+            "m": {
+              "oneof": [
+                "Error",
+                "ping"
+              ]
+            }
+          },
+          "fields": {
+            "Error": {
+              "type": "string",
+              "id": 1
+            },
+            "ping": {
+              "type": "P2pPingMessage",
+              "id": 2
+            }
+          }
+        },
+        "P2pPingMessage": {
+          "fields": {
+            "hi": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            }
+          }
+        },
+        "ApplyToBePinnerRequest": {
+          "fields": {
+            "deploymentId": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "rsaPubKey": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "wannabePinnerId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            },
+            "signature": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 4
+            }
+          }
+        },
+        "ApplyToBePinnerResponse": {
+          "fields": {
+            "pinnerKeyEncrypted": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "key1Encrypted": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "upstreamPinnerTeaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            },
+            "signature": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 4
+            }
+          }
         }
       }
     },
@@ -463,7 +599,7 @@
         "TeaNodeProfileV1": {
           "fields": {
             "pcrValues": {
-              "rule": "repeated",
+              "rule": "required",
               "type": "bytes",
               "id": 1
             }
@@ -490,6 +626,11 @@
               "rule": "repeated",
               "type": "string",
               "id": 4
+            },
+            "peerId": {
+              "rule": "required",
+              "type": "string",
+              "id": 5
             }
           }
         },

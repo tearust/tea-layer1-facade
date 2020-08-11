@@ -127,8 +127,9 @@ async function main() {
                               publicUrls.push(toHex(Buffer.from(url), { addPrefix: true }))
                         });
                         let signature = toHex(Buffer.from(updateProfile.signature), { addPrefix: true })
+                        let peerId = toHex(Buffer.from(updateProfile.nodeProfile.peerId), { addPrefix: true })
 
-                        await api.tx.tea.updateNodeProfile(teaId, ephemeralPublicKey, profileCid, publicUrls, signature)
+                        await api.tx.tea.updateNodeProfile(teaId, ephemeralPublicKey, profileCid, publicUrls, peerId, signature)
                               .signAndSend(ac, ({ events = [], status }) => {
                                     if (status.isInBlock) {
                                           console.log('Update node profile with teaId ' + teaId);

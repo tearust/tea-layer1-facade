@@ -2,10 +2,12 @@ const toHex = require('to-hex');
 const { ApiPromise, Keyring } = require('@polkadot/api')
 const { cryptoWaitReady } = require('@polkadot/util-crypto')
 const types = require('../src/types');
+const rpc = require('../src/rpc');
 
 async function main() {
       const api = await ApiPromise.create({
-            types: types
+            types,
+            rpc
       })
 
       await cryptoWaitReady()

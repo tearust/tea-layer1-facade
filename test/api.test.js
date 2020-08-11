@@ -94,6 +94,7 @@ describe('ra protobuf test suit', () => {
             profileCid: '222',
             teaId: Buffer.from('333', 'hex'),
             publicUrls: ['1','2'],
+            peerId: 'QmZzcViy4RvG7m1yVqjfGQ8HPmrM3Kk2MhodTRue2ZTGfh',
       }
 
       it('TeaNodeUpdateProfileRequest test', () => {
