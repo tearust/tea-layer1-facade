@@ -73,8 +73,11 @@ async function main() {
             const ac = keyring.addFromUri(`//${account}`, { name: `${account} default` });
 
             switch(action) {
-                  case 'node_info':
-                        const nodeInfo = await api.query.tea.nodes(msg)
+                  case 'node_profile_by_tea_id':
+                        let nodeInfo = await api.query.tea.nodes(msg)
+                        if (nodeInfo.isNone) {
+                              nodeInfo = await api.query.tea.bootstrapNodes(msg)
+                        }
                         nc.publish(reply, JSON.stringify(nodeInfo))
                         break
                   case 'latest_block':

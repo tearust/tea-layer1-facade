@@ -13,7 +13,7 @@ function update_node_profile() {
             ephemeralPublicKey: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696597', 'hex'),
             profileCid: 'QmfL6ry4YRKD4joa3RMQZ1qYGKGBWJqHYtEiJEjBmQrASS',
             teaId: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
-            publicUrls: ['tearust.com', 'tearust.io'],
+            publicUrls: ["\"http://bob.tearust.com\""],
             peerId: 'QmZjKxx9SsmVcN8C9Hz37P5gPPxSDat54ibXNdNWva3Up4',
       }
 
@@ -106,6 +106,10 @@ function lookup_node_profile() {
       console.log("EphemeralId Base64", requestBase64);
 
       nc.publish('layer1.async.replay.lookup_node_profile', requestBase64, 'layer1.test.result')
+}
+
+function get_node_profile() {
+      nc.publish('layer1.async.replay.node_profile_by_tea_id', requestBase64, 'layer1.test.result')
 }
 
 async function test_rpc(api) {
