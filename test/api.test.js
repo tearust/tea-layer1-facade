@@ -86,6 +86,42 @@ describe('delegate protobuf test suit', () => {
             // console.log('decode:', newResponse);
             assert.deepEqual(completeTaskResponse, newResponse); 
       })
+
+      const data = {
+            delegatorEphemeralId: Buffer.from('01', 'hex'),
+            deploymentId: '777',
+            dataCid: '888',
+            descriptionCid: '999',
+            capCid: '000'
+      }
+
+      it('AddNewDataRequest test', () => {
+            const dataBuf = new proto.DelegateProtobuf('AddNewDataRequest');
+            dataBuf.payload({data});
+            const dataBufBase64 = Buffer.from(dataBuf.toBuffer()).toString('base64');
+
+            const newDataBuf = new proto.DelegateProtobuf('AddNewDataRequest');
+            const newData = newDataBuf.decode(Buffer.from(dataBufBase64, 'base64'));
+            // console.log('decode:', newData);
+            assert.deepEqual({data}, newData);
+      });
+
+      it('AddNewDataResponse test', () => {
+            const addNewDataResponse = {
+                  accountId: Buffer.from('1234567', 'hex'),
+                  data,
+            }
+
+            const responseBuf = new proto.DelegateProtobuf('AddNewDataResponse');
+            responseBuf.payload(addNewDataResponse);
+            const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
+            console.log("AddNewDataResponse Base64", responseBase64);
+
+            const newResponseBuf = new proto.DelegateProtobuf('AddNewDataResponse');
+            const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'));
+            // console.log('decode:', newResponse);
+            assert.deepEqual(addNewDataResponse, newResponse);
+      })
 })
 
 describe('ra protobuf test suit', () => {

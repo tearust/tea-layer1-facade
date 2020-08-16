@@ -133,6 +133,23 @@ const requestBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64');
 nc.publish('layer1.async.reply.complete_task', requestBase64, 'layer1.test.result')
 ```
 
+#### Add new data
+```
+const data = {
+      delegatorEphemeralId: Buffer.from('01', 'hex'),
+      deploymentId: '777',
+      dataCid: '888',
+      descriptionCid: '999',
+      capCid: '000'
+}
+const dataBuf = new proto.DelegateProtobuf('AddNewDataRequest');
+dataBuf.payload({ data });
+
+const dataBufBase64 = Buffer.from(dataBuf.toBuffer()).toString('base64');
+
+nc.publish('layer1.async.reply.add_new_data', dataBufBase64, 'layer1.test.result')
+```
+
 ### Listener
 
 #### Listen new block

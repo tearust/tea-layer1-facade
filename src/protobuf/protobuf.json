@@ -100,12 +100,47 @@
             }
           }
         },
+        "ServiceRegisterRequest": {
+          "fields": {
+            "depositTxId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "blockChainAccount": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            }
+          }
+        },
+        "ServiceRegisterResponse": {
+          "oneofs": {
+            "res": {
+              "oneof": [
+                "Error",
+                "RsaPubKey"
+              ]
+            }
+          },
+          "fields": {
+            "Error": {
+              "type": "string",
+              "id": 1
+            },
+            "RsaPubKey": {
+              "type": "string",
+              "id": 2
+            }
+          }
+        },
         "DataUploadCompletedNotify": {
           "oneofs": {
             "Cid": {
               "oneof": [
                 "CidData",
-                "CidDescription"
+                "CidDescription",
+                "CidCapchecker"
               ]
             }
           },
@@ -118,10 +153,18 @@
               "type": "string",
               "id": 2
             },
+            "CidCapchecker": {
+              "type": "string",
+              "id": 3
+            },
             "RsaPubKey": {
               "rule": "required",
               "type": "string",
-              "id": 3
+              "id": 10
+            },
+            "KeyUrlEncoded": {
+              "type": "string",
+              "id": 11
             }
           }
         },
@@ -222,6 +265,58 @@
             }
           }
         },
+        "Data": {
+          "fields": {
+            "delegatorEphemeralId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "deploymentId": {
+              "rule": "required",
+              "type": "string",
+              "id": 2
+            },
+            "dataCid": {
+              "rule": "required",
+              "type": "string",
+              "id": 3
+            },
+            "descriptionCid": {
+              "rule": "required",
+              "type": "string",
+              "id": 4
+            },
+            "capCid": {
+              "type": "string",
+              "id": 5
+            }
+          }
+        },
+        "Service": {
+          "fields": {
+            "delegateId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "modelCid": {
+              "rule": "required",
+              "type": "string",
+              "id": 3
+            },
+            "bodyCid": {
+              "rule": "required",
+              "type": "string",
+              "id": 4
+            },
+            "payment": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 5
+            }
+          }
+        },
         "Node": {
           "fields": {
             "teaId": {
@@ -255,6 +350,29 @@
             "task": {
               "rule": "required",
               "type": "Task",
+              "id": 2
+            }
+          }
+        },
+        "AddNewDataRequest": {
+          "fields": {
+            "data": {
+              "rule": "required",
+              "type": "Data",
+              "id": 1
+            }
+          }
+        },
+        "AddNewDataResponse": {
+          "fields": {
+            "accountId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "data": {
+              "rule": "required",
+              "type": "Data",
               "id": 2
             }
           }

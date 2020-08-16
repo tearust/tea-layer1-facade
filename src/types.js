@@ -2,6 +2,7 @@ const types = {
       Address: "AccountId",
       TeaPubKey: "[u8; 32]",
       Url: "Bytes",
+      Cid: "Bytes",
       RefNum: "H256",
       Result: "Bytes",
       Node: {
@@ -22,6 +23,19 @@ const types = {
             "modelCid": "Bytes",
             "bodyCid": "Bytes",
             "payment": "Balance"
+      },
+      Data: {
+            "delegatorEphemeralId": "TeaPubKey",
+            "deploymentId": "Cid",
+            "cid": "Cid",
+            "description": "Cid",
+            "capChecker": "Cid"
+      },
+      Service: {
+            "delegatorEphemeralId": "TeaPubKey",
+            "deploymentId": "Cid",
+            "cid": "Cid",
+            "capChecker": "Cid"
       }
 }
 

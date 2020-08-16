@@ -73,13 +73,6 @@ async function main() {
             const ac = keyring.addFromUri(`//${account}`, { name: `${account} default` });
 
             switch(action) {
-                  case 'node_profile_by_tea_id':
-                        let nodeInfo = await api.query.tea.nodes(msg)
-                        if (nodeInfo.isNone) {
-                              nodeInfo = await api.query.tea.bootstrapNodes(msg)
-                        }
-                        nc.publish(reply, JSON.stringify(nodeInfo))
-                        break
                   case 'latest_block':
                         nc.publish(reply, JSON.stringify(cache))
                         break
@@ -147,7 +140,7 @@ async function main() {
                         console.log('send update_peer_id tx')
                         break
                   case 'add_new_task':
-                        const protoMsg = Buffer.from(msg, 'base64');
+                        var protoMsg = Buffer.from(msg, 'base64');
                         const newTaskBuf = new proto.DelegateProtobuf('AddNewTaskRequest');
                         const newTask = newTaskBuf.decode(protoMsg);
                         // console.log(newTask);
@@ -233,6 +226,39 @@ async function main() {
                         console.log("NodeBase64:", nodeBase64);
 
                         nc.publish(reply, nodeBase64);
+                        break
+                  case 'node_profile_by_tea_id':
+                        let nodeInfo = await api.query.tea.nodes(msg)
+                        if (nodeInfo.isNone) {
+                              nodeInfo = await api.query.tea.bootstrapNodes(msg)
+                        }
+                        nc.publish(reply, JSON.stringify(nodeInfo))
+                        break
+                  case 'add_new_data':
+                        var protoMsg = Buffer.from(msg, 'base64');
+                        const newDataBuf = new proto.DelegateProtobuf('AddNewDataRequest');
+                        const newData = newDataBuf.decode(protoMsg);
+                        console.log(newData);
+                        
+                        var delegatorEphemeralId = toHex(newData.data.delegatorEphemeralId, { addPrefix: true });
+                        var deploymentId = toHex(Buffer.from(newData.data.deploymentId), { addPrefix: true });
+                        let dataCid = toHex(Buffer.from(newData.data.dataCid), { addPrefix: true });
+                        let descriptionCid = toHex(Buffer.from(newData.data.descriptionCid), { addPrefix: true })
+                        let capCid = toHex(Buffer.from(newData.data.capCid), { addPrefix: true })
+
+                        await api.tx.tea.addNewData(delegatorEphemeralId, deploymentId, dataCid, descriptionCid, capCid)
+                              .signAndSend(ac, ({ events = [], status }) => {
+                                    if (status.isInBlock) {
+                                          console.log('Included at block hash', status.asInBlock.toHex());
+                                          console.log('Events:');
+                                          events.forEach(({ event: { data, method, section }, phase }) => {
+                                                console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
+                                          });
+                                    } else if (status.isFinalized) {
+                                          console.log('Finalized block hash', status.asFinalized.toHex());
+                                    }
+                        });
+                        console.log('send add_new_data tx')
                         break
                   default:
                         nc.publish(reply, JSON.stringify(['action_does_not_support']))
@@ -323,6 +349,28 @@ function handle_events(events) {
                               console.log("responseBase64", responseBase64);
 
                               nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
+                              break
+                        case 'NewDataAdded':
+                              const data = {
+                                    delegatorEphemeralId: Buffer.from(eventData.Data.delegatorEphemeralId, 'hex'),
+                                    deploymentId: Buffer.from(eventData.Data.deploymentId, 'hex').toString(),
+                                    dataCid: Buffer.from(eventData.Data.cid, 'hex').toString(),
+                                    descriptionCid: Buffer.from(eventData.Data.description, 'hex').toString(),
+                                    capCid: Buffer.from(eventData.Data.capChecker, 'hex').toString(),
+                              }
+
+                              const newDataResponse = {
+                                    accountId: Buffer.from(eventData.AccountId, 'hex'),
+                                    data,
+                              }
+
+                              console.log('newDataResponse:', JSON.stringify(newDataResponse));
+                              const newDataResponseBuf = new proto.DelegateProtobuf('AddNewDataResponse');
+                              newDataResponseBuf.payload(newDataResponse);
+                              const newDataResponseBase64 = Buffer.from(newDataResponseBuf.toBuffer()).toString('base64');
+                              console.log("DataResponseBase64:", newDataResponseBase64);
+
+                              nc.publish(`layer1.event.${event.section}.${event.method}`, newDataResponseBase64)
                               break
                         default:
                   }

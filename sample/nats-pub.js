@@ -76,13 +76,35 @@ function complete_task() {
       nc.publish('layer1.async.reply.complete_task', requestBase64, 'layer1.test.result')
 }
 
+function add_new_data() {
+      const data = {
+            delegatorEphemeralId: Buffer.from('01', 'hex'),
+            deploymentId: '777',
+            dataCid: '888',
+            descriptionCid: '999',
+            capCid: '000'
+      }
+      const dataBuf = new proto.DelegateProtobuf('AddNewDataRequest');
+      dataBuf.payload({ data });
+
+      const dataBufBase64 = Buffer.from(dataBuf.toBuffer()).toString('base64');
+
+      // const protoMsg = Buffer.from(dataBuf, 'base64');
+      // const newTaskBuf = new proto.DelegateProtobuf('AddNewTaskRequest');
+      // const newTask = newTaskBuf.decode(protoMsg);
+      // console.log('3', newTask);
+
+      nc.publish('layer1.async.reply.add_new_data', dataBufBase64, 'layer1.test.result')
+}
+
 async function main() {
       // add_new_node()
       // update_node_profile()
       // get_nodes()
       // add_new_task()
-      complete_task()
+      // complete_task()
       // update_node_profile()
+      add_new_data()
 }
 
 main().catch((error) => {
