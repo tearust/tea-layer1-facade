@@ -198,8 +198,42 @@ async function main() {
                         nc.publish(reply, JSON.stringify(teaNodes))
                         break
                   case 'lookup_node_profile':
-                        const ephemeralId = Buffer.from(msg, 'base64').toString('hex');
-                        const nodeObj = await api.rpc.tea.getNodeByEphemeralId(ephemeralId);
+                        {
+                              const ephemeralId = Buffer.from(msg, 'base64').toString('hex');
+                              const nodeObj = await api.rpc.tea.getNodeByEphemeralId(ephemeralId);
+                              let node = nodeObj.toJSON();
+
+                              if (node == null) {
+                                    nc.publish(reply, "node_is_not_exist");
+                                    break
+                              }
+                              let urls = []
+                              if (node.urls) {
+                                    node.urls.forEach((url, i) => {
+                                          urls.push(Buffer.from(url.slice(2), 'hex').toString());
+                                    })
+                              }
+                              const nodeProfile = {
+                                    ephemeralPublicKey: Buffer.from(node.ephemeralId.slice(2), 'hex'),
+                                    profileCid: Buffer.from(node.profileCid.slice(2), 'hex').toString(),
+                                    teaId: Buffer.from(node.teaId.slice(2), 'hex'),
+                                    publicUrls: urls,
+                                    peerId: Buffer.from(node.peerId.slice(2), 'hex').toString(),
+                              }
+                              console.log('Lookup node profile:', JSON.stringify(nodeProfile));
+                              const nodeBuf = new proto.RAProtobuf('NodeProfile');
+                              nodeBuf.payload(nodeProfile);
+                              const nodeBase64 = Buffer.from(nodeBuf.toBuffer()).toString('base64');
+                              console.log("NodeBase64:", nodeBase64);
+
+                              nc.publish(reply, nodeBase64);
+                        }
+                        break
+                  case 'node_profile_by_tea_id':
+                        let nodeObj = await api.query.tea.nodes(msg)
+                        if (nodeObj.isNone) {
+                              nodeObj = await api.query.tea.bootstrapNodes(msg)
+                        }
                         let node = nodeObj.toJSON();
 
                         if (node == null) {
@@ -226,13 +260,6 @@ async function main() {
                         console.log("NodeBase64:", nodeBase64);
 
                         nc.publish(reply, nodeBase64);
-                        break
-                  case 'node_profile_by_tea_id':
-                        let nodeInfo = await api.query.tea.nodes(msg)
-                        if (nodeInfo.isNone) {
-                              nodeInfo = await api.query.tea.bootstrapNodes(msg)
-                        }
-                        nc.publish(reply, JSON.stringify(nodeInfo))
                         break
                   case 'add_new_data':
                         var protoMsg = Buffer.from(msg, 'base64');

@@ -45,13 +45,19 @@ Received a Message {
 ```
 
 #### Get node profile by tea id
+
+Nats subject: layer1.async.replay.node_profile_by_tea_id
+Nats body: ephemeral_public_key hex string
+Reply_to subject: As request msg's reply_to field
+Reply body: base64 of encoded actor-ra.proto NodeProfile
+
 ```
 nc.publish('layer1.async.replay.node_profile_by_tea_id', '0xc7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'layer1.test.result')
 ```
 
 Reply Message:
 ```
-{"teaId":"0xc7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596","ephemeralId":"0xc7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696597","profileCid":"0x516d664c3672793459524b44346a6f6133524d515a317159474b4742574a7148597445694a456a426d5172415353","urls":["0x22687474703a2f2f626f622e746561727573742e636f6d22"],"peerId":"0x516d5a6a4b78783953736d56634e384339487a33375035675050785344617435346962584e644e57766133557034"} undefined layer1.test.result 1
+CiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAGiDJOA/eG6eV/GVqsIq070SCz1VHkP06vNRkJBiuj7X9UioA
 ```
 
 #### Update tea node profile
