@@ -24,6 +24,22 @@ const types = {
             "bodyCid": "Bytes",
             "payment": "Balance"
       },
+      Deposit: {
+            "delegatorEphemeralId": "TeaPubKey",
+            "depositPubkey": "TeaPubKey",
+            "amount": "Balance",
+            "expireTime": "u64"
+      },
+      Bill: {
+            "employer": "AccountId",
+            "delegatorEphemeralId": "TeaPubKey",
+            "errandUuid": "Bytes",
+            "payment": "Balance",
+            "paymentType": "u32",
+            "executorEphemeralId": "TeaPubKey",
+            "expiarTime": "u64",
+            "resultCid": "Cid"
+      },
       Data: {
             "delegatorEphemeralId": "TeaPubKey",
             "deploymentId": "Cid",

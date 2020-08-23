@@ -10,7 +10,7 @@ function main() {
       // })
 
       nc.subscribe('layer1.event.*.>', (msg, reply, subject, sid) => {
-            //console.log('Received a message: ', msg, reply, subject, sid)
+            console.log('Received a message: ', msg, reply, subject, sid)
       })
 }
 

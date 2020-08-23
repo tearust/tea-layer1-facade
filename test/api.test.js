@@ -122,6 +122,55 @@ describe('delegate protobuf test suit', () => {
             // console.log('decode:', newResponse);
             assert.deepEqual(addNewDataResponse, newResponse);
       })
+
+      it('SettleAccountsRequest test', () => {
+            const settleAccountsRequest = {
+                  employer: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
+                  delegatorEphemeralId: Buffer.from('02', 'hex'),
+                  errandUuid: '03',
+                  payment: 100,
+                  paymentType: 1,
+                  employerSignature: Buffer.from('04', 'hex'),
+                  executorEphemeralId: Buffer.from('05', 'hex'),
+                  expiarTime: 6,
+                  delegateSignature: Buffer.from('07', 'hex'),
+                  resultCid: '08',
+                  executorSingature: Buffer.from('09', 'hex'),
+            }
+            const requestBuf = new proto.DelegateProtobuf('SettleAccountsRequest');
+            requestBuf.payload(settleAccountsRequest);
+            const requestBufBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64');
+
+            const newRequestBuf = new proto.DelegateProtobuf('SettleAccountsRequest');
+            const newRequest = newRequestBuf.decode(Buffer.from(requestBufBase64, 'base64'));
+            // console.log('decode:', newRequest);
+            // newRequest.payment
+            assert.deepEqual(settleAccountsRequest, newRequest);
+      });
+
+      it('SettleAccountsResponse test', () => {
+            const settleAccountsResponse = {
+                  accountId: Buffer.from('1234567', 'hex'),
+                  employer: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
+                  delegatorEphemeralId: Buffer.from('02', 'hex'),
+                  errandUuid: '03',
+                  payment: 100,
+                  paymentType: 1,
+                  executorEphemeralId: Buffer.from('05', 'hex'),
+                  expiarTime: 6,
+                  resultCid: '08',
+            }
+
+            const responseBuf = new proto.DelegateProtobuf('SettleAccountsResponse');
+            responseBuf.payload(settleAccountsResponse);
+            const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
+            console.log("SettleAccountsResponse Base64", responseBase64);
+
+            const newResponseBuf = new proto.DelegateProtobuf('SettleAccountsResponse');
+            const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'));
+            // console.log('decode:', newResponse);
+            assert.deepEqual(settleAccountsResponse, newResponse);
+      })
 })
 
 describe('ra protobuf test suit', () => {

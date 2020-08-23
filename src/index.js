@@ -287,6 +287,51 @@ async function main() {
                         });
                         console.log('send add_new_data tx')
                         break
+                  case 'settle_accounts':
+                        {
+                              const protoMsg = Buffer.from(msg, 'base64');
+                              const newRequestBuf = new proto.DelegateProtobuf('SettleAccountsRequest');
+                              const newRequest = newRequestBuf.decode(protoMsg);
+                              console.log(newRequest);
+                              
+                              const employer = toHex(Buffer.from(newRequest.employer), { addPrefix: true });
+                              const delegatorEphemeralId = toHex(newRequest.delegatorEphemeralId, { addPrefix: true });
+                              const errandUuid = toHex(Buffer.from(newRequest.errandUuid), { addPrefix: true });
+                              const payment = newRequest.payment;
+                              const paymentType = newRequest.paymentType;
+                              const employerSignature = toHex(newRequest.employerSignature, { addPrefix: true });
+                              const executorEphemeralId = toHex(newRequest.executorEphemeralId, { addPrefix: true });
+                              const expiarTime = newRequest.expiarTime;
+                              const delegateSignature = toHex(newRequest.delegateSignature, { addPrefix: true });
+                              const resultCid = toHex(Buffer.from(newRequest.resultCid), { addPrefix: true });
+                              const executorSingature = toHex(newRequest.executorSingature, { addPrefix: true });
+      
+                              await api.tx.tea.settleAccounts(
+                                    employer,
+                                    delegatorEphemeralId,
+                                    errandUuid,
+                                    payment,
+                                    paymentType,
+                                    employerSignature,
+                                    executorEphemeralId,
+                                    expiarTime,
+                                    delegateSignature,
+                                    resultCid,
+                                    executorSingature)
+                                    .signAndSend(ac, ({ events = [], status }) => {
+                                          if (status.isInBlock) {
+                                                console.log('Included at block hash', status.asInBlock.toHex());
+                                                console.log('Events:');
+                                                events.forEach(({ event: { data, method, section }, phase }) => {
+                                                      console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
+                                                });
+                                          } else if (status.isFinalized) {
+                                                console.log('Finalized block hash', status.asFinalized.toHex());
+                                          }
+                              });
+                              console.log('send deposit tx')
+                        }
+                        break
                   default:
                         nc.publish(reply, JSON.stringify(['action_does_not_support']))
             }
@@ -398,6 +443,29 @@ function handle_events(events) {
                               console.log("DataResponseBase64:", newDataResponseBase64);
 
                               nc.publish(`layer1.event.${event.section}.${event.method}`, newDataResponseBase64)
+                              break
+                        case 'SettleAccounts':
+                        {
+                              const settleAccountsResponse = {
+                                    accountId: Buffer.from(eventData.AccountId, 'hex'),
+                                    employer: Buffer.from(eventData.Bill.employer, 'hex').toString(),
+                                    delegatorEphemeralId: Buffer.from(eventData.Bill.delegatorEphemeralId, 'hex'),
+                                    errandUuid: Buffer.from(eventData.Bill.errandUuid, 'hex').toString(),
+                                    payment: eventData.Bill.payment,
+                                    paymentType: eventData.Bill.paymentType,
+                                    executorEphemeralId: Buffer.from(eventData.Bill.executorEphemeralId, 'hex'),
+                                    expiarTime: eventData.Bill.expiarTime,
+                                    resultCid: Buffer.from(eventData.Bill.resultCid, 'hex').toString(),
+                              }
+                              console.log('settleAccountsResponse:', JSON.stringify(settleAccountsResponse));
+                  
+                              const responseBuf = new proto.DelegateProtobuf('SettleAccountsResponse');
+                              responseBuf.payload(settleAccountsResponse);
+                              const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
+                              console.log("SettleAccountsResponse Base64", responseBase64);
+
+                              nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
+                        }
                               break
                         default:
                   }

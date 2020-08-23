@@ -97,6 +97,27 @@ function add_new_data() {
       nc.publish('layer1.async.reply.add_new_data', dataBufBase64, 'layer1.test.result')
 }
 
+function settle_accounts() {
+      const settleAccountsRequest = {
+            employer: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
+            delegatorEphemeralId: Buffer.from('dbedb0147b62b4c291b10121b3a103bd1f2eab8309350661855e37c392c6f643', 'hex'),
+            errandUuid: '03',
+            payment: 10,
+            paymentType: 1,
+            employerSignature: Buffer.from('04', 'hex'),
+            executorEphemeralId: Buffer.from('05', 'hex'),
+            expiarTime: 6,
+            delegateSignature: Buffer.from('07', 'hex'),
+            resultCid: '08',
+            executorSingature: Buffer.from('09', 'hex'),
+      }
+      const requestBuf = new proto.DelegateProtobuf('SettleAccountsRequest');
+      requestBuf.payload(settleAccountsRequest);
+      const requestBufBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64');
+
+      nc.publish('layer1.async.reply.settle_accounts', requestBufBase64, 'layer1.event.result');
+}
+
 async function main() {
       // add_new_node()
       // update_node_profile()
@@ -104,7 +125,8 @@ async function main() {
       // add_new_task()
       // complete_task()
       // update_node_profile()
-      add_new_data()
+      // add_new_data()
+      settle_accounts()
 }
 
 main().catch((error) => {

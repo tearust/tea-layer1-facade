@@ -27,7 +27,7 @@ function update_node_profile() {
       const requestBase64 = Buffer.from(buf.toBuffer()).toString('base64');
       console.log("TeaNodeUpdateProfileRequest Base64", requestBase64);
 
-      nc.publish('layer1.async.reply.update_node_profile', requestBase64, 'layer1.test.result')
+      nc.publish('layer1.async.reply.update_node_profile', requestBase64, 'layer1.event.result')
 }
 
 function add_new_task() {
@@ -48,7 +48,7 @@ function add_new_task() {
       // const newTask = newTaskBuf.decode(protoMsg);
       // console.log('3', newTask);
 
-      nc.publish('layer1.async.reply.add_new_task', taskBufBase64, 'layer1.test.result')
+      nc.publish('layer1.async.reply.add_new_task', taskBufBase64, 'layer1.event.result')
 }
 
 function complete_task() {
@@ -69,10 +69,10 @@ function complete_task() {
       // const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'));
       // console.log('decode:', newRequest);
 
-      nc.publish('layer1.async.reply.complete_task', requestBase64, 'layer1.test.result')
+      nc.publish('layer1.async.reply.complete_task', requestBase64, 'layer1.event.result')
 }
 
-function test_action() {
+function test_task() {
       update_node_profile();
 
       nc.subscribe('layer1.event.*.>', (msg, reply, subject, sid) => {
@@ -88,16 +88,31 @@ function test_action() {
                         break
                   case 'CompleteTask':
                         console.log('Good !!!');
-
                         lookup_node_profile();
                         break
                   default:
-
+                        console.log('Received default: ', msg, reply, subject, sid)
             }
       })
+}
 
-      nc.subscribe('layer1.test.result', (msg, reply, subject, sid) => {
-            console.log('Received test result: ', msg, reply, subject, sid)
+function test_errand() {
+      update_node_profile();
+
+      nc.subscribe('layer1.event.*.>', (msg, reply, subject, sid) => {
+            const subSections = subject.split('.');
+
+            switch (subSections[3]) {
+                  case 'NewDepositAdded':
+                        
+                        break
+                  case 'SettleAccounts':
+                        
+                        break
+
+                  default:
+                        console.log('Received default: ', msg, reply, subject, sid)
+            }
       })
 }
 
@@ -105,11 +120,11 @@ function lookup_node_profile() {
       const requestBase64 = Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696597', 'hex').toString('base64');
       console.log("EphemeralId Base64", requestBase64);
 
-      nc.publish('layer1.async.replay.lookup_node_profile', requestBase64, 'layer1.test.result')
+      nc.publish('layer1.async.replay.lookup_node_profile', requestBase64, 'layer1.event.result')
 }
 
 function get_node_profile() {
-      nc.publish('layer1.async.replay.node_profile_by_tea_id', requestBase64, 'layer1.test.result')
+      nc.publish('layer1.async.replay.node_profile_by_tea_id', requestBase64, 'layer1.event.result')
 }
 
 async function test_rpc(api) {
@@ -141,7 +156,7 @@ async function main() {
       const keyring = new Keyring({ type: 'sr25519' });
       const alice = keyring.addFromUri('//Alice', { name: 'Alice default' });
 
-      test_action();
+      test_task();
 }
 
 main()
