@@ -100,9 +100,9 @@ function add_new_data() {
 function settle_accounts() {
       const settleAccountsRequest = {
             employer: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
-            delegatorEphemeralId: Buffer.from('dbedb0147b62b4c291b10121b3a103bd1f2eab8309350661855e37c392c6f643', 'hex'),
+            delegatorEphemeralId: Buffer.from('01', 'hex'),
             errandUuid: '03',
-            payment: 10,
+            payment: 900,
             paymentType: 1,
             employerSignature: Buffer.from('04', 'hex'),
             executorEphemeralId: Buffer.from('05', 'hex'),

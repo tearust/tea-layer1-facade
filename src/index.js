@@ -294,7 +294,7 @@ async function main() {
                               const newRequest = newRequestBuf.decode(protoMsg);
                               console.log(newRequest);
                               
-                              const employer = toHex(Buffer.from(newRequest.employer), { addPrefix: true });
+                              const employer = newRequest.employer;
                               const delegatorEphemeralId = toHex(newRequest.delegatorEphemeralId, { addPrefix: true });
                               const errandUuid = toHex(Buffer.from(newRequest.errandUuid), { addPrefix: true });
                               const payment = newRequest.payment;
@@ -448,13 +448,13 @@ function handle_events(events) {
                         {
                               const settleAccountsResponse = {
                                     accountId: Buffer.from(eventData.AccountId, 'hex'),
-                                    employer: Buffer.from(eventData.Bill.employer, 'hex').toString(),
+                                    employer: eventData.Bill.employer.toString(),
                                     delegatorEphemeralId: Buffer.from(eventData.Bill.delegatorEphemeralId, 'hex'),
                                     errandUuid: Buffer.from(eventData.Bill.errandUuid, 'hex').toString(),
-                                    payment: eventData.Bill.payment,
-                                    paymentType: eventData.Bill.paymentType,
+                                    payment: parseInt(eventData.Bill.payment),
+                                    paymentType: parseInt(eventData.Bill.paymentType),
                                     executorEphemeralId: Buffer.from(eventData.Bill.executorEphemeralId, 'hex'),
-                                    expiarTime: eventData.Bill.expiarTime,
+                                    expiarTime: parseInt(eventData.Bill.expiarTime),
                                     resultCid: Buffer.from(eventData.Bill.resultCid, 'hex').toString(),
                               }
                               console.log('settleAccountsResponse:', JSON.stringify(settleAccountsResponse));
