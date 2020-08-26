@@ -132,7 +132,7 @@ describe('delegate protobuf test suit', () => {
                   paymentType: 1,
                   employerSignature: Buffer.from('04', 'hex'),
                   executorEphemeralId: Buffer.from('05', 'hex'),
-                  expiarTime: 6,
+                  expiredTime: 6,
                   delegateSignature: Buffer.from('07', 'hex'),
                   resultCid: '08',
                   executorSingature: Buffer.from('09', 'hex'),
@@ -157,7 +157,7 @@ describe('delegate protobuf test suit', () => {
                   payment: 100,
                   paymentType: 1,
                   executorEphemeralId: Buffer.from('05', 'hex'),
-                  expiarTime: 6,
+                  expiredTime: 6,
                   resultCid: '08',
             }
 

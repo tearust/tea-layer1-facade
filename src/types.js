@@ -38,7 +38,7 @@ const types = {
             "payment": "Balance",
             "paymentType": "u32",
             "executorEphemeralId": "TeaPubKey",
-            "expiarTime": "u64",
+            "expiredTime": "u64",
             "resultCid": "Cid"
       },
       Data: {

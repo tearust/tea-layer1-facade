@@ -106,7 +106,7 @@ function settle_accounts() {
             paymentType: 1,
             employerSignature: Buffer.from('04', 'hex'),
             executorEphemeralId: Buffer.from('05', 'hex'),
-            expiarTime: 6,
+            expiredTime: 6,
             delegateSignature: Buffer.from('07', 'hex'),
             resultCid: '08',
             executorSingature: Buffer.from('09', 'hex'),

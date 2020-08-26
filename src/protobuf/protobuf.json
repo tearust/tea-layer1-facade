@@ -462,7 +462,7 @@
               "type": "bytes",
               "id": 7
             },
-            "expiarTime": {
+            "expiredTime": {
               "rule": "required",
               "type": "uint32",
               "id": 8
@@ -521,7 +521,7 @@
               "type": "bytes",
               "id": 7
             },
-            "expiarTime": {
+            "expiredTime": {
               "rule": "required",
               "type": "uint32",
               "id": 8

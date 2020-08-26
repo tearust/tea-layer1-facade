@@ -301,7 +301,7 @@ async function main() {
                               const paymentType = newRequest.paymentType;
                               const employerSignature = toHex(newRequest.employerSignature, { addPrefix: true });
                               const executorEphemeralId = toHex(newRequest.executorEphemeralId, { addPrefix: true });
-                              const expiarTime = newRequest.expiarTime;
+                              const expiredTime = newRequest.expiredTime;
                               const delegateSignature = toHex(newRequest.delegateSignature, { addPrefix: true });
                               const resultCid = toHex(Buffer.from(newRequest.resultCid), { addPrefix: true });
                               const executorSingature = toHex(newRequest.executorSingature, { addPrefix: true });
@@ -314,7 +314,7 @@ async function main() {
                                     paymentType,
                                     employerSignature,
                                     executorEphemeralId,
-                                    expiarTime,
+                                    expiredTime,
                                     delegateSignature,
                                     resultCid,
                                     executorSingature)
@@ -454,7 +454,7 @@ function handle_events(events) {
                                     payment: parseInt(eventData.Bill.payment),
                                     paymentType: parseInt(eventData.Bill.paymentType),
                                     executorEphemeralId: Buffer.from(eventData.Bill.executorEphemeralId, 'hex'),
-                                    expiarTime: parseInt(eventData.Bill.expiarTime),
+                                    expiredTime: parseInt(eventData.Bill.expiredTime),
                                     resultCid: Buffer.from(eventData.Bill.resultCid, 'hex').toString(),
                               }
                               console.log('settleAccountsResponse:', JSON.stringify(settleAccountsResponse));
