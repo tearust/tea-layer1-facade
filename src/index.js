@@ -6,7 +6,7 @@ const proto = require('./proto');
 const toHex = require('to-hex');
 const types = require('./types');
 const rpc = require('./rpc');
-const { timer } = require('rxjs');
+const BN = require('bn.js');
 
 const natsUrl = process.env.NATS_URL || "127.0.0.1:4222";
 const nc = NATS.connect(natsUrl, {
@@ -289,6 +289,10 @@ async function main() {
                         break
                   case 'settle_accounts':
                         {
+                              const yi = new BN('100000000', 10);
+                              const million = new BN('10000000', 10);
+                              const unit = yi.mul(million);
+
                               const protoMsg = Buffer.from(msg, 'base64');
                               const newRequestBuf = new proto.DelegateProtobuf('SettleAccountsRequest');
                               const newRequest = newRequestBuf.decode(protoMsg);
@@ -297,7 +301,7 @@ async function main() {
                               const employer = newRequest.employer;
                               const delegatorEphemeralId = toHex(newRequest.delegatorEphemeralId, { addPrefix: true });
                               const errandUuid = toHex(Buffer.from(newRequest.errandUuid), { addPrefix: true });
-                              const payment = newRequest.payment;
+                              const payment = parseInt(newRequest.payment, 10) * unit;
                               const paymentType = newRequest.paymentType;
                               const employerSignature = toHex(newRequest.employerSignature, { addPrefix: true });
                               const executorEphemeralId = toHex(newRequest.executorEphemeralId, { addPrefix: true });
@@ -310,7 +314,7 @@ async function main() {
                                     employer,
                                     delegatorEphemeralId,
                                     errandUuid,
-                                    payment,
+                                    payment.toString(),
                                     paymentType,
                                     employerSignature,
                                     executorEphemeralId,
@@ -451,7 +455,7 @@ function handle_events(events) {
                                     employer: eventData.Bill.employer.toString(),
                                     delegatorEphemeralId: Buffer.from(eventData.Bill.delegatorEphemeralId, 'hex'),
                                     errandUuid: Buffer.from(eventData.Bill.errandUuid, 'hex').toString(),
-                                    payment: parseInt(eventData.Bill.payment),
+                                    payment: parseInt(eventData.Bill.payment, 10),
                                     paymentType: parseInt(eventData.Bill.paymentType),
                                     executorEphemeralId: Buffer.from(eventData.Bill.executorEphemeralId, 'hex'),
                                     expiredTime: parseInt(eventData.Bill.expiredTime),
