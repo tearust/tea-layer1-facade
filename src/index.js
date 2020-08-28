@@ -448,6 +448,29 @@ function handle_events(events) {
 
                               nc.publish(`layer1.event.${event.section}.${event.method}`, newDataResponseBase64)
                               break
+                        case 'NewDepositeAdded':
+                        {
+                              const deposit = {
+                                    // delegatorEphemeralId: Buffer.from(eventData.Deposit.delegatorEphemeralId, 'hex'),
+                                    // depositPubKey: Buffer.from(eventData.Deposit.depositPubkey, 'hex'),
+                                    // delegatorSignature: Buffer.from(eventData.Deposit.delegatorSignature, 'hex'),
+                                    // amount: parseInt(eventData.Deposit.amount, 10),
+                                    // expiredTime: parseInt(eventData.Deposit.expiredTime, 10),
+                              }
+                              const newDepositResponse = {
+                                    accountId: Buffer.from(eventData.AccountId, 'hex'),
+                                    deposit,
+                              }
+
+                              console.log('newDepositResponse:', JSON.stringify(newDepositResponse));
+                              const newDepositResponseBuf = new proto.DelegateProtobuf('DepositResponse');
+                              newDepositResponseBuf.payload(newDepositResponse);
+                              const newDepositResponseBase64 = Buffer.from(newDepositResponseBuf.toBuffer()).toString('base64');
+                              console.log("DepositResponseBase64:", newDepositResponseBase64);
+
+                              nc.publish(`layer1.event.${event.section}.${event.method}`, newDepositResponseBase64)
+                              break
+                        }
                         case 'SettleAccounts':
                         {
                               const settleAccountsResponse = {
@@ -469,8 +492,8 @@ function handle_events(events) {
                               console.log("SettleAccountsResponse Base64", responseBase64);
 
                               nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
-                        }
                               break
+                        }
                         default:
                   }
             }

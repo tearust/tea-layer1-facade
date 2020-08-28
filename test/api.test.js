@@ -123,6 +123,33 @@ describe('delegate protobuf test suit', () => {
             assert.deepEqual(addNewDataResponse, newResponse);
       })
 
+      it('DepositResponse test', () => {
+            const deposit = {
+                  delegatorEphemeralId: Buffer.from('01', 'hex'),
+                  depositPubKey: Buffer.from('02', 'hex'),
+                  delegatorSignature: Buffer.from('03', 'hex'),
+                  amount: 1000,
+                  expiredTime: 10000,
+            }
+            const depositResponse = {
+                  accountId: Buffer.from('1234567', 'hex'),
+                  deposit,
+            }
+
+            const responseBuf = new proto.DelegateProtobuf('DepositResponse');
+            responseBuf.payload(depositResponse);
+            const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
+            console.log("DepositResponse Base64", responseBase64);
+
+            const newResponseBuf = new proto.DelegateProtobuf('DepositResponse');
+            const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'));
+            // console.log('decode:', newResponse);
+            newResponse.deposit.amount = parseInt(newResponse.deposit.amount, 10);
+            newResponse.deposit.expiredTime = parseInt(newResponse.deposit.expiredTime, 10);
+
+            assert.deepEqual(depositResponse, newResponse);
+      })
+
       it('SettleAccountsRequest test', () => {
             const settleAccountsRequest = {
                   employer: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
@@ -143,6 +170,7 @@ describe('delegate protobuf test suit', () => {
 
             const newRequestBuf = new proto.DelegateProtobuf('SettleAccountsRequest');
             const newRequest = newRequestBuf.decode(Buffer.from(requestBufBase64, 'base64'));
+            newRequest.expiredTime = parseInt(newRequest.expiredTime, 10)
             // console.log('decode:', newRequest);
             // newRequest.payment
             assert.deepEqual(settleAccountsRequest, newRequest);
@@ -168,6 +196,8 @@ describe('delegate protobuf test suit', () => {
 
             const newResponseBuf = new proto.DelegateProtobuf('SettleAccountsResponse');
             const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'));
+            newResponse.expiredTime = parseInt(newResponse.expiredTime, 10)
+
             // console.log('decode:', newResponse);
             assert.deepEqual(settleAccountsResponse, newResponse);
       })
@@ -185,7 +215,7 @@ describe('ra protobuf test suit', () => {
       it('TeaNodeUpdateProfileRequest test', () => {
             const updateProfileRequest = {
                   nodeProfile,
-                  signature: Buffer.from('666', 'hex'),
+                  signature: Buffer.from('777', 'hex'),
             }
 
             const buf = new proto.RAProtobuf('TeaNodeUpdateProfileRequest');

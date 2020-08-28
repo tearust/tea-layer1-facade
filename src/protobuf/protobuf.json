@@ -331,6 +331,35 @@
             }
           }
         },
+        "Deposit": {
+          "fields": {
+            "delegatorEphemeralId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "depositPubKey": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "delegatorSignature": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            },
+            "amount": {
+              "rule": "required",
+              "type": "uint64",
+              "id": 4
+            },
+            "expiredTime": {
+              "rule": "required",
+              "type": "uint64",
+              "id": 5
+            }
+          }
+        },
         "AddNewTaskRequest": {
           "fields": {
             "task": {
@@ -425,6 +454,20 @@
             }
           }
         },
+        "DepositResponse": {
+          "fields": {
+            "accountId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "deposit": {
+              "rule": "required",
+              "type": "Deposit",
+              "id": 2
+            }
+          }
+        },
         "SettleAccountsRequest": {
           "fields": {
             "employer": {
@@ -464,7 +507,7 @@
             },
             "expiredTime": {
               "rule": "required",
-              "type": "uint32",
+              "type": "uint64",
               "id": 8
             },
             "delegateSignature": {
@@ -523,7 +566,7 @@
             },
             "expiredTime": {
               "rule": "required",
-              "type": "uint32",
+              "type": "uint64",
               "id": 8
             },
             "resultCid": {

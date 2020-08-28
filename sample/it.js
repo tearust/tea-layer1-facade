@@ -92,9 +92,9 @@ async function deposit(api) {
       const keyring = new Keyring({ type: 'sr25519' });
       const alice = keyring.addFromUri('//Alice', { name: 'Alice default' });
 
-      const delegatorEphemeralId = toHex(Buffer.from('01'), { addPrefix: true });
-      const depositPubkey = toHex(Buffer.from('02'), { addPrefix: true });
-      const delegatorSignature = toHex(Buffer.from('03'), { addPrefix: true });
+      const delegatorEphemeralId = '0x421f50f4c91e66d0c2c18ccfdbef9480741a3c7eb189fc45a2e18ae3ee1b185f'
+      const depositPubkey = '0x889c1a57859860e18d0bd6b6488e601570dce7c06eee30cb98a63102f09972a4'
+      const delegatorSignature = '0x808641dc76cae1353aa6e74e7c9275266c6c773f3b7c4271a72f70970adf317de54df11adf2d11037598f44ca27f5b4276991a4ec5a14d6b6716aae7e728a60c'
       const amount = 100 * unit;
       const expireTime = 50;
 
