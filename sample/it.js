@@ -5,8 +5,13 @@ const types = require('../src/types');
 const rpc = require('../src/rpc');
 const NATS = require('nats');
 const proto = require('../src/proto');
+const BN = require('bn.js');
 
 const nc = NATS.connect();
+
+const yi = new BN('100000000', 10);
+const million = new BN('10000000', 10);
+const unit = yi.mul(million);
 
 function update_node_profile() {
       let nodeProfile = {
@@ -72,6 +77,64 @@ function complete_task() {
       nc.publish('layer1.async.reply.complete_task', requestBase64, 'layer1.event.result')
 }
 
+function lookup_node_profile() {
+      const requestBase64 = Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696597', 'hex').toString('base64');
+      console.log("EphemeralId Base64", requestBase64);
+
+      nc.publish('layer1.async.replay.lookup_node_profile', requestBase64, 'layer1.event.result')
+}
+
+function get_node_profile() {
+      nc.publish('layer1.async.replay.node_profile_by_tea_id', requestBase64, 'layer1.event.result')
+}
+
+async function deposit(api) {
+      const keyring = new Keyring({ type: 'sr25519' });
+      const alice = keyring.addFromUri('//Alice', { name: 'Alice default' });
+
+      const delegatorEphemeralId = toHex(Buffer.from('01'), { addPrefix: true });
+      const depositPubkey = toHex(Buffer.from('02'), { addPrefix: true });
+      const delegatorSignature = toHex(Buffer.from('03'), { addPrefix: true });
+      const amount = 100 * unit;
+      const expireTime = 50;
+
+      await api.tx.tea.deposit(delegatorEphemeralId, depositPubkey, delegatorSignature, amount.toString(), expireTime)
+            .signAndSend(alice, ({ events = [], status }) => {
+                  if (status.isInBlock) {
+                        console.log('Included at block hash', status.asInBlock.toHex());
+                        console.log('Events:');
+                        events.forEach(({ event: { data, method, section }, phase }) => {
+                              console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
+                        });
+                  } else if (status.isFinalized) {
+                        console.log('Finalized block hash', status.asFinalized.toHex());
+                  }
+            });
+
+      console.log('send deposit tx')
+}
+
+function settle_accounts() {
+      const settleAccountsRequest = {
+            employer: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
+            delegatorEphemeralId: Buffer.from('01', 'hex'),
+            errandUuid: '03',
+            payment: 900,
+            paymentType: 1,
+            employerSignature: Buffer.from('04', 'hex'),
+            executorEphemeralId: Buffer.from('05', 'hex'),
+            expiredTime: 6,
+            delegateSignature: Buffer.from('07', 'hex'),
+            resultCid: '08',
+            executorSingature: Buffer.from('09', 'hex'),
+      }
+      const requestBuf = new proto.DelegateProtobuf('SettleAccountsRequest');
+      requestBuf.payload(settleAccountsRequest);
+      const requestBufBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64');
+
+      nc.publish('layer1.async.reply.settle_accounts', requestBufBase64, 'layer1.event.result');
+}
+
 function test_task() {
       update_node_profile();
 
@@ -96,35 +159,26 @@ function test_task() {
       })
 }
 
-function test_errand() {
+async function test_errand(api) {
       update_node_profile();
 
-      nc.subscribe('layer1.event.*.>', (msg, reply, subject, sid) => {
+      nc.subscribe('layer1.event.*.>', async (msg, reply, subject, sid) => {
             const subSections = subject.split('.');
 
             switch (subSections[3]) {
+                  case 'UpdateNodeProfile':
+                        await deposit(api);
+                        break
                   case 'NewDepositAdded':
-                        
+                        console.log('Good !!!');
                         break
                   case 'SettleAccounts':
-                        
-                        break
 
+                        break
                   default:
                         console.log('Received default: ', msg, reply, subject, sid)
             }
       })
-}
-
-function lookup_node_profile() {
-      const requestBase64 = Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696597', 'hex').toString('base64');
-      console.log("EphemeralId Base64", requestBase64);
-
-      nc.publish('layer1.async.replay.lookup_node_profile', requestBase64, 'layer1.event.result')
-}
-
-function get_node_profile() {
-      nc.publish('layer1.async.replay.node_profile_by_tea_id', requestBase64, 'layer1.event.result')
 }
 
 async function test_rpc(api) {
@@ -156,7 +210,8 @@ async function main() {
       const keyring = new Keyring({ type: 'sr25519' });
       const alice = keyring.addFromUri('//Alice', { name: 'Alice default' });
 
-      test_task();
+      // test_task();
+      await test_errand(api);
 }
 
 main()
