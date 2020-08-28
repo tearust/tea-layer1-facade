@@ -268,7 +268,7 @@ async function main() {
                         const depositInfoObj = await api.query.tea.depositMap(['5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', delegatorEphemeralId]);
                         if (depositInfoObj.isNone) {
                               console.log("No such deposit found");
-                              nc.publish(reply, "no_such_deposit");
+                              nc.publish(reply, "");
                               break
                         }
                         const depositInfo = depositInfoObj.toJSON();
