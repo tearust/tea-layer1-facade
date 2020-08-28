@@ -102,10 +102,10 @@ nc.publish('layer1.async.reply.update_node_profile', requestBase64, 'layer1.test
 
 #### Get deposit info
 - Nats subject: layer1.async.replay.deposit_info
-- Nats body: base64 of encoded actor-delegate.proto DepositInfoRequest
+- Nats body: base64 of encoded actor-delegate.proto DepositInfoRequest or empty [] if cannot find deposit
 
 - Reply_to subject: As request msg's reply_to field
-- Reply body: base64 of encoded actor-delegate.proto DepositInfoResponse
+- Reply body: base64 of encoded actor-delegate.proto DepositInfoResponse or empty [] if cannot find deposit
 
 #### Add new task
 
