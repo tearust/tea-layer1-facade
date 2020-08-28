@@ -123,31 +123,43 @@ describe('delegate protobuf test suit', () => {
             assert.deepEqual(addNewDataResponse, newResponse);
       })
 
-      it('DepositResponse test', () => {
-            const deposit = {
+      it('DepositInfoRequest test', () => {
+            const depositInfoRequest = {
+                  accountId: Buffer.from('1234567', 'hex'),
+                  delegatorEphemeralId: Buffer.from('01', 'hex'),
+            }
+            const requestBuf = new proto.DelegateProtobuf('DepositInfoRequest');
+            requestBuf.payload(depositInfoRequest);
+            const requestBufBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64');
+
+            const newRequestBuf = new proto.DelegateProtobuf('DepositInfoRequest');
+            const newRequest = newRequestBuf.decode(Buffer.from(requestBufBase64, 'base64'));
+            // console.log('decode:', newRequest);
+            assert.deepEqual(depositInfoRequest, newRequest);
+      });
+
+      it('DepositInfoResponse test', () => {
+            const depositInfoResponse = {
+                  accountId: Buffer.from('1234567', 'hex'),
                   delegatorEphemeralId: Buffer.from('01', 'hex'),
                   depositPubKey: Buffer.from('02', 'hex'),
                   delegatorSignature: Buffer.from('03', 'hex'),
                   amount: 1000,
                   expiredTime: 10000,
             }
-            const depositResponse = {
-                  accountId: Buffer.from('1234567', 'hex'),
-                  deposit,
-            }
 
-            const responseBuf = new proto.DelegateProtobuf('DepositResponse');
-            responseBuf.payload(depositResponse);
+            const responseBuf = new proto.DelegateProtobuf('DepositInfoResponse');
+            responseBuf.payload(depositInfoResponse);
             const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
-            console.log("DepositResponse Base64", responseBase64);
+            console.log("DepositInfoResponse Base64", responseBase64);
 
-            const newResponseBuf = new proto.DelegateProtobuf('DepositResponse');
+            const newResponseBuf = new proto.DelegateProtobuf('DepositInfoResponse');
             const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'));
             // console.log('decode:', newResponse);
-            newResponse.deposit.amount = parseInt(newResponse.deposit.amount, 10);
-            newResponse.deposit.expiredTime = parseInt(newResponse.deposit.expiredTime, 10);
+            newResponse.amount = parseInt(newResponse.amount, 10);
+            newResponse.expiredTime = parseInt(newResponse.expiredTime, 10);
 
-            assert.deepEqual(depositResponse, newResponse);
+            assert.deepEqual(depositInfoResponse, newResponse);
       })
 
       it('SettleAccountsRequest test', () => {

@@ -232,14 +232,11 @@ async function main() {
                   case 'node_profile_by_tea_id':
                         let nodeObj = await api.query.tea.nodes(msg)
                         if (nodeObj.isNone) {
-                              nodeObj = await api.query.tea.bootstrapNodes(msg)
-                        }
-                        let node = nodeObj.toJSON();
-
-                        if (node == null) {
-                              nc.publish(reply, "node_is_not_exist");
+                              console.log("No such node found");
+                              nc.publish(reply, "no_such_node_found");
                               break
                         }
+                        let node = nodeObj.toJSON();
                         let urls = []
                         if (node.urls) {
                               node.urls.forEach((url, i) => {
@@ -261,7 +258,39 @@ async function main() {
 
                         nc.publish(reply, nodeBase64);
                         break
-                  case 'add_new_data':
+                  case 'deposit_info': {
+                        const newRequestBuf = new proto.DelegateProtobuf('DepositInfoRequest');
+                        const newRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'));
+
+                        const accountId = Buffer.from(newRequest.accountId).toString;
+                        const delegatorEphemeralId = toHex(newRequest.delegatorEphemeralId, { addPrefix: true });
+
+                        const depositInfoObj = await api.query.tea.depositMap(['5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', delegatorEphemeralId]);
+                        if (depositInfoObj.isNone) {
+                              console.log("No such deposit found");
+                              nc.publish(reply, "no_such_deposit");
+                              break
+                        }
+                        const depositInfo = depositInfoObj.toJSON();
+                        // console.log("Deposit info:", depositInfo);
+                        const depositInfoResponse = {
+                              accountId: newRequest.accountId,
+                              delegatorEphemeralId: Buffer.from(depositInfo.delegatorEphemeralId.slice(2), 'hex'),
+                              depositPubKey: Buffer.from(depositInfo.depositPubkey.slice(2), 'hex'),
+                              delegatorSignature: Buffer.from(depositInfo.delegatorSignature.slice(2), 'hex'),
+                              amount: parseInt(depositInfo.amount, 10),
+                              expiredTime: depositInfo.expireTime,
+                        }
+
+                        const responseBuf = new proto.DelegateProtobuf('DepositInfoResponse');
+                        responseBuf.payload(depositInfoResponse);
+                        const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
+                        console.log("DepositInfoResponse Base64", responseBase64);
+
+                        nc.publish(reply, responseBase64)
+                        break
+                  }
+                  case 'add_new_data': {
                         var protoMsg = Buffer.from(msg, 'base64');
                         const newDataBuf = new proto.DelegateProtobuf('AddNewDataRequest');
                         const newData = newDataBuf.decode(protoMsg);
@@ -287,55 +316,55 @@ async function main() {
                         });
                         console.log('send add_new_data tx')
                         break
-                  case 'settle_accounts':
-                        {
-                              const yi = new BN('100000000', 10);
-                              const million = new BN('10000000', 10);
-                              const unit = yi.mul(million);
+                  }
+                  case 'settle_accounts': {
+                        const yi = new BN('100000000', 10);
+                        const million = new BN('10000000', 10);
+                        const unit = yi.mul(million);
 
-                              const protoMsg = Buffer.from(msg, 'base64');
-                              const newRequestBuf = new proto.DelegateProtobuf('SettleAccountsRequest');
-                              const newRequest = newRequestBuf.decode(protoMsg);
-                              console.log(newRequest);
-                              
-                              const employer = newRequest.employer;
-                              const delegatorEphemeralId = toHex(newRequest.delegatorEphemeralId, { addPrefix: true });
-                              const errandUuid = toHex(Buffer.from(newRequest.errandUuid), { addPrefix: true });
-                              const payment = parseInt(newRequest.payment, 10) * unit;
-                              const paymentType = newRequest.paymentType;
-                              const employerSignature = toHex(newRequest.employerSignature, { addPrefix: true });
-                              const executorEphemeralId = toHex(newRequest.executorEphemeralId, { addPrefix: true });
-                              const expiredTime = newRequest.expiredTime;
-                              const delegateSignature = toHex(newRequest.delegateSignature, { addPrefix: true });
-                              const resultCid = toHex(Buffer.from(newRequest.resultCid), { addPrefix: true });
-                              const executorSingature = toHex(newRequest.executorSingature, { addPrefix: true });
-      
-                              await api.tx.tea.settleAccounts(
-                                    employer,
-                                    delegatorEphemeralId,
-                                    errandUuid,
-                                    payment.toString(),
-                                    paymentType,
-                                    employerSignature,
-                                    executorEphemeralId,
-                                    expiredTime,
-                                    delegateSignature,
-                                    resultCid,
-                                    executorSingature)
-                                    .signAndSend(ac, ({ events = [], status }) => {
-                                          if (status.isInBlock) {
-                                                console.log('Included at block hash', status.asInBlock.toHex());
-                                                console.log('Events:');
-                                                events.forEach(({ event: { data, method, section }, phase }) => {
-                                                      console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
-                                                });
-                                          } else if (status.isFinalized) {
-                                                console.log('Finalized block hash', status.asFinalized.toHex());
-                                          }
-                              });
-                              console.log('send deposit tx')
-                        }
+                        const protoMsg = Buffer.from(msg, 'base64');
+                        const newRequestBuf = new proto.DelegateProtobuf('SettleAccountsRequest');
+                        const newRequest = newRequestBuf.decode(protoMsg);
+                        console.log(newRequest);
+                        
+                        const employer = newRequest.employer;
+                        const delegatorEphemeralId = toHex(newRequest.delegatorEphemeralId, { addPrefix: true });
+                        const errandUuid = toHex(Buffer.from(newRequest.errandUuid), { addPrefix: true });
+                        const payment = parseInt(newRequest.payment, 10) * unit;
+                        const paymentType = newRequest.paymentType;
+                        const employerSignature = toHex(newRequest.employerSignature, { addPrefix: true });
+                        const executorEphemeralId = toHex(newRequest.executorEphemeralId, { addPrefix: true });
+                        const expiredTime = newRequest.expiredTime;
+                        const delegateSignature = toHex(newRequest.delegateSignature, { addPrefix: true });
+                        const resultCid = toHex(Buffer.from(newRequest.resultCid), { addPrefix: true });
+                        const executorSingature = toHex(newRequest.executorSingature, { addPrefix: true });
+
+                        await api.tx.tea.settleAccounts(
+                              employer,
+                              delegatorEphemeralId,
+                              errandUuid,
+                              payment.toString(),
+                              paymentType,
+                              employerSignature,
+                              executorEphemeralId,
+                              expiredTime,
+                              delegateSignature,
+                              resultCid,
+                              executorSingature)
+                              .signAndSend(ac, ({ events = [], status }) => {
+                                    if (status.isInBlock) {
+                                          console.log('Included at block hash', status.asInBlock.toHex());
+                                          console.log('Events:');
+                                          events.forEach(({ event: { data, method, section }, phase }) => {
+                                                console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
+                                          });
+                                    } else if (status.isFinalized) {
+                                          console.log('Finalized block hash', status.asFinalized.toHex());
+                                    }
+                        });
+                        console.log('send deposit tx')
                         break
+                  }
                   default:
                         nc.publish(reply, JSON.stringify(['action_does_not_support']))
             }
@@ -450,25 +479,25 @@ function handle_events(events) {
                               break
                         case 'NewDepositeAdded':
                         {
-                              const deposit = {
+                              // const deposit = {
                                     // delegatorEphemeralId: Buffer.from(eventData.Deposit.delegatorEphemeralId, 'hex'),
                                     // depositPubKey: Buffer.from(eventData.Deposit.depositPubkey, 'hex'),
                                     // delegatorSignature: Buffer.from(eventData.Deposit.delegatorSignature, 'hex'),
                                     // amount: parseInt(eventData.Deposit.amount, 10),
                                     // expiredTime: parseInt(eventData.Deposit.expiredTime, 10),
-                              }
-                              const newDepositResponse = {
-                                    accountId: Buffer.from(eventData.AccountId, 'hex'),
-                                    deposit,
-                              }
+                              // }
+                              // const newDepositResponse = {
+                              //       accountId: Buffer.from(eventData.AccountId, 'hex'),
+                              //       deposit,
+                              // }
 
-                              console.log('newDepositResponse:', JSON.stringify(newDepositResponse));
-                              const newDepositResponseBuf = new proto.DelegateProtobuf('DepositResponse');
-                              newDepositResponseBuf.payload(newDepositResponse);
-                              const newDepositResponseBase64 = Buffer.from(newDepositResponseBuf.toBuffer()).toString('base64');
-                              console.log("DepositResponseBase64:", newDepositResponseBase64);
+                              // console.log('newDepositResponse:', JSON.stringify(newDepositResponse));
+                              // const newDepositResponseBuf = new proto.DelegateProtobuf('DepositResponse');
+                              // newDepositResponseBuf.payload(newDepositResponse);
+                              // const newDepositResponseBase64 = Buffer.from(newDepositResponseBuf.toBuffer()).toString('base64');
+                              // console.log("DepositResponseBase64:", newDepositResponseBase64);
 
-                              nc.publish(`layer1.event.${event.section}.${event.method}`, newDepositResponseBase64)
+                              // nc.publish(`layer1.event.${event.section}.${event.method}`, newDepositResponseBase64)
                               break
                         }
                         case 'SettleAccounts':

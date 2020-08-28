@@ -118,6 +118,18 @@ function settle_accounts() {
       nc.publish('layer1.async.reply.settle_accounts', requestBufBase64, 'layer1.event.result');
 }
 
+function deposit_info() {
+      const depositInfoRequest = {
+            accountId: Buffer.from('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'),
+            delegatorEphemeralId: Buffer.from('421f50f4c91e66d0c2c18ccfdbef9480741a3c7eb189fc45a2e18ae3ee1b185f', 'hex'),
+      }
+      const requestBuf = new proto.DelegateProtobuf('DepositInfoRequest');
+      requestBuf.payload(depositInfoRequest);
+      const requestBufBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64');
+
+      nc.publish('layer1.async.reply.deposit_info', requestBufBase64, 'layer1.event.result')
+}
+
 async function main() {
       // add_new_node()
       // update_node_profile()
@@ -126,7 +138,8 @@ async function main() {
       // complete_task()
       // update_node_profile()
       // add_new_data()
-      settle_accounts()
+      // settle_accounts()
+      deposit_info()
 }
 
 main().catch((error) => {
