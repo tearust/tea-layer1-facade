@@ -334,7 +334,7 @@ async function main() {
                         const paymentType = newRequest.paymentType;
                         const employerSignature = toHex(newRequest.employerSignature, { addPrefix: true });
                         const executorEphemeralId = toHex(newRequest.executorEphemeralId, { addPrefix: true });
-                        const expiredTime = newRequest.expiredTime;
+                        const expiredTime = parseInt(newRequest.expiredTime, 10);
                         const delegateSignature = toHex(newRequest.delegateSignature, { addPrefix: true });
                         const resultCid = toHex(Buffer.from(newRequest.resultCid), { addPrefix: true });
                         const executorSingature = toHex(newRequest.executorSingature, { addPrefix: true });
@@ -362,7 +362,7 @@ async function main() {
                                           console.log('Finalized block hash', status.asFinalized.toHex());
                                     }
                         });
-                        console.log('send deposit tx')
+                        console.log('send settle_accounts tx')
                         break
                   }
                   default:
@@ -477,31 +477,26 @@ function handle_events(events) {
 
                               nc.publish(`layer1.event.${event.section}.${event.method}`, newDataResponseBase64)
                               break
-                        case 'NewDepositeAdded':
-                        {
-                              // const deposit = {
-                                    // delegatorEphemeralId: Buffer.from(eventData.Deposit.delegatorEphemeralId, 'hex'),
-                                    // depositPubKey: Buffer.from(eventData.Deposit.depositPubkey, 'hex'),
-                                    // delegatorSignature: Buffer.from(eventData.Deposit.delegatorSignature, 'hex'),
-                                    // amount: parseInt(eventData.Deposit.amount, 10),
-                                    // expiredTime: parseInt(eventData.Deposit.expiredTime, 10),
-                              // }
-                              // const newDepositResponse = {
-                              //       accountId: Buffer.from(eventData.AccountId, 'hex'),
-                              //       deposit,
-                              // }
+                        case 'NewDepositAdded': {
+                              const newDepositResponse = {
+                                    accountId: Buffer.from(eventData.AccountId),
+                                    delegatorEphemeralId: Buffer.from(eventData.Deposit.delegatorEphemeralId, 'hex'),
+                                    depositPubKey: Buffer.from(eventData.Deposit.depositPubkey, 'hex'),
+                                    delegatorSignature: Buffer.from(eventData.Deposit.delegatorSignature, 'hex'),
+                                    amount: parseInt(eventData.Deposit.amount, 10),
+                                    expiredTime: parseInt(eventData.Deposit.expireTime, 10),
+                              }
 
-                              // console.log('newDepositResponse:', JSON.stringify(newDepositResponse));
-                              // const newDepositResponseBuf = new proto.DelegateProtobuf('DepositResponse');
-                              // newDepositResponseBuf.payload(newDepositResponse);
-                              // const newDepositResponseBase64 = Buffer.from(newDepositResponseBuf.toBuffer()).toString('base64');
-                              // console.log("DepositResponseBase64:", newDepositResponseBase64);
-
-                              // nc.publish(`layer1.event.${event.section}.${event.method}`, newDepositResponseBase64)
+                              console.log('newDepositResponse:', JSON.stringify(newDepositResponse));
+                              const responseBuf = new proto.DelegateProtobuf('DepositInfoResponse');
+                              responseBuf.payload(newDepositResponse);
+                              const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
+                              console.log("DepositInfoResponse Base64", responseBase64);
+      
+                              nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
                               break
                         }
-                        case 'SettleAccounts':
-                        {
+                        case 'SettleAccounts': {
                               const settleAccountsResponse = {
                                     accountId: Buffer.from(eventData.AccountId, 'hex'),
                                     employer: eventData.Bill.employer.toString(),

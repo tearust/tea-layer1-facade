@@ -116,10 +116,10 @@ async function deposit(api) {
 
 function settle_accounts() {
       const settleAccountsRequest = {
-            employer: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
-            delegatorEphemeralId: Buffer.from('01', 'hex'),
+            employer: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+            delegatorEphemeralId: Buffer.from('421f50f4c91e66d0c2c18ccfdbef9480741a3c7eb189fc45a2e18ae3ee1b185f', 'hex'),
             errandUuid: '03',
-            payment: 900,
+            payment: 10,
             paymentType: 1,
             employerSignature: Buffer.from('04', 'hex'),
             executorEphemeralId: Buffer.from('05', 'hex'),
@@ -170,10 +170,10 @@ async function test_errand(api) {
                         await deposit(api);
                         break
                   case 'NewDepositAdded':
-                        console.log('Good !!!');
+                        settle_accounts();
                         break
                   case 'SettleAccounts':
-
+                        console.log('Good !!!');
                         break
                   default:
                         console.log('Received default: ', msg, reply, subject, sid)
