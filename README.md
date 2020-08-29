@@ -192,6 +192,17 @@ Message Body:
 CgMSNFYSEgoBARIDEinfEgNcg9gSAzFdDhoQCgEBEgM0NDQY6AciAzU1NQ==
 ```
 
+- NewDepositAdded
+
+sub 'layer1.event.tea.NewDepositAdded'
+
+The msg body is base64 of encoded actor-delegate.proto DepositInfoResponse message.
+
+Message Body:
+```
+CiDUNZPHFf3THGEUGr0EqZ/WgiyFWIVMzeOaVoTnpW2ifRIgQh9Q9MkeZtDCwYzP2++UgHQaPH6xifxFouGK4+4bGF8aIIicGleFmGDhjQvWtkiOYBVw3OfAbu4wy5imMQLwmXKkIkCAhkHcdsrhNTqm5058knUmbGx3Pzt8QnGnL3CXCt8xfeVN8RrfLREDdZj0TKJ/W0J2mRpOxaFNa2cWqufnKKYMKICAqOwFMDI=
+```
+
 - SettleAccounts
 
 sub 'layer1.event.tea.SettleAccounts'
