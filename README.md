@@ -179,41 +179,26 @@ Received a Message {
 
 #### Listen new event
 
-```bash
-cargo run --example nats-box -- sub 'layer1.event.tea.NewTaskAdded'
-```
-
 Subject format: layer1.event.{layer1_module}.{event}
 
-if event is NewTaskAdded, the msg body is base64 of actor-delegate.proto message Task.
+- NewTaskAdded
 
-Message format: https://github.com/tearust/tea-codec/blob/master/proto/actor-delegate.proto#L63
+sub 'layer1.event.tea.NewTaskAdded'
 
-Sample:
-```
-const task = {
-      delegateId: Buffer.from('01', 'hex'),
-      modelCid: '444',
-      payment: 1000,
-      bodyCid: '555',
-}
-const node = {
-      teaId: Buffer.from('01', 'hex'),
-      peers: [
-            Buffer.from('1229df2', 'hex'),
-            Buffer.from('5c83d8c', 'hex'),
-            Buffer.from('315d0ec', 'hex'),
-      ]
-}
-const response = {
-      accountId: Buffer.from('1234567', 'hex'),
-      delegateNode: node,
-      task,
-}
-```
+The msg body is base64 of encoded actor-delegate.proto AddNewTask message.
 
 Message Body:
 ```
 CgMSNFYSEgoBARIDEinfEgNcg9gSAzFdDhoQCgEBEgM0NDQY6AciAzU1NQ==
-//this is the base64 of a protobuf Task message
+```
+
+- SettleAccounts
+
+sub 'layer1.event.tea.SettleAccounts'
+
+The msg body is base64 of encoded actor-delegate.proto SettleAccountsResponse message.
+
+Message Body:
+```
+CjA1R3J3dmFFRjV6WGIyNkZ6OXJjUXBEV1M1N0N0RVJIcE5laFhDUGNOb0hHS3V0UVkSIEIfUPTJHmbQwsGMz9vvlIB0Gjx+sYn8RaLhiuPuGxhfGiCInBpXhZhg4Y0L1rZIjmAVcNznwG7uMMuYpjEC8JlypCJAgIZB3HbK4TU6pudOfJJ1Jmxsdz87fEJxpy9wlwrfMX3lTfEa3y0RA3WY9Eyif1tCdpkaTsWhTWtnFqrn5yimDCgAMDI=
 ```
