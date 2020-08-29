@@ -262,10 +262,10 @@ async function main() {
                         const newRequestBuf = new proto.DelegateProtobuf('DepositInfoRequest');
                         const newRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'));
 
-                        const accountId = Buffer.from(newRequest.accountId).toString;
+                        const accountId = Buffer.from(newRequest.accountId).toString();
                         const delegatorEphemeralId = toHex(newRequest.delegatorEphemeralId, { addPrefix: true });
 
-                        const depositInfoObj = await api.query.tea.depositMap(['5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', delegatorEphemeralId]);
+                        const depositInfoObj = await api.query.tea.depositMap([accountId, delegatorEphemeralId]);
                         if (depositInfoObj.isNone) {
                               console.log("No such deposit found");
                               nc.publish(reply, "");
