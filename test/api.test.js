@@ -256,10 +256,10 @@ describe('ra protobuf test suit', () => {
 
 describe('debug', function() {
       it('CompleteTaskRequest debug', () => {
-            const requestBase64 = 'CiC6kUe6UPrKaURS23xFjjOpoDIqy6rCS/Ndt7tRZd/zrBIg6YibHFTM1s8YSQHe2JIGmSHXb3dJtvc77Wzzub4aikQaQE9i53WmGskE1s/BhHMgN2G3fvYCVcdF6nElVgaVZZbwURymHRss0DnXifAamPHXRrttxY/rB/lFzEwFMFCrAQMiJXsicmVzdWx0IjoibGlvbiAtIDY1Ljg2JSIsInN0YXR1cyI6MX0qQFOD5/6c0ordhvqYy3kLNEZHd8IwnaUENUaRxfLtESqu4+gIAv2kHF4LAWgyiGjavLpzdrlViAKw/EXrw91m/AA='
+            // const requestBase64 = 'CiC6kUe6UPrKaURS23xFjjOpoDIqy6rCS/Ndt7tRZd/zrBIg6YibHFTM1s8YSQHe2JIGmSHXb3dJtvc77Wzzub4aikQaQE9i53WmGskE1s/BhHMgN2G3fvYCVcdF6nElVgaVZZbwURymHRss0DnXifAamPHXRrttxY/rB/lFzEwFMFCrAQMiJXsicmVzdWx0IjoibGlvbiAtIDY1Ljg2JSIsInN0YXR1cyI6MX0qQFOD5/6c0ordhvqYy3kLNEZHd8IwnaUENUaRxfLtESqu4+gIAv2kHF4LAWgyiGjavLpzdrlViAKw/EXrw91m/AA='
 
-            const newRequestBuf = new proto.DelegateProtobuf('CompleteTaskRequest');
-            const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'));
+            // const newRequestBuf = new proto.DelegateProtobuf('CompleteTaskRequest');
+            // const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'));
             // console.log('decode:', newRequest);
 
             // console.log("refNum", Buffer.from(newRequest.refNum).toString('hex'))
@@ -269,5 +269,23 @@ describe('debug', function() {
             // console.log("resultSig", Buffer.from(newRequest.resultSig).toString('hex'))
 
             // assert.deepEqual(completeTaskRequest, newRequest); 
+      })
+
+      it('DepositInfoResponse test', () => {
+            const responseBase64 = 'CjA1SHBHOXc4RUJMZTVYQ3JiY3pwd3E1VFNYdmVkanJCR0N3cXhLMWlRN3FVc1NXRmMSIHS0f8ePHO7aoMw4O5TCEvXOebN/XLYKR9ohTbU98g5cGiAuZRxNrBaJXBQxtJYlUhlLdPHccAFNqksg+Zq5tQdxuyJAhaySxTV7kyelYCittG3V/aqYfRJCTBEhwWW1aVMzXrNgjg36UgnJ3X/3JUhGEACGRjGgTlD0HV7Z9G3cS5K0BSjIATBk'
+            // const responseBase64 = 'CjA1SHBHOXc4RUJMZTVYQ3JiY3pwd3E1VFNYdmVkanJCR0N3cXhLMWlRN3FVc1NXRmMSIHS0f8ePHO7aoMw4O5TCEvXOebN/XLYKR9ohTbU98g5cGiAuZRxNrBaJXBQxtJYlUhlLdPHccAFNqksg+Zq5tQdxuyJAhaySxTV7kyelYCittG3V/aqYfRJCTBEhwWW1aVMzXrNgjg36UgnJ3X/3JUhGEACGRjGgTlD0HV7Z9G3cS5K0BSjIATBk'
+
+            const newResponseBuf = new proto.DelegateProtobuf('DepositInfoResponse');
+            const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'));
+
+            newResponse.accountId = Buffer.from(newResponse.accountId, 'hex').toString(),
+            newResponse.delegatorEphemeralId = Buffer.from(newResponse.delegatorEphemeralId).toString('hex'),
+            newResponse.depositPubKey = Buffer.from(newResponse.depositPubKey).toString('hex'),
+            newResponse.delegatorSignature = Buffer.from(newResponse.delegatorSignature).toString('hex'),
+            newResponse.amount = parseInt(newResponse.amount, 10);
+            newResponse.expiredTime = parseInt(newResponse.expiredTime, 10);
+            
+            console.log('decode:', newResponse);
+
       })
 });

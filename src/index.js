@@ -20,6 +20,10 @@ const cache = {
       peer_url_list: []
 };
 
+const yi = new BN('100000000', 10);
+const million = new BN('10000000', 10);
+const unit = yi.mul(million);
+
 function sleep (time) {
       return new Promise((resolve) => setTimeout(resolve, time));
 }
@@ -271,21 +275,25 @@ async function main() {
                               nc.publish(reply, "");
                               break
                         }
+
                         const depositInfo = depositInfoObj.toJSON();
                         // console.log("Deposit info:", depositInfo);
+                        const amount = new BN(depositInfo.amount.slice(2), 'hex');
+                        // console.log("amount", amount);
                         const depositInfoResponse = {
-                              accountId: newRequest.accountId,
+                              accountId: Buffer.from(newRequest.accountId),
                               delegatorEphemeralId: Buffer.from(depositInfo.delegatorEphemeralId.slice(2), 'hex'),
                               depositPubKey: Buffer.from(depositInfo.depositPubkey.slice(2), 'hex'),
                               delegatorSignature: Buffer.from(depositInfo.delegatorSignature.slice(2), 'hex'),
-                              amount: parseInt(depositInfo.amount, 10),
-                              expiredTime: depositInfo.expireTime,
+                              amount: amount.div(unit).toNumber(),
+                              expiredTime: parseInt(depositInfo.expireTime, 10),
                         }
-
+                        
+                        console.log("depositInfoResponse:", JSON.stringify(depositInfoResponse));
                         const responseBuf = new proto.DelegateProtobuf('DepositInfoResponse');
                         responseBuf.payload(depositInfoResponse);
                         const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
-                        console.log("DepositInfoResponse Base64", responseBase64);
+                        console.log("deposit_info DepositInfoResponse Base64", responseBase64);
 
                         nc.publish(reply, responseBase64)
                         break
@@ -318,10 +326,6 @@ async function main() {
                         break
                   }
                   case 'settle_accounts': {
-                        const yi = new BN('100000000', 10);
-                        const million = new BN('10000000', 10);
-                        const unit = yi.mul(million);
-
                         const protoMsg = Buffer.from(msg, 'base64');
                         const newRequestBuf = new proto.DelegateProtobuf('SettleAccountsRequest');
                         const newRequest = newRequestBuf.decode(protoMsg);
@@ -451,7 +455,7 @@ function handle_events(events) {
                               const responseBu = new proto.DelegateProtobuf('CompleteTaskResponse');
                               responseBu.payload(completeTaskResponse);
                               const responseBase64 = Buffer.from(responseBu.toBuffer()).toString('base64');
-                              console.log("responseBase64", responseBase64);
+                              console.log("Event CompleteTask Base64", responseBase64);
 
                               nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
                               break
@@ -473,17 +477,17 @@ function handle_events(events) {
                               const newDataResponseBuf = new proto.DelegateProtobuf('AddNewDataResponse');
                               newDataResponseBuf.payload(newDataResponse);
                               const newDataResponseBase64 = Buffer.from(newDataResponseBuf.toBuffer()).toString('base64');
-                              console.log("DataResponseBase64:", newDataResponseBase64);
+                              console.log("Event NewDataAdded Base64:", newDataResponseBase64);
 
                               nc.publish(`layer1.event.${event.section}.${event.method}`, newDataResponseBase64)
                               break
                         case 'NewDepositAdded': {
                               const newDepositResponse = {
-                                    accountId: Buffer.from(eventData.AccountId),
+                                    accountId: Buffer.from(eventData.AccountId.toString()),
                                     delegatorEphemeralId: Buffer.from(eventData.Deposit.delegatorEphemeralId, 'hex'),
                                     depositPubKey: Buffer.from(eventData.Deposit.depositPubkey, 'hex'),
                                     delegatorSignature: Buffer.from(eventData.Deposit.delegatorSignature, 'hex'),
-                                    amount: parseInt(eventData.Deposit.amount, 10),
+                                    amount: eventData.Deposit.amount.div(unit).toNumber(),
                                     expiredTime: parseInt(eventData.Deposit.expireTime, 10),
                               }
 
@@ -491,7 +495,7 @@ function handle_events(events) {
                               const responseBuf = new proto.DelegateProtobuf('DepositInfoResponse');
                               responseBuf.payload(newDepositResponse);
                               const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
-                              console.log("DepositInfoResponse Base64", responseBase64);
+                              console.log("Event NewDepositAdded Base64", responseBase64);
       
                               nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
                               break
@@ -513,7 +517,7 @@ function handle_events(events) {
                               const responseBuf = new proto.DelegateProtobuf('SettleAccountsResponse');
                               responseBuf.payload(settleAccountsResponse);
                               const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
-                              console.log("SettleAccountsResponse Base64", responseBase64);
+                              console.log("Event SettleAccounts Base64", responseBase64);
 
                               nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
                               break

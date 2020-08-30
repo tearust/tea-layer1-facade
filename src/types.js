@@ -1,5 +1,6 @@
 const types = {
       Address: "AccountId",
+      LookupSource: "AccountId",
       TeaPubKey: "[u8; 32]",
       Url: "Bytes",
       Cid: "Bytes",
