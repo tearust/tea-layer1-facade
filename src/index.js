@@ -506,7 +506,7 @@ function handle_events(events) {
                                     employer: eventData.Bill.employer.toString(),
                                     delegatorEphemeralId: Buffer.from(eventData.Bill.delegatorEphemeralId, 'hex'),
                                     errandUuid: Buffer.from(eventData.Bill.errandUuid, 'hex').toString(),
-                                    payment: parseInt(eventData.Bill.payment, 10),
+                                    payment: eventData.Bill.payment.div(unit).toNumber(),
                                     paymentType: parseInt(eventData.Bill.paymentType),
                                     executorEphemeralId: Buffer.from(eventData.Bill.executorEphemeralId, 'hex'),
                                     expiredTime: parseInt(eventData.Bill.expiredTime),
