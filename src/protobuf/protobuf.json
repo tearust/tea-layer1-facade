@@ -432,7 +432,7 @@
               "type": "bytes",
               "id": 1
             },
-            "delegatorEphemeralId": {
+            "depositPubkey": {
               "rule": "required",
               "type": "bytes",
               "id": 2
@@ -601,6 +601,24 @@
               "rule": "required",
               "type": "bytes",
               "id": 2
+            }
+          }
+        },
+        "QueryBalanceRequest": {
+          "fields": {
+            "accountId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            }
+          }
+        },
+        "QueryErrandExecutionResult": {
+          "fields": {
+            "errandId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
             }
           }
         }

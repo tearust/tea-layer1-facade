@@ -267,9 +267,9 @@ async function main() {
                         const newRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'));
 
                         const accountId = Buffer.from(newRequest.accountId).toString();
-                        const delegatorEphemeralId = toHex(newRequest.delegatorEphemeralId, { addPrefix: true });
+                        const depositPubkey = toHex(newRequest.depositPubkey, { addPrefix: true });
 
-                        const depositInfoObj = await api.query.tea.depositMap([accountId, delegatorEphemeralId]);
+                        const depositInfoObj = await api.query.tea.depositMap([accountId, depositPubkey]);
                         if (depositInfoObj.isNone) {
                               console.log("No such deposit found");
                               nc.publish(reply, "");

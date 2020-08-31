@@ -126,7 +126,7 @@ describe('delegate protobuf test suit', () => {
       it('DepositInfoRequest test', () => {
             const depositInfoRequest = {
                   accountId: Buffer.from('1234567', 'hex'),
-                  delegatorEphemeralId: Buffer.from('01', 'hex'),
+                  depositPubkey: Buffer.from('01', 'hex'),
             }
             const requestBuf = new proto.DelegateProtobuf('DepositInfoRequest');
             requestBuf.payload(depositInfoRequest);

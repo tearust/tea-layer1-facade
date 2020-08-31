@@ -121,7 +121,7 @@ function settle_accounts() {
 function deposit_info() {
       const depositInfoRequest = {
             accountId: Buffer.from('5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc'),
-            delegatorEphemeralId: Buffer.from('74b47fc78f1ceedaa0cc383b94c212f5ce79b37f5cb60a47da214db53df20e5c', 'hex'),
+            depositPubkey: Buffer.from('74b47fc78f1ceedaa0cc383b94c212f5ce79b37f5cb60a47da214db53df20e5c', 'hex'),
       }
       const requestBuf = new proto.DelegateProtobuf('DepositInfoRequest');
       requestBuf.payload(depositInfoRequest);
