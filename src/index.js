@@ -266,10 +266,10 @@ async function main() {
                         const newRequestBuf = new proto.DelegateProtobuf('DepositInfoRequest');
                         const newRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'));
 
-                        const accountId = Buffer.from(newRequest.accountId).toString();
-                        const depositPubkey = toHex(newRequest.depositPubkey, { addPrefix: true });
+                        const accountId = newRequest.accountId;
+                        const delegatorTeaId = toHex(newRequest.delegatorTeaId, { addPrefix: true });
 
-                        const depositInfoObj = await api.query.tea.depositMap([accountId, depositPubkey]);
+                        const depositInfoObj = await api.query.tea.depositMap([accountId, delegatorTeaId]);
                         if (depositInfoObj.isNone) {
                               console.log("No such deposit found");
                               nc.publish(reply, "");
@@ -281,9 +281,9 @@ async function main() {
                         const amount = new BN(depositInfo.amount.slice(2), 'hex');
                         // console.log("amount", amount);
                         const depositInfoResponse = {
-                              accountId: Buffer.from(newRequest.accountId),
+                              accountId,
+                              delegatorTeaId: Buffer.from(depositInfo.delegatorTeaId.slice(2), 'hex'),
                               delegatorEphemeralId: Buffer.from(depositInfo.delegatorEphemeralId.slice(2), 'hex'),
-                              depositPubKey: Buffer.from(depositInfo.depositPubkey.slice(2), 'hex'),
                               delegatorSignature: Buffer.from(depositInfo.delegatorSignature.slice(2), 'hex'),
                               amount: amount.div(unit).toNumber(),
                               expiredTime: parseInt(depositInfo.expireTime, 10),
@@ -332,6 +332,7 @@ async function main() {
                         console.log(newRequest);
                         
                         const employer = newRequest.employer;
+                        const delegatorTeaId = toHex(newRequest.delegatorTeaId, { addPrefix: true });
                         const delegatorEphemeralId = toHex(newRequest.delegatorEphemeralId, { addPrefix: true });
                         const errandUuid = toHex(Buffer.from(newRequest.errandUuid), { addPrefix: true });
                         const payment = parseInt(newRequest.payment, 10) * unit;
@@ -345,6 +346,7 @@ async function main() {
 
                         await api.tx.tea.settleAccounts(
                               employer,
+                              delegatorTeaId,
                               delegatorEphemeralId,
                               errandUuid,
                               payment.toString(),
@@ -483,9 +485,9 @@ function handle_events(events) {
                               break
                         case 'NewDepositAdded': {
                               const newDepositResponse = {
-                                    accountId: Buffer.from(eventData.AccountId.toString()),
+                                    accountId: eventData.AccountId.toString(),
+                                    delegatorTeaId: Buffer.from(eventData.Deposit.delegatorTeaId, 'hex'),
                                     delegatorEphemeralId: Buffer.from(eventData.Deposit.delegatorEphemeralId, 'hex'),
-                                    depositPubKey: Buffer.from(eventData.Deposit.depositPubkey, 'hex'),
                                     delegatorSignature: Buffer.from(eventData.Deposit.delegatorSignature, 'hex'),
                                     amount: eventData.Deposit.amount.div(unit).toNumber(),
                                     expiredTime: parseInt(eventData.Deposit.expireTime, 10),
@@ -502,8 +504,9 @@ function handle_events(events) {
                         }
                         case 'SettleAccounts': {
                               const settleAccountsResponse = {
-                                    accountId: Buffer.from(eventData.AccountId, 'hex'),
+                                    accountId: eventData.AccountId.toString(),
                                     employer: eventData.Bill.employer.toString(),
+                                    delegatorTeaId: Buffer.from(eventData.Bill.delegatorTeaId, 'hex'),
                                     delegatorEphemeralId: Buffer.from(eventData.Bill.delegatorEphemeralId, 'hex'),
                                     errandUuid: Buffer.from(eventData.Bill.errandUuid, 'hex').toString(),
                                     payment: eventData.Bill.payment.div(unit).toNumber(),

@@ -125,8 +125,8 @@ describe('delegate protobuf test suit', () => {
 
       it('DepositInfoRequest test', () => {
             const depositInfoRequest = {
-                  accountId: Buffer.from('1234567', 'hex'),
-                  depositPubkey: Buffer.from('01', 'hex'),
+                  accountId: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
+                  delegatorTeaId: Buffer.from('01', 'hex'),
             }
             const requestBuf = new proto.DelegateProtobuf('DepositInfoRequest');
             requestBuf.payload(depositInfoRequest);
@@ -140,9 +140,9 @@ describe('delegate protobuf test suit', () => {
 
       it('DepositInfoResponse test', () => {
             const depositInfoResponse = {
-                  accountId: Buffer.from('1234567', 'hex'),
-                  delegatorEphemeralId: Buffer.from('01', 'hex'),
-                  depositPubKey: Buffer.from('02', 'hex'),
+                  accountId: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
+                  delegatorTeaId: Buffer.from('01', 'hex'),
+                  delegatorEphemeralId: Buffer.from('02', 'hex'),
                   delegatorSignature: Buffer.from('03', 'hex'),
                   amount: 1000,
                   expiredTime: 10000,
@@ -165,6 +165,7 @@ describe('delegate protobuf test suit', () => {
       it('SettleAccountsRequest test', () => {
             const settleAccountsRequest = {
                   employer: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
+                  delegatorTeaId: Buffer.from('01', 'hex'),
                   delegatorEphemeralId: Buffer.from('02', 'hex'),
                   errandUuid: '03',
                   payment: 100,
@@ -190,7 +191,8 @@ describe('delegate protobuf test suit', () => {
 
       it('SettleAccountsResponse test', () => {
             const settleAccountsResponse = {
-                  accountId: Buffer.from('1234567', 'hex'),
+                  accountId: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
+                  delegatorTeaId: Buffer.from('01', 'hex'),
                   employer: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
                   delegatorEphemeralId: Buffer.from('02', 'hex'),
                   errandUuid: '03',
@@ -272,15 +274,14 @@ describe('debug', function() {
       })
 
       it('DepositInfoResponse test', () => {
-            const responseBase64 = 'CjA1SHBHOXc4RUJMZTVYQ3JiY3pwd3E1VFNYdmVkanJCR0N3cXhLMWlRN3FVc1NXRmMSIHS0f8ePHO7aoMw4O5TCEvXOebN/XLYKR9ohTbU98g5cGiAuZRxNrBaJXBQxtJYlUhlLdPHccAFNqksg+Zq5tQdxuyJAhaySxTV7kyelYCittG3V/aqYfRJCTBEhwWW1aVMzXrNgjg36UgnJ3X/3JUhGEACGRjGgTlD0HV7Z9G3cS5K0BSjIATBk'
-            // const responseBase64 = 'CjA1SHBHOXc4RUJMZTVYQ3JiY3pwd3E1VFNYdmVkanJCR0N3cXhLMWlRN3FVc1NXRmMSIHS0f8ePHO7aoMw4O5TCEvXOebN/XLYKR9ohTbU98g5cGiAuZRxNrBaJXBQxtJYlUhlLdPHccAFNqksg+Zq5tQdxuyJAhaySxTV7kyelYCittG3V/aqYfRJCTBEhwWW1aVMzXrNgjg36UgnJ3X/3JUhGEACGRjGgTlD0HV7Z9G3cS5K0BSjIATBk'
+            // const responseBase64 = 'CjA1R3J3dmFFRjV6WGIyNkZ6OXJjUXBEV1M1N0N0RVJIcE5laFhDUGNOb0hHS3V0UVkSIEIfUPTJHmbQwsGMz9vvlIB0Gjx+sYn8RaLhiuPuGxhfGiCInBpXhZhg4Y0L1rZIjmAVcNznwG7uMMuYpjEC8JlypCJAgIZB3HbK4TU6pudOfJJ1Jmxsdz87fEJxpy9wlwrfMX3lTfEa3y0RA3WY9Eyif1tCdpkaTsWhTWtnFqrn5yimDCiOAjAy'
+            const responseBase64 = 'CjA1R3J3dmFFRjV6WGIyNkZ6OXJjUXBEV1M1N0N0RVJIcE5laFhDUGNOb0hHS3V0UVkSIEIfUPTJHmbQwsGMz9vvlIB0Gjx+sYn8RaLhiuPuGxhfGiCInBpXhZhg4Y0L1rZIjmAVcNznwG7uMMuYpjEC8JlypCJAgIZB3HbK4TU6pudOfJJ1Jmxsdz87fEJxpy9wlwrfMX3lTfEa3y0RA3WY9Eyif1tCdpkaTsWhTWtnFqrn5yimDCiqATAy'
 
             const newResponseBuf = new proto.DelegateProtobuf('DepositInfoResponse');
             const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'));
 
-            newResponse.accountId = Buffer.from(newResponse.accountId, 'hex').toString(),
             newResponse.delegatorEphemeralId = Buffer.from(newResponse.delegatorEphemeralId).toString('hex'),
-            newResponse.depositPubKey = Buffer.from(newResponse.depositPubKey).toString('hex'),
+            newResponse.delegatorTeaId = Buffer.from(newResponse.delegatorTeaId).toString('hex'),
             newResponse.delegatorSignature = Buffer.from(newResponse.delegatorSignature).toString('hex'),
             newResponse.amount = parseInt(newResponse.amount, 10);
             newResponse.expiredTime = parseInt(newResponse.expiredTime, 10);

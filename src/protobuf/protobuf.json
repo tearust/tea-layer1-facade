@@ -429,10 +429,10 @@
           "fields": {
             "accountId": {
               "rule": "required",
-              "type": "bytes",
+              "type": "string",
               "id": 1
             },
-            "depositPubkey": {
+            "delegatorTeaId": {
               "rule": "required",
               "type": "bytes",
               "id": 2
@@ -443,15 +443,15 @@
           "fields": {
             "accountId": {
               "rule": "required",
-              "type": "bytes",
+              "type": "string",
               "id": 1
             },
-            "delegatorEphemeralId": {
+            "delegatorTeaId": {
               "rule": "required",
               "type": "bytes",
               "id": 2
             },
-            "depositPubKey": {
+            "delegatorEphemeralId": {
               "rule": "required",
               "type": "bytes",
               "id": 3
@@ -480,55 +480,60 @@
               "type": "string",
               "id": 1
             },
-            "delegatorEphemeralId": {
+            "delegatorTeaId": {
               "rule": "required",
               "type": "bytes",
               "id": 2
             },
+            "delegatorEphemeralId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            },
             "errandUuid": {
               "rule": "required",
               "type": "string",
-              "id": 3
+              "id": 4
             },
             "payment": {
               "rule": "required",
               "type": "uint32",
-              "id": 4
+              "id": 5
             },
             "paymentType": {
               "rule": "required",
               "type": "uint32",
-              "id": 5
+              "id": 6
             },
             "employerSignature": {
               "rule": "required",
               "type": "bytes",
-              "id": 6
+              "id": 7
             },
             "executorEphemeralId": {
               "rule": "required",
               "type": "bytes",
-              "id": 7
+              "id": 8
             },
             "expiredTime": {
               "rule": "required",
               "type": "uint64",
-              "id": 8
+              "id": 9
             },
             "delegateSignature": {
               "rule": "required",
               "type": "bytes",
-              "id": 9
+              "id": 10
             },
             "resultCid": {
               "rule": "required",
               "type": "string",
-              "id": 10
+              "id": 11
             },
             "executorSingature": {
               "rule": "required",
               "type": "bytes",
-              "id": 11
+              "id": 12
             }
           }
         },
@@ -536,48 +541,53 @@
           "fields": {
             "accountId": {
               "rule": "required",
-              "type": "bytes",
+              "type": "string",
               "id": 1
+            },
+            "delegatorTeaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
             },
             "employer": {
               "rule": "required",
               "type": "string",
-              "id": 2
+              "id": 3
             },
             "delegatorEphemeralId": {
               "rule": "required",
               "type": "bytes",
-              "id": 3
+              "id": 4
             },
             "errandUuid": {
               "rule": "required",
               "type": "string",
-              "id": 4
+              "id": 5
             },
             "payment": {
               "rule": "required",
               "type": "uint32",
-              "id": 5
+              "id": 6
             },
             "paymentType": {
               "rule": "required",
               "type": "uint32",
-              "id": 6
+              "id": 7
             },
             "executorEphemeralId": {
               "rule": "required",
               "type": "bytes",
-              "id": 7
+              "id": 8
             },
             "expiredTime": {
               "rule": "required",
               "type": "uint64",
-              "id": 8
+              "id": 9
             },
             "resultCid": {
               "rule": "required",
               "type": "string",
-              "id": 9
+              "id": 10
             }
           }
         },
@@ -601,6 +611,11 @@
               "rule": "required",
               "type": "bytes",
               "id": 2
+            },
+            "delegatorTeaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
             }
           }
         },
@@ -610,6 +625,11 @@
               "rule": "required",
               "type": "bytes",
               "id": 1
+            },
+            "delegatorTeaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
             }
           }
         },
