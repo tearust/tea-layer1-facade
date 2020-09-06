@@ -128,6 +128,7 @@ function settle_accounts() {
             delegatorTeaId: Buffer.from('421f50f4c91e66d0c2c18ccfdbef9480741a3c7eb189fc45a2e18ae3ee1b185f', 'hex'),
             delegatorEphemeralId: Buffer.from('889c1a57859860e18d0bd6b6488e601570dce7c06eee30cb98a63102f09972a4', 'hex'),
             errandUuid: '03',
+            errandJsonCid: '04',
             bills: [bill1, bill2],
             employerSignature: Buffer.from('04', 'hex'),
             executorEphemeralId: Buffer.from('05', 'hex'),

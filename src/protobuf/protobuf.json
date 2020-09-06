@@ -509,6 +509,11 @@
               "type": "string",
               "id": 4
             },
+            "errandJsonCid": {
+              "rule": "required",
+              "type": "string",
+              "id": 5
+            },
             "bills": {
               "rule": "repeated",
               "type": "Bill",
@@ -573,10 +578,15 @@
               "type": "string",
               "id": 5
             },
+            "errandJsonCid": {
+              "rule": "required",
+              "type": "string",
+              "id": 6
+            },
             "bills": {
               "rule": "repeated",
               "type": "Bill",
-              "id": 6
+              "id": 7
             },
             "executorEphemeralId": {
               "rule": "required",

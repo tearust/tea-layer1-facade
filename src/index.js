@@ -335,6 +335,7 @@ async function main() {
                         const delegatorTeaId = toHex(newRequest.delegatorTeaId, { addPrefix: true });
                         const delegatorEphemeralId = toHex(newRequest.delegatorEphemeralId, { addPrefix: true });
                         const errandUuid = toHex(Buffer.from(newRequest.errandUuid), { addPrefix: true });
+                        const errandJsonCid = toHex(Buffer.from(newRequest.errandJsonCid), { addPrefix: true });
                         const employerSignature = toHex(newRequest.employerSignature, { addPrefix: true });
                         const executorEphemeralId = toHex(newRequest.executorEphemeralId, { addPrefix: true });
                         const expiredTime = parseInt(newRequest.expiredTime, 10);
@@ -354,6 +355,7 @@ async function main() {
                               delegatorTeaId,
                               delegatorEphemeralId,
                               errandUuid,
+                              errandJsonCid,
                               employerSignature,
                               executorEphemeralId,
                               expiredTime,
@@ -520,6 +522,7 @@ function handle_events(events) {
                                     delegatorTeaId: Buffer.from(eventData.Bill.delegatorTeaId, 'hex'),
                                     delegatorEphemeralId: Buffer.from(eventData.Bill.delegatorEphemeralId, 'hex'),
                                     errandUuid: Buffer.from(eventData.Bill.errandUuid, 'hex').toString(),
+                                    errandJsonCid: Buffer.from(eventData.Bill.errandJsonCid, 'hex').toString(),
                                     bills,
                                     executorEphemeralId: Buffer.from(eventData.Bill.executorEphemeralId, 'hex'),
                                     expiredTime: parseInt(eventData.Bill.expiredTime),
