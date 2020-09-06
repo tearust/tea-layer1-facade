@@ -162,14 +162,22 @@ describe('delegate protobuf test suit', () => {
             assert.deepEqual(depositInfoResponse, newResponse);
       })
 
+      const bill1 = {
+            accountId: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+            payment: 10,
+      };
+      const bill2 = {
+            accountId: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+            payment: 20,
+      };
+
       it('SettleAccountsRequest test', () => {
             const settleAccountsRequest = {
                   employer: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
                   delegatorTeaId: Buffer.from('01', 'hex'),
                   delegatorEphemeralId: Buffer.from('02', 'hex'),
                   errandUuid: '03',
-                  payment: 100,
-                  paymentType: 1,
+                  bills: [bill1, bill2],
                   employerSignature: Buffer.from('04', 'hex'),
                   executorEphemeralId: Buffer.from('05', 'hex'),
                   expiredTime: 6,
@@ -196,8 +204,7 @@ describe('delegate protobuf test suit', () => {
                   employer: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
                   delegatorEphemeralId: Buffer.from('02', 'hex'),
                   errandUuid: '03',
-                  payment: 100,
-                  paymentType: 1,
+                  bills: [bill1, bill2],
                   executorEphemeralId: Buffer.from('05', 'hex'),
                   expiredTime: 6,
                   resultCid: '08',
@@ -286,7 +293,7 @@ describe('debug', function() {
             newResponse.amount = parseInt(newResponse.amount, 10);
             newResponse.expiredTime = parseInt(newResponse.expiredTime, 10);
             
-            console.log('decode:', newResponse);
+            // console.log('decode:', newResponse);
 
       })
 });

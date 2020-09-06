@@ -115,13 +115,20 @@ async function deposit(api) {
 }
 
 function settle_accounts() {
+      const bill1 = {
+            accountId: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+            payment: 10,
+      };
+      const bill2 = {
+            accountId: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+            payment: 20,
+      };
       const settleAccountsRequest = {
             employer: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
             delegatorTeaId: Buffer.from('421f50f4c91e66d0c2c18ccfdbef9480741a3c7eb189fc45a2e18ae3ee1b185f', 'hex'),
             delegatorEphemeralId: Buffer.from('889c1a57859860e18d0bd6b6488e601570dce7c06eee30cb98a63102f09972a4', 'hex'),
             errandUuid: '03',
-            payment: 10,
-            paymentType: 1,
+            bills: [bill1, bill2],
             employerSignature: Buffer.from('04', 'hex'),
             executorEphemeralId: Buffer.from('05', 'hex'),
             expiredTime: 6,

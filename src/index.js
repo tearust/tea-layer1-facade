@@ -335,8 +335,6 @@ async function main() {
                         const delegatorTeaId = toHex(newRequest.delegatorTeaId, { addPrefix: true });
                         const delegatorEphemeralId = toHex(newRequest.delegatorEphemeralId, { addPrefix: true });
                         const errandUuid = toHex(Buffer.from(newRequest.errandUuid), { addPrefix: true });
-                        const payment = parseInt(newRequest.payment, 10) * unit;
-                        const paymentType = newRequest.paymentType;
                         const employerSignature = toHex(newRequest.employerSignature, { addPrefix: true });
                         const executorEphemeralId = toHex(newRequest.executorEphemeralId, { addPrefix: true });
                         const expiredTime = parseInt(newRequest.expiredTime, 10);
@@ -344,19 +342,25 @@ async function main() {
                         const resultCid = toHex(Buffer.from(newRequest.resultCid), { addPrefix: true });
                         const executorSingature = toHex(newRequest.executorSingature, { addPrefix: true });
 
+                        const bills = [];
+                        newRequest.bills.forEach((bill, i) => {
+                              bills.push([bill.accountId, new BN(bill.payment, 10).mul(unit).toString()]);
+                        });
+
+                        // const bills = [['5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', 10], ['5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', 10]];
+
                         await api.tx.tea.settleAccounts(
                               employer,
                               delegatorTeaId,
                               delegatorEphemeralId,
                               errandUuid,
-                              payment.toString(),
-                              paymentType,
                               employerSignature,
                               executorEphemeralId,
                               expiredTime,
                               delegateSignature,
                               resultCid,
-                              executorSingature)
+                              executorSingature,
+                              bills)
                               .signAndSend(ac, ({ events = [], status }) => {
                                     if (status.isInBlock) {
                                           console.log('Included at block hash', status.asInBlock.toHex());
@@ -503,14 +507,20 @@ function handle_events(events) {
                               break
                         }
                         case 'SettleAccounts': {
+                              const bills = [];
+                              eventData.Bill.bills.forEach((bill, i) => {
+                                    bills.push({
+                                          accountId: bill[0].toString(),
+                                          payment: bill[1].div(unit).toNumber(),
+                                    });
+                              });
                               const settleAccountsResponse = {
                                     accountId: eventData.AccountId.toString(),
                                     employer: eventData.Bill.employer.toString(),
                                     delegatorTeaId: Buffer.from(eventData.Bill.delegatorTeaId, 'hex'),
                                     delegatorEphemeralId: Buffer.from(eventData.Bill.delegatorEphemeralId, 'hex'),
                                     errandUuid: Buffer.from(eventData.Bill.errandUuid, 'hex').toString(),
-                                    payment: eventData.Bill.payment.div(unit).toNumber(),
-                                    paymentType: parseInt(eventData.Bill.paymentType),
+                                    bills,
                                     executorEphemeralId: Buffer.from(eventData.Bill.executorEphemeralId, 'hex'),
                                     expiredTime: parseInt(eventData.Bill.expiredTime),
                                     resultCid: Buffer.from(eventData.Bill.resultCid, 'hex').toString(),

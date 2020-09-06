@@ -473,6 +473,20 @@
             }
           }
         },
+        "Bill": {
+          "fields": {
+            "accountId": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "payment": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 2
+            }
+          }
+        },
         "SettleAccountsRequest": {
           "fields": {
             "employer": {
@@ -495,14 +509,9 @@
               "type": "string",
               "id": 4
             },
-            "payment": {
-              "rule": "required",
-              "type": "uint32",
-              "id": 5
-            },
-            "paymentType": {
-              "rule": "required",
-              "type": "uint32",
+            "bills": {
+              "rule": "repeated",
+              "type": "Bill",
               "id": 6
             },
             "employerSignature": {
@@ -564,15 +573,10 @@
               "type": "string",
               "id": 5
             },
-            "payment": {
-              "rule": "required",
-              "type": "uint32",
+            "bills": {
+              "rule": "repeated",
+              "type": "Bill",
               "id": 6
-            },
-            "paymentType": {
-              "rule": "required",
-              "type": "uint32",
-              "id": 7
             },
             "executorEphemeralId": {
               "rule": "required",
@@ -604,18 +608,13 @@
           "fields": {
             "layer1Account": {
               "rule": "required",
-              "type": "bytes",
+              "type": "string",
               "id": 1
             },
             "nonce": {
               "rule": "required",
               "type": "bytes",
               "id": 2
-            },
-            "delegatorTeaId": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 3
             }
           }
         },
@@ -623,7 +622,7 @@
           "fields": {
             "accountId": {
               "rule": "required",
-              "type": "bytes",
+              "type": "string",
               "id": 1
             },
             "delegatorTeaId": {

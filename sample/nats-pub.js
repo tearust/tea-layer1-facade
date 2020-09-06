@@ -98,13 +98,20 @@ function add_new_data() {
 }
 
 function settle_accounts() {
+      const bill1 = {
+            accountId: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+            payment: 10,
+      };
+      const bill2 = {
+            accountId: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+            payment: 20,
+      };
       const settleAccountsRequest = {
             employer: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-            delegatorTeaId: Buffer.from('421f50f4c91e66d0c2c18ccfdbef9480741a3c7eb189fc45a2e18ae3ee1b185f', 'hex'),
+            delegatorTeaId: Buffer.from('01', 'hex'),
             delegatorEphemeralId: Buffer.from('01', 'hex'),
             errandUuid: '03',
-            payment: 10,
-            paymentType: 1,
+            bills: [bill1, bill2],
             employerSignature: Buffer.from('04', 'hex'),
             executorEphemeralId: Buffer.from('05', 'hex'),
             expiredTime: 6,
@@ -139,8 +146,8 @@ async function main() {
       // complete_task()
       // update_node_profile()
       // add_new_data()
-      // settle_accounts()
-      deposit_info()
+      settle_accounts()
+      // deposit_info()
 }
 
 main().catch((error) => {
