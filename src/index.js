@@ -201,10 +201,20 @@ async function main() {
                         })
                         nc.publish(reply, JSON.stringify(teaNodes))
                         break
-                  case 'lookup_node_profile':
-                        {
-                              const ephemeralId = Buffer.from(msg, 'base64').toString('hex');
-                              const nodeObj = await api.rpc.tea.getNodeByEphemeralId(ephemeralId);
+                  case 'lookup_node_profile': {
+                              let ephemeralId = toHex(Buffer.from(msg, 'base64'), { addPrefix: true });
+                              const teaId = await api.query.tea.ephemeralIds(ephemeralId);
+                              if (teaId.isNone) {
+                                    console.log("No such ephemeral id found", ephemeralId);
+                                    nc.publish(reply, "no_such_ephemeral_id_found");
+                                    break
+                              }
+                              let nodeObj = await api.query.tea.nodes(teaId.unwrap());
+                              if (nodeObj.isNone) {
+                                    console.log("No such node found", teaId.toString());
+                                    nc.publish(reply, "no_such_node_found");
+                                    break
+                              }
                               let node = nodeObj.toJSON();
 
                               if (node == null) {
@@ -233,7 +243,7 @@ async function main() {
                               nc.publish(reply, nodeBase64);
                         }
                         break
-                  case 'node_profile_by_tea_id':
+                  case 'node_profile_by_tea_id': {
                         let nodeObj = await api.query.tea.nodes(msg)
                         if (nodeObj.isNone) {
                               console.log("No such node found");
@@ -262,6 +272,7 @@ async function main() {
 
                         nc.publish(reply, nodeBase64);
                         break
+                  }
                   case 'deposit_info': {
                         const newRequestBuf = new proto.DelegateProtobuf('DepositInfoRequest');
                         const newRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'));

@@ -139,6 +139,13 @@ function deposit_info() {
       nc.publish('layer1.async.reply.deposit_info', requestBufBase64, 'layer1.event.result')
 }
 
+function lookup_node_profile() {
+      const requestBase64 = Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696597', 'hex').toString('base64');
+      console.log("EphemeralId Base64", requestBase64);
+
+      nc.publish('layer1.async.replay.lookup_node_profile', requestBase64, 'layer1.event.result')
+}
+
 async function main() {
       // add_new_node()
       // update_node_profile()
@@ -147,8 +154,9 @@ async function main() {
       // complete_task()
       // update_node_profile()
       // add_new_data()
-      settle_accounts()
+      // settle_accounts()
       // deposit_info()
+      lookup_node_profile()
 }
 
 main().catch((error) => {
