@@ -143,7 +143,7 @@ function lookup_node_profile() {
       const requestBase64 = Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696597', 'hex').toString('base64');
       console.log("EphemeralId Base64", requestBase64);
 
-      nc.publish('layer1.async.replay.lookup_node_profile', requestBase64, 'layer1.event.result')
+      nc.publish('layer1.async.reply.lookup_node_profile', requestBase64, 'layer1.event.result')
 }
 
 async function main() {

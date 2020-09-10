@@ -45,13 +45,13 @@ Received a Message {
 ```
 
 #### Get node profile by tea id
-- Nats subject: layer1.async.replay.node_profile_by_tea_id
+- Nats subject: layer1.async.reply.node_profile_by_tea_id
 - Nats body: ephemeral_public_key hex string
 - Reply_to subject: As request msg's reply_to field
 - Reply body: base64 of encoded actor-ra.proto NodeProfile
 
 ```
-nc.publish('layer1.async.replay.node_profile_by_tea_id', '0xc7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'layer1.test.result')
+nc.publish('layer1.async.reply.node_profile_by_tea_id', '0xc7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'layer1.test.result')
 ```
 
 Reply Message:
@@ -60,7 +60,7 @@ CiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAGiDJOA/eG6eV/GVqsIq070SCz1VHkP06
 ```
 
 #### Update tea node profile
-- Nats subject: layer1.async.replay.update_node_profile
+- Nats subject: layer1.async.reply.update_node_profile
 - Nats body: base64 encoded protobuf encoded [u8]. The message is actor-ra.proto TeaNodeUpdateProfileRequest
 - Sample data structure: (need to base64 encoded, protobuf encode before sending)
 - Sample data structure:
@@ -95,13 +95,13 @@ nc.publish('layer1.async.reply.update_node_profile', requestBase64, 'layer1.test
 ```
 
 #### Look up tea node profile
-- Nats subject: layer1.async.replay.lookup_node_profile
+- Nats subject: layer1.async.reply.lookup_node_profile
 - Nats body: base64 ephemeral_public_key
 - Reply_to subject: As request msg's reply_to field
 - Reply body: base64 of encoded actor-ra.proto NodeProfile
 
 #### Get deposit info
-- Nats subject: layer1.async.replay.deposit_info
+- Nats subject: layer1.async.reply.deposit_info
 - Nats body: base64 of encoded actor-delegate.proto DepositInfoRequest or empty [] if cannot find deposit
 
 - Reply_to subject: As request msg's reply_to field
