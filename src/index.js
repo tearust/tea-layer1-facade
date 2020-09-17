@@ -96,9 +96,14 @@ async function main() {
                         await transfer(api, ac, subMsgs[0], parseInt(subMsgs[1]));
                         console.log('send transfer');
                         break
-                  case 'add_new_node':
-                        var teaId = msg
-                        await api.tx.tea.addNewNode(teaId)
+                  case 'add_new_node': {
+                        const newRequestBuf = new proto.DelegateProtobuf('AddNewNodeRequest');
+                        const newNodeRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'));
+
+                        let teaId = toHex(newNodeRequest.teaId, { addPrefix: true });
+                        let peerId = toHex(Buffer.from(newNodeRequest.peerId), { addPrefix: true });
+
+                        await api.tx.tea.addNewNode(teaId, peerId)
                               .signAndSend(ac, ({ events = [], status }) => {
                                     if (status.isInBlock) {
                                           console.log('Add new node with teaId ' + teaId);
@@ -111,8 +116,34 @@ async function main() {
                                           console.log(phase.toString() + ' : ' + section + '.' + method + ' ' + data.toString());
                                     });
                         });
-                        console.log('send add_new_node tx')
+                        console.log('send add_new_node tx');
                         break
+                  }
+                  case 'commit_ra_result': {
+                        const newRequestBuf = new proto.RAProtobuf('CommitRaResultRequest');
+                        const newRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'));
+
+                        let teaId = toHex(newRequest.teaId, { addPrefix: true });
+                        let targetTeaId = toHex(newRequest.targetTeaId, { addPrefix: true });
+                        let isPass = newRequest.isPass;
+                        let signature = toHex(newRequest.signature, { addPrefix: true });
+
+                        await api.tx.tea.remoteAttestation(teaId, targetTeaId, isPass, signature)
+                              .signAndSend(ac, ({ events = [], status }) => {
+                                    if (status.isInBlock) {
+                                          console.log('Commit remote attestation result, teaId:' + teaId);
+                                          nc.publish(reply, JSON.stringify({status, teaId}))
+                                    } else {
+                                          console.log('Status of transfer: ' + status.type);
+                                    }
+
+                                    events.forEach(({ phase, event: { data, method, section } }) => {
+                                          console.log(phase.toString() + ' : ' + section + '.' + method + ' ' + data.toString());
+                                    });
+                        });
+                        console.log('send commit_ra_result tx');
+                        break
+                  }
                   case 'update_node_profile':
                         const uProtoMsg = Buffer.from(msg, 'base64');
                         const updateProfileBuf = new proto.RAProtobuf('TeaNodeUpdateProfileRequest');
@@ -241,8 +272,8 @@ async function main() {
                               console.log("NodeBase64:", nodeBase64);
 
                               nc.publish(reply, nodeBase64);
-                        }
-                        break
+                              break
+                  }
                   case 'node_profile_by_tea_id': {
                         let nodeObj = await api.query.tea.nodes(msg)
                         if (nodeObj.isNone) {
@@ -340,7 +371,7 @@ async function main() {
                         const protoMsg = Buffer.from(msg, 'base64');
                         const newRequestBuf = new proto.DelegateProtobuf('SettleAccountsRequest');
                         const newRequest = newRequestBuf.decode(protoMsg);
-                        console.log(newRequest);
+                        // console.log(newRequest);
                         
                         const employer = newRequest.employer;
                         const delegatorTeaId = toHex(newRequest.delegatorTeaId, { addPrefix: true });
@@ -545,6 +576,23 @@ function handle_events(events) {
                               responseBuf.payload(settleAccountsResponse);
                               const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
                               console.log("Event SettleAccounts Base64", responseBase64);
+
+                              nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
+                              break
+                        }
+                        case 'CommitRaResult': {
+                              const commitRaResultResponse = {
+                                    accountId: eventData.AccountId.toString(),
+                                    teaId: Buffer.from(eventData.RaResult.teaId, 'hex'),
+                                    targetTeaId: Buffer.from(eventData.RaResult.targetTeaId, 'hex'),
+                                    isPass: Boolean(eventData.RaResult.isPass),
+                              }
+                  
+                              console.log('newCommitRaResultResponse:', JSON.stringify(commitRaResultResponse));
+                              const responseBuf = new proto.RAProtobuf('CommitRaResultResponse');
+                              responseBuf.payload(commitRaResultResponse);
+                              const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
+                              console.log("CommitRaResultResponse Base64", responseBase64);
 
                               nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
                               break

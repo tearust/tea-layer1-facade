@@ -224,6 +224,55 @@ describe('delegate protobuf test suit', () => {
             // console.log('decode:', newResponse);
             assert.deepEqual(settleAccountsResponse, newResponse);
       })
+
+      it('AddNewNodeRequest test', () => {
+            const addNewNodeRequest = {
+                  teaId: Buffer.from('000', 'hex'),
+                  peerId: '111',
+            }
+
+            const requestBuf = new proto.DelegateProtobuf('AddNewNodeRequest');
+            requestBuf.payload(addNewNodeRequest);
+            const requestBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64');
+            console.log("AddNewNodeRequest Base64", requestBase64);
+
+            const newRequestBuf = new proto.DelegateProtobuf('AddNewNodeRequest');
+            const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'));
+            // console.log('decode:', newRequest);
+            assert.deepEqual(addNewNodeRequest, newRequest);
+      })
+
+      it('AddNewNodeResponse test', () => {
+            const raNodes = [
+                  {
+                        teaId: Buffer.from('111', 'hex'),
+                        isPass: false,
+                  },
+                  {
+                        teaId: Buffer.from('222', 'hex'),
+                        isPass: true,
+                  },
+            ]
+            const addNewNodeResponse = {
+                  accountId: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
+                  teaId: Buffer.from('000', 'hex'),
+                  peerId: '111',
+                  createTime: 0,
+                  raNodes,
+                  status: 'Pending',
+            }
+
+            const responseBuf = new proto.DelegateProtobuf('AddNewNodeResponse');
+            responseBuf.payload(addNewNodeResponse);
+            const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
+            console.log("AddNewNodeResponse Base64", responseBase64);
+
+            const newResponseBuf = new proto.DelegateProtobuf('AddNewNodeResponse');
+            const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'));
+            // console.log('decode:', newResponse);
+            newResponse.createTime = parseInt(newResponse.createTime, 10);
+            assert.deepEqual(addNewNodeResponse, newResponse);
+      })
 })
 
 describe('ra protobuf test suit', () => {
@@ -262,6 +311,44 @@ describe('ra protobuf test suit', () => {
             const newResponse = newResponseBuf.decode(Buffer.from(base64, 'base64'));
             // console.log('decode:', newResponse);
             assert.deepEqual({nodeProfile}, newResponse); 
+      })
+
+      it('CommitRaResultRequest test', () => {
+            const commitRaRequest = {
+                  teaId: Buffer.from('0000', 'hex'),
+                  targetTeaId: Buffer.from('1111', 'hex'),
+                  isPass: true,
+                  signature: Buffer.from('2222', 'hex'),
+            }
+
+            const requestBuf = new proto.RAProtobuf('CommitRaResultRequest');
+            requestBuf.payload(commitRaRequest);
+            const requestBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64');
+            console.log("CommitRaResultRequest Base64", requestBase64);
+
+            const newRequestBuf = new proto.RAProtobuf('CommitRaResultRequest');
+            const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'));
+            // console.log('decode:', newRequest);
+            assert.deepEqual(commitRaRequest, newRequest);
+      })
+
+      it('CommitRaResultResponse test', () => {
+            const commitRaResultResponse = {
+                  accountId: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
+                  teaId: Buffer.from('0000', 'hex'),
+                  targetTeaId: Buffer.from('1111', 'hex'),
+                  isPass: true,
+            }
+
+            const responseBuf = new proto.RAProtobuf('CommitRaResultResponse');
+            responseBuf.payload(commitRaResultResponse);
+            const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
+            console.log("CommitRaResultResponse Base64", responseBase64);
+
+            const newResponseBuf = new proto.RAProtobuf('CommitRaResultResponse');
+            const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'));
+            // console.log('decode:', newResponse);
+            assert.deepEqual(commitRaResultResponse, newResponse);
       })
 })
 

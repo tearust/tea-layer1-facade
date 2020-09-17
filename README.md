@@ -107,44 +107,6 @@ nc.publish('layer1.async.reply.update_node_profile', requestBase64, 'layer1.test
 - Reply_to subject: As request msg's reply_to field
 - Reply body: base64 of encoded actor-delegate.proto DepositInfoResponse or empty [] if cannot find deposit
 
-#### Add new task
-
-Note: `tea_id`(delegateId ) must already exsit in the layer1.
-
-```
-const task = {
-      refNum: Buffer.from('01', 'hex'),
-      delegateId: Buffer.from('01', 'hex'),
-      modelCid: '444',
-      bodyCid: '555',
-      payment: 1000,
-}
-const taskBuf = new proto.Protobuf('AddNewTaskRequest');
-taskBuf.payload({ task });
-
-const taskBufBase64 = Buffer.from(taskBuf.toBuffer()).toString('base64');
-nc.publish('layer1.async.reply.add_new_task', taskBufBase64, 'layer1.test.result')
-```
-
-#### Complete task
-
-Note: `ref_num` must already exsit in the layer1.
-
-```
-const completeTaskRequest = {
-      refNum: Buffer.from('0c6123c17c95bd6617a01ef899f5895ddb190eb3265f341687f4c0ad1b1f366f', 'hex'),
-      teaId: Buffer.from('e9889b1c54ccd6cf184901ded892069921d76f7749b6f73bed6cf3b9be1a8a44', 'hex'),
-      delegateSig: Buffer.from('577ca5104490756b320da325aa81e272049fcee7bb63fe1f92220201a15c47025e3032b85366fcf85b3a2f24418a933b9d6c4fcd94e145b783e2364980a93c0d', 'hex'),
-      result: Buffer.from('0xe9889b1c54ccd6cf184901ded892069921d76f7749b6f73bed6cf3b9be1a8a440c6123c17c95bd6617a01ef899f5895ddb190eb3265f341687f4c0ad1b1f366f', 'hex'),
-      resultSig: Buffer.from('44', 'hex'),
-}
-
-const requestBuf = new proto.Protobuf('CompleteTaskRequest');
-requestBuf.payload(completeTaskRequest);
-const requestBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64');
-nc.publish('layer1.async.reply.complete_task', requestBase64, 'layer1.test.result')
-```
-
 #### Add new data
 ```
 const data = {
@@ -161,6 +123,20 @@ const dataBufBase64 = Buffer.from(dataBuf.toBuffer()).toString('base64');
 
 nc.publish('layer1.async.reply.add_new_data', dataBufBase64, 'layer1.test.result')
 ```
+
+#### Add new node
+- Nats subject: layer1.async.reply.add_new_node
+- Nats body: base64 of encoded actor-delegate.proto AddNewNodeRequest 
+
+- Reply_to subject: As request msg's reply_to field
+- Reply body: base64 of encoded actor-delegate.proto AddNewNodeResponse
+
+#### Commit remote attestation result
+- Nats subject: layer1.async.reply.commit_ra_result
+- Nats body: base64 of encoded actor-ra.proto CommitRaResultRequest
+
+- Reply_to subject: As request msg's reply_to field
+- Reply body: base64 of encoded actor-ra.proto CommitRaResultResponse
 
 ### Listener
 
@@ -212,4 +188,15 @@ The msg body is base64 of encoded actor-delegate.proto SettleAccountsResponse me
 Message Body:
 ```
 CjA1R3J3dmFFRjV6WGIyNkZ6OXJjUXBEV1M1N0N0RVJIcE5laFhDUGNOb0hHS3V0UVkSIEIfUPTJHmbQwsGMz9vvlIB0Gjx+sYn8RaLhiuPuGxhfGiCInBpXhZhg4Y0L1rZIjmAVcNznwG7uMMuYpjEC8JlypCJAgIZB3HbK4TU6pudOfJJ1Jmxsdz87fEJxpy9wlwrfMX3lTfEa3y0RA3WY9Eyif1tCdpkaTsWhTWtnFqrn5yimDCgAMDI=
+```
+
+- CommitRaResult
+
+sub 'layer1.event.tea.CommitRaResult'
+
+The msg body is base64 of encoded actor-delegate.proto CommitRaResultResponse message.
+
+Message Body:
+```
+CiDUNZPHFf3THGEUGr0EqZ/WgiyFWIVMzeOaVoTnpW2ifRIgQh9Q9MkeZtDCwYzP2++UgHQaPH6xifxFouGK4+4bGF8aIIicGleFmGDhjQvWtkiOYBVw3OfAbu4wy5imMQLwmXKkIkCAhkHcdsrhNTqm5058knUmbGx3Pzt8QnGnL3CXCt8xfeVN8RrfLREDdZj0TKJ/W0J2mRpOxaFNa2cWqufnKKYMKICAqOwFMDI=
 ```

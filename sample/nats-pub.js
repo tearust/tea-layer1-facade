@@ -146,6 +146,36 @@ function lookup_node_profile() {
       nc.publish('layer1.async.reply.lookup_node_profile', requestBase64, 'layer1.event.result')
 }
 
+function add_new_node() {
+      const addNewNodeRequest = {
+            teaId: Buffer.from('01', 'hex'),
+            peerId: '1111',
+      }
+
+      const requestBuf = new proto.DelegateProtobuf('AddNewNodeRequest');
+      requestBuf.payload(addNewNodeRequest);
+      const requestBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64');
+      console.log("AddNewNodeRequest Base64", requestBase64);
+
+      nc.publish('layer1.async.reply.add_new_node', requestBase64, 'layer1.event.result')
+}
+
+function commit_ra_result() {
+      const commitRaRequest = {
+            teaId: Buffer.from('df38cb4f12479041c8e8d238109ef2a150b017f382206e24fee932e637c2db7b', 'hex'),
+            targetTeaId: Buffer.from('01', 'hex'),
+            isPass: true,
+            signature: Buffer.from('2222', 'hex'),
+      }
+
+      const requestBuf = new proto.RAProtobuf('CommitRaResultRequest');
+      requestBuf.payload(commitRaRequest);
+      const requestBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64');
+      console.log("CommitRaResultRequest Base64", requestBase64);
+
+      nc.publish('layer1.async.reply.commit_ra_result', requestBase64, 'layer1.event.result')
+}
+
 async function main() {
       // add_new_node()
       // update_node_profile()
@@ -156,7 +186,9 @@ async function main() {
       // add_new_data()
       // settle_accounts()
       // deposit_info()
-      lookup_node_profile()
+      // lookup_node_profile()
+      // add_new_node()
+      commit_ra_result()
 }
 
 main().catch((error) => {

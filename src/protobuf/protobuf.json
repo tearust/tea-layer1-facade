@@ -317,20 +317,6 @@
             }
           }
         },
-        "Node": {
-          "fields": {
-            "teaId": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 1
-            },
-            "peers": {
-              "rule": "repeated",
-              "type": "bytes",
-              "id": 2
-            }
-          }
-        },
         "AddNewTaskRequest": {
           "fields": {
             "task": {
@@ -605,6 +591,68 @@
             }
           }
         },
+        "AddNewNodeRequest": {
+          "fields": {
+            "teaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "peerId": {
+              "rule": "required",
+              "type": "string",
+              "id": 2
+            }
+          }
+        },
+        "RANode": {
+          "fields": {
+            "teaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "isPass": {
+              "rule": "required",
+              "type": "bool",
+              "id": 2
+            }
+          }
+        },
+        "AddNewNodeResponse": {
+          "fields": {
+            "accountId": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "teaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "peerId": {
+              "rule": "required",
+              "type": "string",
+              "id": 3
+            },
+            "createTime": {
+              "rule": "required",
+              "type": "uint64",
+              "id": 4
+            },
+            "raNodes": {
+              "rule": "repeated",
+              "type": "RANode",
+              "id": 5
+            },
+            "status": {
+              "rule": "required",
+              "type": "string",
+              "id": 6
+            }
+          }
+        },
         "NotifyDelegateTaskComplete": {
           "fields": {
             "refNum": {
@@ -837,6 +885,54 @@
               "rule": "required",
               "type": "bool",
               "id": 1
+            }
+          }
+        },
+        "CommitRaResultRequest": {
+          "fields": {
+            "teaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "targetTeaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "isPass": {
+              "rule": "required",
+              "type": "bool",
+              "id": 3
+            },
+            "signature": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 4
+            }
+          }
+        },
+        "CommitRaResultResponse": {
+          "fields": {
+            "accountId": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "teaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "targetTeaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            },
+            "isPass": {
+              "rule": "required",
+              "type": "bool",
+              "id": 4
             }
           }
         }
