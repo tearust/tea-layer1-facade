@@ -85,24 +85,11 @@ async function main() {
                         const blockHash = await api.rpc.chain.getBlockHash(parseInt(msg))
                         nc.publish(reply, JSON.stringify(blockHash))
                         break
-                  case 'put_peer_url':
-                        // TODO put url to layer1
-                        const list = {
-                              list: put_peer_url(msg)
-                        };
-                        nc.publish(reply, JSON.stringify(list));
-                        break
-                  case 'transfer':
-                        const subMsgs = msg.split('_')
-                        await transfer(api, ac, subMsgs[0], parseInt(subMsgs[1]));
-                        console.log('send transfer');
-                        break
                   case 'add_new_node': {
                         const newRequestBuf = new proto.DelegateProtobuf('AddNewNodeRequest');
                         const newNodeRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'));
 
                         let teaId = toHex(newNodeRequest.teaId, { addPrefix: true });
-                        // let peerId = toHex(Buffer.from(newNodeRequest.peerId), { addPrefix: true });
 
                         await api.tx.tea.addNewNode(teaId)
                               .signAndSend(ac, ({ events = [], status }) => {
@@ -174,57 +161,6 @@ async function main() {
                                     });
                         });
                         console.log('send update_peer_id tx')
-                        break
-                  case 'add_new_task':
-                        var protoMsg = Buffer.from(msg, 'base64');
-                        const newTaskBuf = new proto.DelegateProtobuf('AddNewTaskRequest');
-                        const newTask = newTaskBuf.decode(protoMsg);
-                        // console.log(newTask);
-                        
-                        var refNum = toHex(newTask.task.refNum, { addPrefix: true });
-                        var delegateId = toHex(newTask.task.delegateId, { addPrefix: true });
-                        // console.log(delegateId);
-                        let modelCid = toHex(Buffer.from(newTask.task.modelCid), { addPrefix: true });
-                        let payment = newTask.task.payment;
-                        let bodyCid = toHex(Buffer.from(newTask.task.bodyCid), { addPrefix: true })
-
-                        await api.tx.tea.addNewTask(refNum, delegateId, modelCid, payment, bodyCid)
-                              .signAndSend(ac, ({ events = [], status }) => {
-                                    if (status.isInBlock) {
-                                          console.log('Included at block hash', status.asInBlock.toHex());
-                                          console.log('Events:');
-                                          events.forEach(({ event: { data, method, section }, phase }) => {
-                                                console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
-                                          });
-                                    } else if (status.isFinalized) {
-                                          console.log('Finalized block hash', status.asFinalized.toHex());
-                                    }
-                        });
-                        console.log('send add_new_task tx')
-                        break
-                  case 'complete_task':
-                        const newRequestBuf = new proto.DelegateProtobuf('CompleteTaskRequest');
-                        const newRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'));
-
-                        var refNum = toHex(newRequest.refNum, { addPrefix: true });
-                        var teaId = toHex(newRequest.teaId, { addPrefix: true });
-                        let delegateSig = toHex(Buffer.from(newRequest.delegateSig), { addPrefix: true });
-                        let result = toHex(Buffer.from(newRequest.result), { addPrefix: true });
-                        let resultSig = toHex(Buffer.from(newRequest.resultSig), { addPrefix: true });
-
-                        await api.tx.tea.completeTask(refNum, teaId, delegateSig, result, resultSig)
-                              .signAndSend(ac, ({ events = [], status }) => {
-                                    if (status.isInBlock) {
-                                          console.log('Included at block hash', status.asInBlock.toHex());
-                                          console.log('Events:');
-                                          events.forEach(({ event: { data, method, section }, phase }) => {
-                                                console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
-                                          });
-                                    } else if (status.isFinalized) {
-                                          console.log('Finalized block hash', status.asFinalized.toHex());
-                                    }
-                        });
-                        console.log('send add_new_task tx')
                         break
                   case 'get_nodes':
                         const nodes = await api.query.tea.nodes.entries()
@@ -472,40 +408,12 @@ function handle_events(events) {
                   console.log('eventData:', JSON.stringify(eventData));
                   
                   switch (event.method) {
-                        case 'NewTaskAdded':
-                              const task = {
-                                    refNum: Buffer.from(eventData.Task.refNum, 'hex'),
-                                    delegateId: Buffer.from(eventData.Task.delegateTeaId, 'hex'),
-                                    modelCid: eventData.Task.modelCid.toString(),
-                                    bodyCid: Buffer.from(eventData.Task.bodyCid, 'hex').toString(),
-                                    payment: parseInt(eventData.Task.payment),
-                              }
-                              const response = {
-                                    accountId: Buffer.from(eventData.AccountId, 'hex'),
-                                    task,
-                              }
-
-                              console.log('response:', JSON.stringify(response));
-                              const responseBuf = new proto.DelegateProtobuf('AddNewTaskResponse');
-                              responseBuf.payload(response);
-                              const newTaskResponseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
-                              console.log("TaskResponseBase64:", newTaskResponseBase64);
-
-                              nc.publish(`layer1.event.${event.section}.${event.method}`, newTaskResponseBase64)
-                              break
-                        case 'NewModelAdded':
-                              var msg = {}
-                              msg['account_id'] = eventData.AccountId
-
-                              console.log(JSON.stringify(msg))
-                              nc.publish(`layer1.event.${event.section}.${event.method}`, JSON.stringify(msg))
-                              break
                         case 'UpdateNodeProfile':
                               let urls = []
                               if (eventData.Node.urls) {
                                     eventData.Node.urls.forEach((url, i) => {
-                                          urls.push(Buffer.from(url.slice(2), 'hex').toString());
-                                    })
+                                          urls.push(Buffer.from(url, 'hex').toString());
+                                    });
                               }
                               let raNodes = []
                               if (eventData.Node.raNodes) {
@@ -547,21 +455,6 @@ function handle_events(events) {
                               responseBuf.payload(addNewNodeResponse);
                               const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
                               console.log("AddNewNodeResponse Base64", responseBase64);
-
-                              nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
-                              break
-                        }
-                        case 'CompleteTask': {
-                              const completeTaskResponse = {
-                                    refNum: Buffer.from(eventData.RefNum, 'hex'),
-                                    accountId: Buffer.from(eventData.AccountId, 'hex'),
-                                    result: Buffer.from(eventData.Result, 'hex'),
-                              }
-                  
-                              const responseBu = new proto.DelegateProtobuf('CompleteTaskResponse');
-                              responseBu.payload(completeTaskResponse);
-                              const responseBase64 = Buffer.from(responseBu.toBuffer()).toString('base64');
-                              console.log("Event CompleteTask Base64", responseBase64);
 
                               nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
                               break
@@ -658,42 +551,6 @@ function handle_events(events) {
                         default:
                   }
             }
-      });
-}
-
-function put_peer_url(msg){
-      console.log('receive peer url : ', msg);
-      let n = cache.peer_url_list.find((x) => x === msg);
-      if(!n){
-            cache.peer_url_list.push(msg);
-      }
-
-      const rs = [];
-      cache.peer_url_list.forEach((x) => {
-            if(x !== msg){
-                  rs.push(x);
-            }
-      })
-
-      return rs;
-}
-
-async function transfer(api, sender, recipient, amount) {
-      // Create a extrinsic, transferring randomAmount units to Bob.
-      const unsub = await api.tx.balances
-            .transfer(recipient, amount)
-            .signAndSend(sender, ({ events = [], status }) => {
-                  console.log(`Current status is ${status.type}`);
-                  if (status.isFinalized) {
-                        console.log(`Transaction included at blockHash ${status.asFinalized}`);
-
-                        // Loop through Vec<EventRecord> to display all events
-                        events.forEach(({ phase, event: { data, method, section } }) => {
-                              console.log(`\t' ${phase}: ${section}.${method}:: ${data}`);
-                        });
-
-                        unsub();
-                  }
       });
 }
 

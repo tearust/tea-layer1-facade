@@ -18,7 +18,7 @@ function update_node_profile() {
             teaId: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
             ephemeralPublicKey: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696597', 'hex'),
             profileCid: 'QmfL6ry4YRKD4joa3RMQZ1qYGKGBWJqHYtEiJEjBmQrASS',
-            publicUrls: ["\"http://bob.tearust.com\""],
+            publicUrls: ["http://bob.tearust.com", "http://alice.tearust.com"],
             peerId: 'QmZzcViy4RvG7m1yVqjfGQ8HPmrM3Kk2MhodTRue2ZTGfh',
             signature: Buffer.from('0a1440036a457fd023ceac9e7287c8313ad50eff73cf74341e38f843a7a04ddc5be8178f5796bb756ed000e05ee35e19b602cccb95872c6756255ab4c5a91900', 'hex'),
       }
@@ -29,48 +29,6 @@ function update_node_profile() {
       console.log("TeaNodeUpdateProfileRequest Base64", requestBase64);
 
       nc.publish('layer1.async.reply.update_node_profile', requestBase64, 'layer1.event.result')
-}
-
-function add_new_task() {
-      const task = {
-            refNum: Buffer.from('0c6123c17c95bd6617a01ef899f5895ddb190eb3265f341687f4c0ad1b1f366f', 'hex'),
-            delegateId: Buffer.from('e9889b1c54ccd6cf184901ded892069921d76f7749b6f73bed6cf3b9be1a8a44', 'hex'),
-            modelCid: 'QmfL6ry4YRKD4joa3RMQZ1qYGKGBWJqHYtEiJEjBmQrASB',
-            bodyCid: '9f58',
-            payment: 1000,
-      }
-      const taskBuf = new proto.DelegateProtobuf('AddNewTaskRequest');
-      taskBuf.payload({ task });
-
-      const taskBufBase64 = Buffer.from(taskBuf.toBuffer()).toString('base64');
-
-      // const protoMsg = Buffer.from(taskBuf, 'base64');
-      // const newTaskBuf = new proto.DelegateProtobuf('AddNewTaskRequest');
-      // const newTask = newTaskBuf.decode(protoMsg);
-      // console.log('3', newTask);
-
-      nc.publish('layer1.async.reply.add_new_task', taskBufBase64, 'layer1.event.result')
-}
-
-function complete_task() {
-      const completeTaskRequest = {
-            refNum: Buffer.from('0c6123c17c95bd6617a01ef899f5895ddb190eb3265f341687f4c0ad1b1f366f', 'hex'),
-            teaId: Buffer.from('e9889b1c54ccd6cf184901ded892069921d76f7749b6f73bed6cf3b9be1a8a44', 'hex'),
-            delegateSig: Buffer.from('577ca5104490756b320da325aa81e272049fcee7bb63fe1f92220201a15c47025e3032b85366fcf85b3a2f24418a933b9d6c4fcd94e145b783e2364980a93c0d', 'hex'),
-            result: Buffer.from('e9889b1c54ccd6cf184901ded892069921d76f7749b6f73bed6cf3b9be1a8a440c6123c17c95bd6617a01ef899f5895ddb190eb3265f341687f4c0ad1b1f366f', 'hex'),
-            resultSig: Buffer.from('577ca5104490756b320da325aa81e272049fcee7bb63fe1f92220201a15c47025e3032b85366fcf85b3a2f24418a933b9d6c4fcd94e145b783e2364980a93c0d', 'hex'),
-      }
-
-      const requestBuf = new proto.DelegateProtobuf('CompleteTaskRequest');
-      requestBuf.payload(completeTaskRequest);
-      const requestBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64');
-      console.log("CompleteTaskRequest Base64", requestBase64);
-
-      // const newRequestBuf = new proto.DelegateProtobuf('CompleteTaskRequest');
-      // const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'));
-      // console.log('decode:', newRequest);
-
-      nc.publish('layer1.async.reply.complete_task', requestBase64, 'layer1.event.result')
 }
 
 function lookup_node_profile() {
@@ -242,8 +200,8 @@ async function main() {
       const alice = keyring.addFromUri('//Alice', { name: 'Alice default' });
 
       // test_task();
-      // await test_errand(api);
-      await updateManifest(api);
+      await test_errand(api);
+      // await updateManifest(api);
 }
 
 main()
