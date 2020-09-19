@@ -1,7 +1,7 @@
 const rpc = {
-      tea: {
+  tea: {
 
-      }
+  }
 }
 
-module.exports = rpc;
+module.exports = rpc

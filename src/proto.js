@@ -1,64 +1,67 @@
-const protobuf = require('protobufjs');
-const protobufJSON = require('./protobuf/protobuf.json');
+const protobuf = require('protobufjs')
+const protobufJSON = require('./protobuf/protobuf.json')
 
-const root = protobuf.Root.fromJSON(protobufJSON);
+const root = protobuf.Root.fromJSON(protobufJSON)
 
 class Protobuf {
-  constructor(key, obj){
-    this.key = key;
-    this.obj = root.lookup(`${obj}.${key}`);
-    this._payload = null;
+  constructor (key, obj) {
+    this.key = key
+    this.obj = root.lookup(`${obj}.${key}`)
+    this._payload = null
   }
-  payload(payload){
-    let err = this.obj.verify(payload);
-    if(err){
-      console.error(err);
-      throw 'invalid payload for '+this.key;
+
+  payload (payload) {
+    const err = this.obj.verify(payload)
+    if (err) {
+      console.error(err)
+      throw 'invalid payload for ' + this.key
     }
-    this._payload = payload;
+    this._payload = payload
   }
-  toBuffer(){
-    const msg = this.obj.create(this._payload);
-    return this.obj.encode(msg).finish();
+
+  toBuffer () {
+    const msg = this.obj.create(this._payload)
+    return this.obj.encode(msg).finish()
   }
-  decode(buf){
-    return this.obj.decode(buf);
+
+  decode (buf) {
+    return this.obj.decode(buf)
   }
 }
 
 class DelegateProtobuf extends Protobuf {
-  constructor(key) {
-    super(key, 'actor_delegate');
+  constructor (key) {
+    super(key, 'actor_delegate')
   }
 }
 
 class RAProtobuf extends Protobuf {
-  constructor(key) {
-    super(key, 'actor_ra');
+  constructor (key) {
+    super(key, 'actor_ra')
   }
 }
 
 const F = {
   DelegateProtobuf,
   RAProtobuf,
-  stringToU8(str){
-    var arr = [];
+  stringToU8 (str) {
+    var arr = []
     for (var i = 0, j = str.length; i < j; ++i) {
-      arr.push(str.charCodeAt(i));
+      arr.push(str.charCodeAt(i))
     }
-  
-    var tmpUint8Array = new Uint8Array(arr);
-    return tmpUint8Array;
+
+    var tmpUint8Array = new Uint8Array(arr)
+    return tmpUint8Array
   },
-  u8ToString(u8_arr){
-    var dataString = "";
+  u8ToString (u8_arr) {
+    var dataString = ''
     for (var i = 0; i < u8_arr.length; i++) {
-      dataString += String.fromCharCode(u8_arr[i]);
+      dataString += String.fromCharCode(u8_arr[i])
     }
-  
-    return dataString;
+
+    return dataString
   }
-};
+}
 
 // test
 // const aa = new F.Protobuf('TaskRegisterRequest');
@@ -77,4 +80,4 @@ const F = {
 // const dd = aa.decode(buf);
 // console.log(22, dd);
 
-module.exports = F;
+module.exports = F
