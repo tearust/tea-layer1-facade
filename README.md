@@ -46,59 +46,21 @@ Received a Message {
 
 #### Get node profile by tea id
 - Nats subject: layer1.async.reply.node_profile_by_tea_id
-- Nats body: ephemeral_public_key hex string
+- Nats body: base64 of encoded ephemeral_public_key
 - Reply_to subject: As request msg's reply_to field
 - Reply body: base64 of encoded actor-ra.proto NodeProfile
-
-```
-nc.publish('layer1.async.reply.node_profile_by_tea_id', '0xc7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'layer1.test.result')
-```
-
-Reply Message:
-```
-CiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAGiDJOA/eG6eV/GVqsIq070SCz1VHkP06vNRkJBiuj7X9UioA
-```
-
-#### Update tea node profile
-- Nats subject: layer1.async.reply.update_node_profile
-- Nats body: base64 encoded protobuf encoded [u8]. The message is actor-ra.proto TeaNodeUpdateProfileRequest
-- Sample data structure: (need to base64 encoded, protobuf encode before sending)
-- Sample data structure:
-```
-//TeaNodeUpdateProfileRequest
-{ 
-  ephemeral_public_key: [233, 136, 155, 28, 84, 204, 214, 207, 24, 73, 1, 222, 216, 146, 6, 153, 33, 215, 111, 119, 73, 182, 247, 59, 237, 108, 243, 185, 190, 26, 138, 68],//this is the Ed25519 pub key
-  public_urls: ["placeholder_url1", "placeholder_url2"], //the list of public URL that this delegate allow web client to access to
-  profile_cid: "QmfL6ry4YRKD4joa3RMQZ1qYGKGBWJqHYtEiJEjBmQrASB" //the IPFS Cid of the profile data
-}
-```
-Reply_to subject:       actor.ra.inbox.tea_node_update_profile_response
-Body: Error message string
-```
-let nodeProfile = {
-      ephemeralPublicKey: Buffer.from('111', 'hex'),
-      profileCid: '222',
-      teaId: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
-      publicUrls: ['1','2'],
-}
-
-const updateProfileRequest = {
-      nodeProfile,
-      signature: Buffer.from('112233', 'hex'),
-}
-
-const buf = new proto.RAProtobuf('TeaNodeUpdateProfileRequest');
-buf.payload(updateProfileRequest);
-const requestBase64 = Buffer.from(buf.toBuffer()).toString('base64');
-
-nc.publish('layer1.async.reply.update_node_profile', requestBase64, 'layer1.test.result')
-```
 
 #### Look up tea node profile
 - Nats subject: layer1.async.reply.lookup_node_profile
 - Nats body: base64 ephemeral_public_key
 - Reply_to subject: As request msg's reply_to field
 - Reply body: base64 of encoded actor-ra.proto NodeProfile
+
+#### Update tea node profile
+- Nats subject: layer1.async.reply.update_node_profile
+- Nats body: base64 encoded protobuf encoded [u8]. The message is actor-ra.proto TeaNodeUpdateProfileRequest
+- Reply_to subject: As request msg's reply_to field
+- Reply body: base64 of encoded actor-ra.proto TeaNodeResponse
 
 #### Get deposit info
 - Nats subject: layer1.async.reply.deposit_info

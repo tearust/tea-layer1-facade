@@ -597,25 +597,6 @@
               "rule": "required",
               "type": "bytes",
               "id": 1
-            },
-            "peerId": {
-              "rule": "required",
-              "type": "string",
-              "id": 2
-            }
-          }
-        },
-        "RANode": {
-          "fields": {
-            "teaId": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 1
-            },
-            "isPass": {
-              "rule": "required",
-              "type": "bool",
-              "id": 2
             }
           }
         },
@@ -630,26 +611,6 @@
               "rule": "required",
               "type": "bytes",
               "id": 2
-            },
-            "peerId": {
-              "rule": "required",
-              "type": "string",
-              "id": 3
-            },
-            "createTime": {
-              "rule": "required",
-              "type": "uint64",
-              "id": 4
-            },
-            "raNodes": {
-              "rule": "repeated",
-              "type": "RANode",
-              "id": 5
-            },
-            "status": {
-              "rule": "required",
-              "type": "string",
-              "id": 6
             }
           }
         },
@@ -827,6 +788,20 @@
             }
           }
         },
+        "RANode": {
+          "fields": {
+            "teaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "isPass": {
+              "rule": "required",
+              "type": "bool",
+              "id": 2
+            }
+          }
+        },
         "NodeProfile": {
           "fields": {
             "ephemeralPublicKey": {
@@ -853,29 +828,64 @@
               "rule": "required",
               "type": "string",
               "id": 5
+            },
+            "raNodes": {
+              "rule": "repeated",
+              "type": "RANode",
+              "id": 6
+            },
+            "status": {
+              "rule": "required",
+              "type": "string",
+              "id": 7
             }
           }
         },
         "TeaNodeUpdateProfileRequest": {
           "fields": {
-            "nodeProfile": {
+            "ephemeralPublicKey": {
               "rule": "required",
-              "type": "NodeProfile",
+              "type": "bytes",
               "id": 1
+            },
+            "profileCid": {
+              "rule": "required",
+              "type": "string",
+              "id": 2
+            },
+            "teaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            },
+            "publicUrls": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 4
+            },
+            "peerId": {
+              "rule": "required",
+              "type": "string",
+              "id": 5
             },
             "signature": {
               "rule": "required",
               "type": "bytes",
-              "id": 2
+              "id": 6
             }
           }
         },
         "TeaNodeResponse": {
           "fields": {
+            "accountId": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
             "nodeProfile": {
               "rule": "required",
               "type": "NodeProfile",
-              "id": 1
+              "id": 2
             }
           }
         },

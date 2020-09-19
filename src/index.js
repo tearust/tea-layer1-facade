@@ -7,6 +7,7 @@ const toHex = require('to-hex');
 const types = require('./types');
 const rpc = require('./rpc');
 const BN = require('bn.js');
+const { range } = require('rxjs');
 
 const natsUrl = process.env.NATS_URL || "127.0.0.1:4222";
 const nc = NATS.connect(natsUrl, {
@@ -101,9 +102,9 @@ async function main() {
                         const newNodeRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'));
 
                         let teaId = toHex(newNodeRequest.teaId, { addPrefix: true });
-                        let peerId = toHex(Buffer.from(newNodeRequest.peerId), { addPrefix: true });
+                        // let peerId = toHex(Buffer.from(newNodeRequest.peerId), { addPrefix: true });
 
-                        await api.tx.tea.addNewNode(teaId, peerId)
+                        await api.tx.tea.addNewNode(teaId)
                               .signAndSend(ac, ({ events = [], status }) => {
                                     if (status.isInBlock) {
                                           console.log('Add new node with teaId ' + teaId);
@@ -150,15 +151,15 @@ async function main() {
                         const updateProfile = updateProfileBuf.decode(uProtoMsg);
                         // console.log(updateProfile);
                         
-                        var teaId = toHex(updateProfile.nodeProfile.teaId, { addPrefix: true });
-                        var ephemeralPublicKey = toHex(updateProfile.nodeProfile.ephemeralPublicKey, { addPrefix: true });
-                        let profileCid = toHex(Buffer.from(updateProfile.nodeProfile.profileCid), { addPrefix: true });
+                        var teaId = toHex(updateProfile.teaId, { addPrefix: true });
+                        var ephemeralPublicKey = toHex(updateProfile.ephemeralPublicKey, { addPrefix: true });
+                        let profileCid = toHex(Buffer.from(updateProfile.profileCid), { addPrefix: true });
+                        let peerId = toHex(Buffer.from(updateProfile.peerId), { addPrefix: true })
                         let publicUrls = [];
-                        updateProfile.nodeProfile.publicUrls.forEach((url, i) => {
+                        updateProfile.publicUrls.forEach((url, i) => {
                               publicUrls.push(toHex(Buffer.from(url), { addPrefix: true }))
                         });
                         let signature = toHex(Buffer.from(updateProfile.signature), { addPrefix: true })
-                        let peerId = toHex(Buffer.from(updateProfile.nodeProfile.peerId), { addPrefix: true })
 
                         await api.tx.tea.updateNodeProfile(teaId, ephemeralPublicKey, profileCid, publicUrls, peerId, signature)
                               .signAndSend(ac, ({ events = [], status }) => {
@@ -258,12 +259,23 @@ async function main() {
                                           urls.push(Buffer.from(url.slice(2), 'hex').toString());
                                     })
                               }
+                              let raNodes = []
+                              if (node.raNodes) {
+                                    node.raNodes.forEach((raNode, i) => {
+                                          raNodes.push({
+                                                teaId: Buffer.from(raNode[0], 'hex'),
+                                                isPass: Boolean(raNode[1]),
+                                          });
+                                    });
+                              }
                               const nodeProfile = {
+                                    teaId: Buffer.from(node.teaId.slice(2), 'hex'),
                                     ephemeralPublicKey: Buffer.from(node.ephemeralId.slice(2), 'hex'),
                                     profileCid: Buffer.from(node.profileCid.slice(2), 'hex').toString(),
-                                    teaId: Buffer.from(node.teaId.slice(2), 'hex'),
-                                    publicUrls: urls,
                                     peerId: Buffer.from(node.peerId.slice(2), 'hex').toString(),
+                                    publicUrls: urls,
+                                    raNodes,
+                                    status: node.status.toString(),
                               }
                               console.log('Lookup node profile:', JSON.stringify(nodeProfile));
                               const nodeBuf = new proto.RAProtobuf('NodeProfile');
@@ -275,7 +287,8 @@ async function main() {
                               break
                   }
                   case 'node_profile_by_tea_id': {
-                        let nodeObj = await api.query.tea.nodes(msg)
+                        let teaId = toHex(Buffer.from(msg, 'base64'), { addPrefix: true });
+                        let nodeObj = await api.query.tea.nodes(teaId)
                         if (nodeObj.isNone) {
                               console.log("No such node found");
                               nc.publish(reply, "no_such_node_found");
@@ -288,12 +301,23 @@ async function main() {
                                     urls.push(Buffer.from(url.slice(2), 'hex').toString());
                               })
                         }
+                        let raNodes = []
+                        if (node.raNodes) {
+                              node.raNodes.forEach((raNode, i) => {
+                                    raNodes.push({
+                                          teaId: Buffer.from(raNode[0], 'hex'),
+                                          isPass: Boolean(raNode[1]),
+                                    });
+                              });
+                        }
                         const nodeProfile = {
                               ephemeralPublicKey: Buffer.from(node.ephemeralId.slice(2), 'hex'),
                               profileCid: Buffer.from(node.profileCid.slice(2), 'hex').toString(),
                               teaId: Buffer.from(node.teaId.slice(2), 'hex'),
                               publicUrls: urls,
                               peerId: Buffer.from(node.peerId.slice(2), 'hex').toString(),
+                              raNodes,
+                              status: node.status.toString(),
                         }
                         console.log('Lookup node profile:', JSON.stringify(nodeProfile));
                         const nodeBuf = new proto.RAProtobuf('NodeProfile');
@@ -477,25 +501,57 @@ function handle_events(events) {
                               nc.publish(`layer1.event.${event.section}.${event.method}`, JSON.stringify(msg))
                               break
                         case 'UpdateNodeProfile':
-                              var msg = {}
-                              msg['account_id'] = eventData.AccountId
-                              msg['node'] = {
-                                    'tea_id': eventData.Node.teaId,
-                                    'peers': eventData.Node.peers
+                              let urls = []
+                              if (eventData.Node.urls) {
+                                    eventData.Node.urls.forEach((url, i) => {
+                                          urls.push(Buffer.from(url.slice(2), 'hex').toString());
+                                    })
+                              }
+                              let raNodes = []
+                              if (eventData.Node.raNodes) {
+                                    eventData.Node.raNodes.forEach((raNode, i) => {
+                                          raNodes.push({
+                                                teaId: Buffer.from(raNode[0], 'hex'),
+                                                isPass: Boolean(raNode[1]),
+                                          });
+                                    });
+                              }
+                              const nodeProfile = {
+                                    teaId: Buffer.from(eventData.Node.teaId, 'hex'),
+                                    ephemeralPublicKey: Buffer.from(eventData.Node.ephemeralId, 'hex'),
+                                    profileCid: Buffer.from(eventData.Node.profileCid, 'hex').toString(),
+                                    publicUrls: urls,
+                                    peerId: Buffer.from(eventData.Node.peerId, 'hex').toString(),
+                                    raNodes,
+                                    status: eventData.Node.status.toString(),
                               }
 
-                              console.log(JSON.stringify(msg))
-                              nc.publish(`layer1.event.${event.section}.${event.method}`, JSON.stringify(msg))
-                              break
-                        case 'NewNodeJoined':
-                              var msg = {}
-                              msg['account_id'] = eventData.AccountId
-                              msg['tea_id'] = eventData.Node.teaId
+                              const nodeResponse = {
+                                    accountId: eventData.AccountId.toString(),
+                                    nodeProfile,
+                              }
+                              const buf = new proto.RAProtobuf('TeaNodeResponse');
+                              buf.payload(nodeResponse);
+                              const responseBase64 = Buffer.from(buf.toBuffer()).toString('base64');
+                              console.log("TeaNodeResponse Base64", responseBase64);
 
-                              console.log(JSON.stringify(msg))
-                              nc.publish(`layer1.event.${event.section}.${event.method}`, JSON.stringify(msg))
+                              nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64);
                               break
-                        case 'CompleteTask':
+                        case 'NewNodeJoined': {
+                              const addNewNodeResponse = {
+                                    accountId: eventData.AccountId.toString(),
+                                    teaId: Buffer.from(eventData.Node.teaId, 'hex'),
+                              }
+                  
+                              const responseBuf = new proto.DelegateProtobuf('AddNewNodeResponse');
+                              responseBuf.payload(addNewNodeResponse);
+                              const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64');
+                              console.log("AddNewNodeResponse Base64", responseBase64);
+
+                              nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
+                              break
+                        }
+                        case 'CompleteTask': {
                               const completeTaskResponse = {
                                     refNum: Buffer.from(eventData.RefNum, 'hex'),
                                     accountId: Buffer.from(eventData.AccountId, 'hex'),
@@ -509,7 +565,8 @@ function handle_events(events) {
 
                               nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
                               break
-                        case 'NewDataAdded':
+                        }
+                        case 'NewDataAdded': {
                               const data = {
                                     delegatorEphemeralId: Buffer.from(eventData.Data.delegatorEphemeralId, 'hex'),
                                     deploymentId: Buffer.from(eventData.Data.deploymentId, 'hex').toString(),
@@ -531,6 +588,7 @@ function handle_events(events) {
 
                               nc.publish(`layer1.event.${event.section}.${event.method}`, newDataResponseBase64)
                               break
+                        }
                         case 'NewDepositAdded': {
                               const newDepositResponse = {
                                     accountId: eventData.AccountId.toString(),

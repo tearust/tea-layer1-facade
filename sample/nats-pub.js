@@ -5,21 +5,14 @@ const proto = require('../src/proto');
 
 const nc = NATS.connect();
 
-function add_new_node() {
-      nc.publish('layer1.async.reply.add_new_node', '0x02b40e313842e45574e0ca5b37cb0580cc3378ceb096b562a9828b2137b98f5f', 'layer1.test.result')
-}
-
 function update_node_profile() {
-      let nodeProfile = {
-            ephemeralPublicKey: Buffer.from('111', 'hex'),
-            profileCid: '222',
-            teaId: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
-            publicUrls: ['1','2'],
-      }
-
       const updateProfileRequest = {
-            nodeProfile,
-            signature: Buffer.from('666', 'hex'),
+            teaId: Buffer.from('0111', 'hex'),
+            ephemeralPublicKey: Buffer.from('1111', 'hex'),
+            profileCid: '2222',
+            publicUrls: ['1','2'],
+            peerId: 'QmZzcViy4RvG7m1yVqjfGQ8HPmrM3Kk2MhodTRue2ZTGfh',
+            signature: Buffer.from('777', 'hex'),
       }
 
       const buf = new proto.RAProtobuf('TeaNodeUpdateProfileRequest');
@@ -140,16 +133,22 @@ function deposit_info() {
 }
 
 function lookup_node_profile() {
-      const requestBase64 = Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696597', 'hex').toString('base64');
+      const requestBase64 = Buffer.from('1111', 'hex').toString('base64');
       console.log("EphemeralId Base64", requestBase64);
 
       nc.publish('layer1.async.reply.lookup_node_profile', requestBase64, 'layer1.event.result')
 }
 
+function node_profile_by_tea_id() {
+      const requestBase64 = Buffer.from('0111', 'hex').toString('base64');
+      console.log("TeaId Base64", requestBase64);
+
+      nc.publish('layer1.async.reply.node_profile_by_tea_id', requestBase64, 'layer1.event.result')
+}
+
 function add_new_node() {
       const addNewNodeRequest = {
-            teaId: Buffer.from('01', 'hex'),
-            peerId: '1111',
+            teaId: Buffer.from('0111', 'hex'),
       }
 
       const requestBuf = new proto.DelegateProtobuf('AddNewNodeRequest');
@@ -162,8 +161,8 @@ function add_new_node() {
 
 function commit_ra_result() {
       const commitRaRequest = {
-            teaId: Buffer.from('df38cb4f12479041c8e8d238109ef2a150b017f382206e24fee932e637c2db7b', 'hex'),
-            targetTeaId: Buffer.from('01', 'hex'),
+            teaId: Buffer.from('0111000000000000000000000000000000000000000000000000000000000000', 'hex'),
+            targetTeaId: Buffer.from('0111', 'hex'),
             isPass: true,
             signature: Buffer.from('2222', 'hex'),
       }
@@ -187,8 +186,9 @@ async function main() {
       // settle_accounts()
       // deposit_info()
       // lookup_node_profile()
+      node_profile_by_tea_id()
       // add_new_node()
-      commit_ra_result()
+      // commit_ra_result()
 }
 
 main().catch((error) => {

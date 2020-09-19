@@ -14,16 +14,12 @@ const million = new BN('10000000', 10);
 const unit = yi.mul(million);
 
 function update_node_profile() {
-      let nodeProfile = {
+      const updateProfileRequest = {
+            teaId: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
             ephemeralPublicKey: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696597', 'hex'),
             profileCid: 'QmfL6ry4YRKD4joa3RMQZ1qYGKGBWJqHYtEiJEjBmQrASS',
-            teaId: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
             publicUrls: ["\"http://bob.tearust.com\""],
-            peerId: 'QmZjKxx9SsmVcN8C9Hz37P5gPPxSDat54ibXNdNWva3Up4',
-      }
-
-      const updateProfileRequest = {
-            nodeProfile,
+            peerId: 'QmZzcViy4RvG7m1yVqjfGQ8HPmrM3Kk2MhodTRue2ZTGfh',
             signature: Buffer.from('0a1440036a457fd023ceac9e7287c8313ad50eff73cf74341e38f843a7a04ddc5be8178f5796bb756ed000e05ee35e19b602cccb95872c6756255ab4c5a91900', 'hex'),
       }
 
@@ -84,7 +80,10 @@ function lookup_node_profile() {
       nc.publish('layer1.async.reply.lookup_node_profile', requestBase64, 'layer1.event.result')
 }
 
-function get_node_profile() {
+function node_profile_by_tea_id() {
+      const requestBase64 = Buffer.from('0111', 'hex').toString('base64');
+      console.log("TeaId Base64", requestBase64);
+
       nc.publish('layer1.async.reply.node_profile_by_tea_id', requestBase64, 'layer1.event.result')
 }
 

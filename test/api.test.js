@@ -228,7 +228,7 @@ describe('delegate protobuf test suit', () => {
       it('AddNewNodeRequest test', () => {
             const addNewNodeRequest = {
                   teaId: Buffer.from('000', 'hex'),
-                  peerId: '111',
+                  // peerId: '111',
             }
 
             const requestBuf = new proto.DelegateProtobuf('AddNewNodeRequest');
@@ -243,23 +243,23 @@ describe('delegate protobuf test suit', () => {
       })
 
       it('AddNewNodeResponse test', () => {
-            const raNodes = [
-                  {
-                        teaId: Buffer.from('111', 'hex'),
-                        isPass: false,
-                  },
-                  {
-                        teaId: Buffer.from('222', 'hex'),
-                        isPass: true,
-                  },
-            ]
+            // const raNodes = [
+            //       {
+            //             teaId: Buffer.from('111', 'hex'),
+            //             isPass: false,
+            //       },
+            //       {
+            //             teaId: Buffer.from('222', 'hex'),
+            //             isPass: true,
+            //       },
+            // ]
             const addNewNodeResponse = {
                   accountId: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
                   teaId: Buffer.from('000', 'hex'),
-                  peerId: '111',
-                  createTime: 0,
-                  raNodes,
-                  status: 'Pending',
+                  // peerId: '111',
+                  // createTime: 0,
+                  // raNodes,
+                  // status: 'Pending',
             }
 
             const responseBuf = new proto.DelegateProtobuf('AddNewNodeResponse');
@@ -270,23 +270,39 @@ describe('delegate protobuf test suit', () => {
             const newResponseBuf = new proto.DelegateProtobuf('AddNewNodeResponse');
             const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'));
             // console.log('decode:', newResponse);
-            newResponse.createTime = parseInt(newResponse.createTime, 10);
+            // newResponse.createTime = parseInt(newResponse.createTime, 10);
             assert.deepEqual(addNewNodeResponse, newResponse);
       })
 })
 
 describe('ra protobuf test suit', () => {
+      const raNodes = [
+            {
+                  teaId: Buffer.from('111', 'hex'),
+                  isPass: false,
+            },
+            {
+                  teaId: Buffer.from('222', 'hex'),
+                  isPass: true,
+            },
+      ];
       let nodeProfile = {
             ephemeralPublicKey: Buffer.from('111', 'hex'),
             profileCid: '222',
             teaId: Buffer.from('333', 'hex'),
             publicUrls: ['1','2'],
             peerId: 'QmZzcViy4RvG7m1yVqjfGQ8HPmrM3Kk2MhodTRue2ZTGfh',
+            raNodes,
+            status: 'Pending',
       }
 
       it('TeaNodeUpdateProfileRequest test', () => {
             const updateProfileRequest = {
-                  nodeProfile,
+                  ephemeralPublicKey: Buffer.from('111', 'hex'),
+                  profileCid: '222',
+                  teaId: Buffer.from('333', 'hex'),
+                  publicUrls: ['1','2'],
+                  peerId: 'QmZzcViy4RvG7m1yVqjfGQ8HPmrM3Kk2MhodTRue2ZTGfh',
                   signature: Buffer.from('777', 'hex'),
             }
 
@@ -302,15 +318,19 @@ describe('ra protobuf test suit', () => {
       })
 
       it('TeaNodeResponse test', () => {
+            const nodeResponse = {
+                  accountId: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
+                  nodeProfile,
+            }
             const buf = new proto.RAProtobuf('TeaNodeResponse');
-            buf.payload({nodeProfile});
+            buf.payload(nodeResponse);
             const base64 = Buffer.from(buf.toBuffer()).toString('base64');
             console.log("TeaNodeResponse Base64", base64);
 
             const newResponseBuf = new proto.RAProtobuf('TeaNodeResponse');
             const newResponse = newResponseBuf.decode(Buffer.from(base64, 'base64'));
             // console.log('decode:', newResponse);
-            assert.deepEqual({nodeProfile}, newResponse); 
+            assert.deepEqual(nodeResponse, newResponse); 
       })
 
       it('CommitRaResultRequest test', () => {
