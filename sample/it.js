@@ -207,6 +207,29 @@ async function test_rpc(api) {
       return r;
 }
 
+async function updateManifest(api) {
+      const keyring = new Keyring({ type: 'sr25519' });
+      const alice = keyring.addFromUri('//Alice', { name: 'Alice default' });
+
+      const teaId = '0x421f50f4c91e66d0c2c18ccfdbef9480741a3c7eb189fc45a2e18ae3ee1b185f'
+      const manifestCid = '1234'
+
+      await api.tx.tea.updateManifest(teaId, manifestCid)
+            .signAndSend(alice, ({ events = [], status }) => {
+                  if (status.isInBlock) {
+                        console.log('Included at block hash', status.asInBlock.toHex());
+                        console.log('Events:');
+                        events.forEach(({ event: { data, method, section }, phase }) => {
+                              console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
+                        });
+                  } else if (status.isFinalized) {
+                        console.log('Finalized block hash', status.asFinalized.toHex());
+                  }
+            });
+
+      console.log('send updateManifest tx')
+}
+
 async function main() {
       const api = await ApiPromise.create({
             types,
@@ -219,7 +242,8 @@ async function main() {
       const alice = keyring.addFromUri('//Alice', { name: 'Alice default' });
 
       // test_task();
-      await test_errand(api);
+      // await test_errand(api);
+      await updateManifest(api);
 }
 
 main()
