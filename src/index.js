@@ -225,6 +225,21 @@ async function main () {
         nc.publish(reply, nodeBase64)
         break
       }
+      case 'manifest_cid_by_tea_id': {
+            const teaId = '0x'+Buffer.from(msg, 'base64');
+            console.log(123, teaId);
+            const nodeObj = await api.query.tea.manifest(teaId);
+      
+            if (nodeObj.isNone) {
+            console.log('No such node found')  
+            }
+            let cid = nodeObj.toJSON();
+            cid = Buffer.from(cid.slice(2), 'hex');
+
+            nc.publish(reply, cid);
+
+            break;
+      }
       case 'node_profile_by_tea_id': {
         const teaId = toHex(Buffer.from(msg, 'base64'), { addPrefix: true })
         const nodeObj = await api.query.tea.nodes(teaId)
