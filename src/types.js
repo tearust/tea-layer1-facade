@@ -12,7 +12,8 @@ const types = {
   RaResult: {
     teaId: 'TeaPubKey',
     targetTeaId: 'TeaPubKey',
-    isPass: 'bool'
+    isPass: 'bool',
+    targetStatus: 'NodeStatus'
   },
   ManifestInfo: {
     teaId: 'TeaPubKey',

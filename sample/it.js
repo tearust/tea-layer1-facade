@@ -175,9 +175,8 @@ async function main () {
   const keyring = new Keyring({ type: 'sr25519' })
   const alice = keyring.addFromUri('//Alice', { name: 'Alice default' })
 
-  // test_task();
-  // await test_errand(api)
-  await updateManifest(api)
+  await test_errand(api)
+  // await updateManifest(api)
 }
 
 main()

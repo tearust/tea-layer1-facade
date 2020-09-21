@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+/* eslint-disable no-unused-vars */
 const assert = require('assert')
 const { ApiPromise } = require('@polkadot/api')
 const NATS = require('nats')
@@ -119,7 +121,7 @@ function add_new_node () {
 
 function commit_ra_result () {
   const commitRaRequest = {
-    teaId: Buffer.from('0111000000000000000000000000000000000000000000000000000000000000', 'hex'),
+    teaId: Buffer.from('c7e016fad0796bb68594e49a6ef1942cf7e73497e69edb32d19ba2fab3696596', 'hex'),
     targetTeaId: Buffer.from('0111', 'hex'),
     isPass: true,
     signature: Buffer.from('2222', 'hex')
@@ -135,14 +137,14 @@ function commit_ra_result () {
 
 async function main () {
   // add_new_node()
-  // update_node_profile()
+  //   update_node_profile()
   // get_nodes()
   // add_new_data()
   // settle_accounts()
   // deposit_info()
   // lookup_node_profile()
   // node_profile_by_tea_id()
-  // commit_ra_result()
+  commit_ra_result()
 }
 
 main().catch((error) => {

@@ -227,11 +227,12 @@ async function main () {
       }
       case 'manifest_cid_by_tea_id': {
         const teaId = '0x' + Buffer.from(msg, 'base64')
-        console.log(123, teaId)
+        console.log('manifest_cid_by_tea_id, teaId:', teaId)
         const nodeObj = await api.query.tea.manifest(teaId)
 
         if (nodeObj.isNone) {
-          console.log('No such node found')
+          console.log('No such manifest found')
+          nc.publish(reply, '')
         }
         let cid = nodeObj.toJSON()
         cid = Buffer.from(cid.slice(2), 'hex')
@@ -555,7 +556,8 @@ function handle_events (events) {
             accountId: eventData.AccountId.toString(),
             teaId: Buffer.from(eventData.RaResult.teaId, 'hex'),
             targetTeaId: Buffer.from(eventData.RaResult.targetTeaId, 'hex'),
-            isPass: Boolean(eventData.RaResult.isPass)
+            isPass: Boolean(eventData.RaResult.isPass),
+            targetStatus: eventData.RaResult.targetStatus.toString()
           }
 
           console.log('newCommitRaResultResponse:', JSON.stringify(commitRaResultResponse))

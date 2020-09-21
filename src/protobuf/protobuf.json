@@ -943,6 +943,11 @@
               "rule": "required",
               "type": "bool",
               "id": 4
+            },
+            "targetStatus": {
+              "rule": "required",
+              "type": "string",
+              "id": 5
             }
           }
         }
