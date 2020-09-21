@@ -177,7 +177,7 @@ async function main () {
 
   // test_task();
   // await test_errand(api)
-  await updateManifest(api);
+  await updateManifest(api)
 }
 
 main()

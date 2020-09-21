@@ -1,17 +1,6 @@
 /* eslint-disable no-undef */
 const assert = require('assert')
 const proto = require('../src/proto')
-const _ = require('lodash')
-
-async function foo () {
-  return 1 + 1
-}
-
-describe('layer1::api', function () {
-  it('test add new node', async () => {
-    assert.equal(2, await foo())
-  })
-})
 
 describe('delegate protobuf test suit', () => {
   const task = {
@@ -30,7 +19,7 @@ describe('delegate protobuf test suit', () => {
     const newTaskBuf = new proto.DelegateProtobuf('AddNewTaskRequest')
     const newTask = newTaskBuf.decode(Buffer.from(taskBufBase64, 'base64'))
     // console.log('decode:', newTask);
-    assert.deepEqual({ task }, newTask)
+    assert.deepStrictEqual({ task }, newTask)
   })
 
   it('AddNewTaskResponse test', () => {
@@ -47,7 +36,7 @@ describe('delegate protobuf test suit', () => {
     const newResponseBuf = new proto.DelegateProtobuf('AddNewTaskResponse')
     const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'))
     // console.log('decode:', newResponse);
-    assert.deepEqual(addNewTaskResponse, newResponse)
+    assert.deepStrictEqual(addNewTaskResponse, newResponse)
   })
 
   it('CompleteTaskRequest test', () => {
@@ -67,7 +56,7 @@ describe('delegate protobuf test suit', () => {
     const newRequestBuf = new proto.DelegateProtobuf('CompleteTaskRequest')
     const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'))
     // console.log('decode:', newRequest);
-    assert.deepEqual(completeTaskRequest, newRequest)
+    assert.deepStrictEqual(completeTaskRequest, newRequest)
   })
 
   it('CompleteTaskResponse test', () => {
@@ -85,7 +74,7 @@ describe('delegate protobuf test suit', () => {
     const newResponseBuf = new proto.DelegateProtobuf('CompleteTaskResponse')
     const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'))
     // console.log('decode:', newResponse);
-    assert.deepEqual(completeTaskResponse, newResponse)
+    assert.deepStrictEqual(completeTaskResponse, newResponse)
   })
 
   const data = {
@@ -104,7 +93,7 @@ describe('delegate protobuf test suit', () => {
     const newDataBuf = new proto.DelegateProtobuf('AddNewDataRequest')
     const newData = newDataBuf.decode(Buffer.from(dataBufBase64, 'base64'))
     // console.log('decode:', newData);
-    assert.deepEqual({ data }, newData)
+    assert.deepStrictEqual({ data }, newData)
   })
 
   it('AddNewDataResponse test', () => {
@@ -121,7 +110,7 @@ describe('delegate protobuf test suit', () => {
     const newResponseBuf = new proto.DelegateProtobuf('AddNewDataResponse')
     const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'))
     // console.log('decode:', newResponse);
-    assert.deepEqual(addNewDataResponse, newResponse)
+    assert.deepStrictEqual(addNewDataResponse, newResponse)
   })
 
   it('DepositInfoRequest test', () => {
@@ -136,7 +125,7 @@ describe('delegate protobuf test suit', () => {
     const newRequestBuf = new proto.DelegateProtobuf('DepositInfoRequest')
     const newRequest = newRequestBuf.decode(Buffer.from(requestBufBase64, 'base64'))
     // console.log('decode:', newRequest);
-    assert.deepEqual(depositInfoRequest, newRequest)
+    assert.deepStrictEqual(depositInfoRequest, newRequest)
   })
 
   it('DepositInfoResponse test', () => {
@@ -160,7 +149,7 @@ describe('delegate protobuf test suit', () => {
     newResponse.amount = parseInt(newResponse.amount, 10)
     newResponse.expiredTime = parseInt(newResponse.expiredTime, 10)
 
-    assert.deepEqual(depositInfoResponse, newResponse)
+    assert.deepStrictEqual(depositInfoResponse, newResponse)
   })
 
   const bill1 = {
@@ -196,7 +185,7 @@ describe('delegate protobuf test suit', () => {
     newRequest.expiredTime = parseInt(newRequest.expiredTime, 10)
     // console.log('decode:', newRequest);
     // newRequest.payment
-    assert.deepEqual(settleAccountsRequest, newRequest)
+    assert.deepStrictEqual(settleAccountsRequest, newRequest)
   })
 
   it('SettleAccountsResponse test', () => {
@@ -223,7 +212,7 @@ describe('delegate protobuf test suit', () => {
     newResponse.expiredTime = parseInt(newResponse.expiredTime, 10)
 
     // console.log('decode:', newResponse);
-    assert.deepEqual(settleAccountsResponse, newResponse)
+    assert.deepStrictEqual(settleAccountsResponse, newResponse)
   })
 
   it('AddNewNodeRequest test', () => {
@@ -240,7 +229,7 @@ describe('delegate protobuf test suit', () => {
     const newRequestBuf = new proto.DelegateProtobuf('AddNewNodeRequest')
     const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'))
     // console.log('decode:', newRequest);
-    assert.deepEqual(addNewNodeRequest, newRequest)
+    assert.deepStrictEqual(addNewNodeRequest, newRequest)
   })
 
   it('AddNewNodeResponse test', () => {
@@ -272,7 +261,7 @@ describe('delegate protobuf test suit', () => {
     const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'))
     // console.log('decode:', newResponse);
     // newResponse.createTime = parseInt(newResponse.createTime, 10);
-    assert.deepEqual(addNewNodeResponse, newResponse)
+    assert.deepStrictEqual(addNewNodeResponse, newResponse)
   })
 })
 
@@ -315,7 +304,7 @@ describe('ra protobuf test suit', () => {
     const newRequestBuf = new proto.RAProtobuf('TeaNodeUpdateProfileRequest')
     const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'))
     // console.log('decode:', newRequest);
-    assert.deepEqual(updateProfileRequest, newRequest)
+    assert.deepStrictEqual(updateProfileRequest, newRequest)
   })
 
   it('TeaNodeResponse test', () => {
@@ -331,7 +320,7 @@ describe('ra protobuf test suit', () => {
     const newResponseBuf = new proto.RAProtobuf('TeaNodeResponse')
     const newResponse = newResponseBuf.decode(Buffer.from(base64, 'base64'))
     // console.log('decode:', newResponse);
-    assert.deepEqual(nodeResponse, newResponse)
+    assert.deepStrictEqual(nodeResponse, newResponse)
   })
 
   it('CommitRaResultRequest test', () => {
@@ -350,7 +339,7 @@ describe('ra protobuf test suit', () => {
     const newRequestBuf = new proto.RAProtobuf('CommitRaResultRequest')
     const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'))
     // console.log('decode:', newRequest);
-    assert.deepEqual(commitRaRequest, newRequest)
+    assert.deepStrictEqual(commitRaRequest, newRequest)
   })
 
   it('CommitRaResultResponse test', () => {
@@ -369,7 +358,7 @@ describe('ra protobuf test suit', () => {
     const newResponseBuf = new proto.RAProtobuf('CommitRaResultResponse')
     const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'))
     // console.log('decode:', newResponse);
-    assert.deepEqual(commitRaResultResponse, newResponse)
+    assert.deepStrictEqual(commitRaResultResponse, newResponse)
   })
 })
 
@@ -387,7 +376,7 @@ describe('debug', function () {
     // console.log("result", Buffer.from(newRequest.result).toString('hex'))
     // console.log("resultSig", Buffer.from(newRequest.resultSig).toString('hex'))
 
-    // assert.deepEqual(completeTaskRequest, newRequest);
+    // assert.deepStrictEqual(completeTaskRequest, newRequest);
   })
 
   it('DepositInfoResponse test', () => {
