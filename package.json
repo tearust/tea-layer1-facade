@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "test": "mocha",
+    "build": "webpack",
     "protobuf": "pbjs -t json ../tea-codec/proto/actor-*.proto > ./src/protobuf/protobuf.json"
   },
   "author": "",
@@ -20,11 +21,8 @@
     "to-hex": "0.0.15"
   },
   "devDependencies": {
-    "eslint": "^7.9.0",
-    "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1"
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12",
+    "webpack-node-externals": "^2.5.2"
   }
 }
