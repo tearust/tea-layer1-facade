@@ -5,11 +5,12 @@ echo "build facade to tearust/builds folder"
 rm -rf /tearust/builds/tea-layer1-facade
 mkdir -p /tearust/builds/tea-layer1-facade
 
-cp -r /tearust/tea-layer1-facade/src /tearust/builds/tea-layer1-facade/
-cp /tearust/tea-layer1-facade/package.json /tearust/builds/tea-layer1-facade/
 
-cd /tearust/builds/tea-layer1-facade/
+cd /tearust/tea-layer1-facade
 npm i
+npm run build
+
+cp -r /tearust/tea-layer1-facade/dist /tearust/builds/tea-layer1-facade/
 
 echo "copying tea-layer1-facade for alice.."
 rm -rf /tearust/nodes/alice/tea-layer1-facade
