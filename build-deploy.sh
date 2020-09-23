@@ -13,14 +13,14 @@ npm i
 
 echo "copying tea-layer1-facade for alice.."
 rm -rf /tearust/nodes/alice/tea-layer1-facade
-cp -r /tearust/build/tea-layer1-facade /tearust/nodes/alice
+cp -r /tearust/builds/tea-layer1-facade /tearust/nodes/alice
 echo "copying tea-layer1-facade for bob.."
 rm -rf /tearust/nodes/bob/tea-layer1-facade
-cp -r /tearust/build/tea-layer1-facade /tearust/nodes/bob
+cp -r /tearust/builds/tea-layer1-facade /tearust/nodes/bob
 echo "copying tea-layer1-facade for charlie.."
 rm -rf /tearust/nodes/charlie/tea-layer1-facade
-cp -r /tearust/build/tea-layer1-facade /tearust/nodes/charlie
+cp -r /tearust/builds/tea-layer1-facade /tearust/nodes/charlie
 echo "copying tea-layer1-facade for dave.."
 rm -rf /tearust/nodes/dave/tea-layer1-facade
-cp -r /tearust/build/tea-layer1-facade /tearust/nodes/dave
+cp -r /tearust/builds/tea-layer1-facade /tearust/nodes/dave
 echo "done deploying tea-layer1-facade"
