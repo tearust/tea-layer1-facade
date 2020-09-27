@@ -398,6 +398,9 @@ async function main () {
         console.log('send settle_accounts tx')
         break
       }
+      case 'update_manifest_cid':
+        // TODO
+        break;
       default:
         nc.publish(reply, JSON.stringify(['action_does_not_support']))
     }
