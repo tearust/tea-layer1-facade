@@ -48,6 +48,13 @@ async function main () {
 
   await cryptoWaitReady()
 
+  const keyring = new Keyring({ type: 'sr25519' })
+
+  const account = process.env.FACADE_ACCOUNT_URI || '//Alice'
+  const ac = keyring.addFromUri(account)
+
+  console.log(`facade use account: ${ac.address}`)
+
   // listen new block
   api.rpc.chain.subscribeNewHeads((header) => {
     // console.log(`chain is at #${header.number} has hash ${header.hash}`)
@@ -71,11 +78,6 @@ async function main () {
     }
     // const replyTo = subSections[2]
     const action = subSections[3]
-
-    const keyring = new Keyring({ type: 'sr25519' })
-
-    const account = process.env.FACADE_ACCOUNT || 'Alice'
-    const ac = keyring.addFromUri(`//${account}`, { name: `${account} default` })
 
     switch (action) {
       case 'latest_block':

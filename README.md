@@ -1,5 +1,47 @@
 ## tea-layer1-facade
 
+### Account
+
+#### Install subkey
+```
+curl https://getsubstrate.io -sSf | bash -s -- --fast
+cargo install --force subkey --git https://github.com/paritytech/substrate --version 2.0.0
+```
+
+#### Generate new account
+```
+subkey generate
+```
+Return
+```
+Secret phrase `ball era toward play company unknown veteran universe tower pencil old upset` is account:
+  Secret seed:      0xf3266e943a8b3ed58e171c3491143e65322d0fe8d0b9d27bcb53763bddd6e6fd
+  Public key (hex): 0x7e848c52314be77a339ec83697f5707f17632b1b6092230b383807d9fe486c27
+  Account ID:       0x7e848c52314be77a339ec83697f5707f17632b1b6092230b383807d9fe486c27
+  SS58 Address:     5EvbGMuZqE5eMkr8dFDpAQ6UCpFeGberTxWXYHHRiRmHJAp5
+```
+
+### ENV configuration
+
+#### NATS_URL
+`NATS_URL` specity Nats Server URL:Port. If not specified, default value will be `127.0.0.1:4222`
+
+#### FACADE_WSURL
+`FACADE_WSURL` specify a websocket url which layer1 server you wanted. `ws://127.0.0.1:9944` is used by default if not specified.
+
+ e.g: `FACADE_WSURL=wss://poc-3.polkadot.io`
+
+#### FACADE_ACCOUNT_URI
+`FACADE_ACCOUNT_URI` specify a substrate account suri. It can be a mnemonic, a hex seed or string seeds.
+
+e.g: 
+
+Use the Alice dev account: `FACADE_ACCOUNT_URI=//Alice`.
+
+Use a mnemonic: `FACADE_ACCOUNT_URI='ball era toward play company unknown veteran universe tower pencil old upset'`.
+
+Use a hex seed: `FACADE_ACCOUNT_URI='0xf3266e943a8b3ed58e171c3491143e65322d0fe8d0b9d27bcb53763bddd6e6fd'`.
+
 ### Start
 
 Run nats service
@@ -15,19 +57,6 @@ Run layer1 facade
 npm install
 npm start
 ```
-
-### ENV
-- `NATS_URL` specity Nats Server URL:Port. If not specified, default value will be `127.0.0.1:4222`
-
-- `FACADE_WSURL` specify a websocket url which layer1 server you wanted. `ws://127.0.0.1:9944` is used by default if not specified.
-
- e.g: `FACADE_WSURL=wss://poc-3.polkadot.io`
-
-- `FACADE_ACCOUNT` specify a account of layer1. `Alice` is used by default if not specified.
-
-e.g: `FACADE_ACCOUNT=Bob`
-
-Currently available values are：Alice, Bob, Charlie, Eve, Ferdie.
 
 ### Nats Api
 

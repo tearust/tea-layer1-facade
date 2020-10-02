@@ -40,7 +40,7 @@ async function updateManifest (layer1_account, tea_id, manifest_cid, api) {
 async function main () {
   console.log('start update manifest cid');
   const wsurl = process.env.FACADE_WSURL;
-  const layer1_account = process.env.FACADE_ACCOUNT;
+  const layer1_account = process.env.FACADE_ACCOUNT_URI;
   const tea_id = process.argv[2];
   const manifest_cid = process.argv[3];
   if(!wsurl || !layer1_account || !tea_id || !manifest_cid){
