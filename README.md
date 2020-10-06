@@ -38,9 +38,9 @@ e.g:
 
 Use the Alice dev account: `FACADE_ACCOUNT_URI=//Alice`.
 
-Use a mnemonic: `FACADE_ACCOUNT_URI='ball era toward play company unknown veteran universe tower pencil old upset'`.
+Use a mnemonic: `FACADE_ACCOUNT_URI=ball era toward play company unknown veteran universe tower pencil old upset`.
 
-Use a hex seed: `FACADE_ACCOUNT_URI='0xf3266e943a8b3ed58e171c3491143e65322d0fe8d0b9d27bcb53763bddd6e6fd'`.
+Use a hex seed: `FACADE_ACCOUNT_URI=0xf3266e943a8b3ed58e171c3491143e65322d0fe8d0b9d27bcb53763bddd6e6fd`.
 
 ### Start
 
