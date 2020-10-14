@@ -402,7 +402,7 @@ async function main () {
       }
       case 'update_manifest_cid':
         // TODO
-        break;
+        break
       default:
         nc.publish(reply, JSON.stringify(['action_does_not_support']))
     }
