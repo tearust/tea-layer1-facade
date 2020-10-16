@@ -400,9 +400,62 @@ async function main () {
         console.log('send settle_accounts tx')
         break
       }
-      case 'update_manifest_cid':
+      case 'update_runtime_activity': {
+        const protoMsg = Buffer.from(msg, 'base64')
+        const newRequestBuf = new proto.DelegateProtobuf('UpdateRuntimeActivity')
+        const newRequest = newRequestBuf.decode(protoMsg)
+        console.log(newRequest)
+
+        const teaId = toHex(newRequest.teaId, { addPrefix: true })
+        const cid = toHex(Buffer.from(newRequest.cid), { addPrefix: true })
+        const ephemeralId = toHex(newRequest.ephemeralId, { addPrefix: true })
+        const signature = toHex(newRequest.signature, { addPrefix: true })
+
+        await api.tx.tea.updateRuntimeActivity(teaId, cid, ephemeralId, signature)
+          .signAndSend(ac, ({ events = [], status }) => {
+            if (status.isInBlock) {
+              console.log('Included at block hash', status.asInBlock.toHex())
+              console.log('Events:')
+              events.forEach(({ event: { data, method, section }, phase }) => {
+                console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString())
+              })
+            } else if (status.isFinalized) {
+              console.log('Finalized block hash', status.asFinalized.toHex())
+            }
+          })
+        console.log('send add_new_data tx')
+        break
+      }
+      case 'runtime_activity_by_tea_id': {
+        const teaId = '0x' + Buffer.from(msg, 'base64').toString('hex')
+        console.log('runtime_activity_by_tea_id, teaId:', teaId)
+        const runtimeActivityObj = await api.query.tea.runtimeActivities(teaId)
+
+        if (runtimeActivityObj.isNone) {
+          console.log('No such runtime activity found')
+          nc.publish(reply, '')
+        }
+        const runtimeActivity = runtimeActivityObj.toJSON()
+
+        const runtimeActivityResponse = {
+          teaId: Buffer.from(runtimeActivity.teaId.slice(2), 'hex'),
+          cid: Buffer.from(runtimeActivity.cid.slice(2), 'hex').toString(),
+          updateHeight: parseInt(runtimeActivity.updateHeight, 10)
+        }
+
+        console.log('Look up runtime activity:', JSON.stringify(runtimeActivityResponse))
+        const responseBuf = new proto.DelegateProtobuf('RuntimeActivityResponse')
+        responseBuf.payload(runtimeActivityResponse)
+        const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64')
+        console.log('RuntimeActivityResponse Base64', responseBase64)
+
+        nc.publish(reply, responseBase64)
+        break
+      }
+      case 'update_manifest_cid': {
         // TODO
         break
+      }
       default:
         nc.publish(reply, JSON.stringify(['action_does_not_support']))
     }
@@ -570,6 +623,23 @@ function handle_events (events) {
           responseBuf.payload(commitRaResultResponse)
           const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64')
           console.log('CommitRaResultResponse Base64', responseBase64)
+
+          nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
+          break
+        }
+        case 'UpdateRuntimeActivity': {
+          const runtimeActivityResponse = {
+            // accountId: eventData.AccountId.toString(),
+            teaId: Buffer.from(eventData.RuntimeActivity.teaId, 'hex'),
+            cid: Buffer.from(eventData.RuntimeActivity.cid, 'hex').toString(),
+            updateHeight: parseInt(eventData.RuntimeActivity.updateHeight, 10)
+          }
+
+          console.log('newRuntimeActivityResponse:', JSON.stringify(runtimeActivityResponse))
+          const responseBuf = new proto.DelegateProtobuf('RuntimeActivityResponse')
+          responseBuf.payload(runtimeActivityResponse)
+          const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64')
+          console.log('RuntimeActivityResponse Base64', responseBase64)
 
           nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
           break

@@ -135,6 +135,29 @@ function commit_ra_result () {
   nc.publish('layer1.async.reply.commit_ra_result', requestBase64, 'layer1.event.result')
 }
 
+function update_runtime_activity () {
+  const updateRuntimeActivity = {
+    teaId: Buffer.from('0002', 'hex'),
+    cid: '1111',
+    ephemeralId: Buffer.from('2222', 'hex'),
+    signature: Buffer.from('3333', 'hex')
+  }
+
+  const requestBuf = new proto.DelegateProtobuf('UpdateRuntimeActivity')
+  requestBuf.payload(updateRuntimeActivity)
+  const requestBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64')
+  console.log('UpdateRuntimeActivity Base64', requestBase64)
+
+  nc.publish('layer1.async.reply.update_runtime_activity', requestBase64, 'layer1.event.result')
+}
+
+function runtime_activity_by_tea_id () {
+  const requestBase64 = Buffer.from('0002', 'hex').toString('base64')
+  console.log('TeaId Base64', requestBase64)
+
+  nc.publish('layer1.async.reply.runtime_activity_by_tea_id', requestBase64, 'layer1.event.result')
+}
+
 async function main () {
   // add_new_node()
   //   update_node_profile()
@@ -144,7 +167,9 @@ async function main () {
   // deposit_info()
   // lookup_node_profile()
   // node_profile_by_tea_id()
-  commit_ra_result()
+  // commit_ra_result()
+  // update_runtime_activity()
+  runtime_activity_by_tea_id()
 }
 
 main().catch((error) => {

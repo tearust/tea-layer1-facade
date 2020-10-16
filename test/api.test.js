@@ -249,6 +249,59 @@ describe('delegate protobuf test suit', () => {
     // newResponse.createTime = parseInt(newResponse.createTime, 10);
     assert.deepEqual(addNewNodeResponse, newResponse)
   })
+
+  it('RuntimeActivityRequest test', () => {
+    const runtimeActivityRequest = {
+      teaId: Buffer.from('000', 'hex')
+    }
+
+    const requestBuf = new proto.DelegateProtobuf('RuntimeActivityRequest')
+    requestBuf.payload(runtimeActivityRequest)
+    const requestBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64')
+    console.log('RuntimeActivityRequest Base64', requestBase64)
+
+    const newRequestBuf = new proto.DelegateProtobuf('RuntimeActivityRequest')
+    const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'))
+    // console.log('decode:', newRequest);
+    assert.deepEqual(runtimeActivityRequest, newRequest)
+  })
+
+  it('RuntimeActivityResponse test', () => {
+    const runtimeActivityResponse = {
+      teaId: Buffer.from('000', 'hex'),
+      cid: '111',
+      updateHeight: 100
+    }
+
+    const responseBuf = new proto.DelegateProtobuf('RuntimeActivityResponse')
+    responseBuf.payload(runtimeActivityResponse)
+    const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64')
+    console.log('RuntimeActivityResponse Base64', responseBase64)
+
+    const newResponseBuf = new proto.DelegateProtobuf('RuntimeActivityResponse')
+    const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'))
+    assert.deepEqual(runtimeActivityResponse, newResponse)
+  })
+
+  it('UpdateRuntimeActivity test', () => {
+    const updateRuntimeActivity = {
+      teaId: Buffer.from('0000', 'hex'),
+      cid: '1111',
+      ephemeralId: Buffer.from('2222', 'hex'),
+      signature: Buffer.from('3333', 'hex')
+    }
+
+    const requestBuf = new proto.DelegateProtobuf('UpdateRuntimeActivity')
+    requestBuf.payload(updateRuntimeActivity)
+    const requestBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64')
+    console.log('UpdateRuntimeActivity Base64', requestBase64)
+
+    const newRequestBuf = new proto.DelegateProtobuf('UpdateRuntimeActivity')
+    const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'))
+    assert.deepEqual(updateRuntimeActivity, newRequest)
+  })
+
+
 })
 
 describe('ra protobuf test suit', () => {

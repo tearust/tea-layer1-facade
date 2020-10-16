@@ -7,7 +7,7 @@ const types = {
   RefNum: 'H256',
   Result: 'Bytes',
   NodeStatus: {
-    _enum: ['Pending', 'Active', 'Invalid']
+    _enum: ['Pending', 'Active', 'Inactive', 'Invalid']
   },
   RaResult: {
     teaId: 'TeaPubKey',
@@ -25,7 +25,8 @@ const types = {
     profileCid: 'Bytes',
     urls: 'Vec<Url>',
     peerId: 'Bytes',
-    createTime: 'u64',
+    createTime: 'BlockNumber',
+    updateTime: 'BlockNumber',
     raNodes: 'Vec<(TeaPubKey, bool)>',
     status: 'NodeStatus'
   },
@@ -46,7 +47,7 @@ const types = {
     delegatorEphemeralId: 'TeaPubKey',
     delegatorSignature: 'Bytes',
     amount: 'Balance',
-    expireTime: 'u64'
+    expireTime: 'BlockNumber'
   },
   Bill: {
     employer: 'AccountId',
@@ -55,7 +56,7 @@ const types = {
     errandUuid: 'Bytes',
     errandJsonCid: 'Bytes',
     executorEphemeralId: 'TeaPubKey',
-    expiredTime: 'u64',
+    expiredTime: 'BlockNumber',
     resultCid: 'Cid',
     bills: 'Vec<(AccountId, Balance)>'
   },
@@ -71,6 +72,12 @@ const types = {
     deploymentId: 'Cid',
     cid: 'Cid',
     capChecker: 'Cid'
+  },
+  RuntimeActivity: {
+    teaId: 'TeaPubKey',
+    cid: 'Cid',
+    ephemeralId: 'TeaPubKey',
+    updateHeight: 'BlockNumber'
   }
 }
 

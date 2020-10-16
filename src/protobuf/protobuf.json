@@ -591,6 +591,58 @@
             }
           }
         },
+        "UpdateRuntimeActivity": {
+          "fields": {
+            "teaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "cid": {
+              "rule": "required",
+              "type": "string",
+              "id": 2
+            },
+            "ephemeralId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            },
+            "signature": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 4
+            }
+          }
+        },
+        "RuntimeActivityRequest": {
+          "fields": {
+            "teaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            }
+          }
+        },
+        "RuntimeActivityResponse": {
+          "fields": {
+            "teaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "cid": {
+              "rule": "required",
+              "type": "string",
+              "id": 2
+            },
+            "updateHeight": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 3
+            }
+          }
+        },
         "AddNewNodeRequest": {
           "fields": {
             "teaId": {
