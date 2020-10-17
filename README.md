@@ -81,7 +81,7 @@ Received a Message {
 
 #### Look up tea node profile
 - Nats subject: layer1.async.reply.lookup_node_profile
-- Nats body: base64 ephemeral_public_key
+- Nats body: base64 of encoded ephemeral_public_key
 - Reply_to subject: As request msg's reply_to field
 - Reply body: base64 of encoded actor-ra.proto NodeProfile
 
@@ -128,6 +128,21 @@ nc.publish('layer1.async.reply.add_new_data', dataBufBase64, 'layer1.test.result
 
 - Reply_to subject: As request msg's reply_to field
 - Reply body: base64 of encoded actor-ra.proto CommitRaResultResponse
+
+#### Update runtime activity
+- Nats subject: layer1.async.reply.update_runtime_activity
+- Nats body: base64 of encoded actor-delegate.proto UpdateRuntimeActivity 
+
+- Reply_to subject: As request msg's reply_to field
+- Reply body: base64 of encoded actor-delegate.proto RuntimeActivityResponse
+
+#### Get runtime activity by tea id
+- Nats subject: layer1.async.reply.runtime_activity_by_tea_id
+- Nats body: base64 of encoded tea id
+
+- Reply_to subject: As request msg's reply_to field
+- Reply body: base64 of encoded actor-delegate.proto RuntimeActivityResponse
+
 
 ### Listener
 
