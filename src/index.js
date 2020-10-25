@@ -21,10 +21,6 @@ const cache = {
   peer_url_list: []
 }
 
-const yi = new BN('100000000', 10)
-const million = new BN('10000000', 10)
-const unit = yi.mul(million)
-
 function sleep (time) {
   return new Promise((resolve) => setTimeout(resolve, time))
 }
@@ -301,14 +297,12 @@ async function main () {
 
         const depositInfo = depositInfoObj.toJSON()
         // console.log("Deposit info:", depositInfo);
-        const amount = new BN(depositInfo.amount.slice(2), 'hex')
-        // console.log("amount", amount);
         const depositInfoResponse = {
           accountId,
           delegatorTeaId: Buffer.from(depositInfo.delegatorTeaId.slice(2), 'hex'),
           delegatorEphemeralId: Buffer.from(depositInfo.delegatorEphemeralId.slice(2), 'hex'),
           delegatorSignature: Buffer.from(depositInfo.delegatorSignature.slice(2), 'hex'),
-          amount: amount.div(unit).toNumber(),
+          amount: Buffer.from(depositInfo.amount.slice(2), 'hex'), // BN hex string
           expiredTime: parseInt(depositInfo.expireTime, 10)
         }
 
@@ -368,7 +362,7 @@ async function main () {
 
         const bills = []
         newRequest.bills.forEach((bill, i) => {
-          bills.push([bill.accountId, new BN(bill.payment, 10).mul(unit).toString()])
+          bills.push([bill.accountId, new BN(bill.payment, 'hex').toString()])
         })
 
         // const bills = [['5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', 10], ['5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', 10]];
@@ -566,7 +560,7 @@ function handle_events (events) {
             delegatorTeaId: Buffer.from(eventData.Deposit.delegatorTeaId, 'hex'),
             delegatorEphemeralId: Buffer.from(eventData.Deposit.delegatorEphemeralId, 'hex'),
             delegatorSignature: Buffer.from(eventData.Deposit.delegatorSignature, 'hex'),
-            amount: eventData.Deposit.amount.div(unit).toNumber(),
+            amount: Buffer.from(eventData.Deposit.amount, 'hex'),
             expiredTime: parseInt(eventData.Deposit.expireTime, 10)
           }
 
@@ -584,7 +578,7 @@ function handle_events (events) {
           eventData.Bill.bills.forEach((bill, i) => {
             bills.push({
               accountId: bill[0].toString(),
-              payment: bill[1].div(unit).toNumber()
+              payment: Buffer.from(bill[1], 'hex')
             })
           })
           const settleAccountsResponse = {
