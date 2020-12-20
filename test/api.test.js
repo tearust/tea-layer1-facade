@@ -300,6 +300,46 @@ describe('delegate protobuf test suit', () => {
     const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'))
     assert.deepEqual(updateRuntimeActivity, newRequest)
   })
+
+  it('UpdateGenerateKeyResult test', () => {
+
+    const deploymentIds1 = [
+        {
+          id: Buffer.from('111', 'hex'),
+        },
+        {
+          id: Buffer.from('222', 'hex'),
+        }]
+    const deploymentIds2 = [
+        {
+          id: Buffer.from('333', 'hex'),
+        },
+        {
+          id: Buffer.from('444', 'hex'),
+        }]
+    const keyGenerationInfo = [
+        {
+          publicKey: Buffer.from('555', 'hex'),
+          deploymentIds: deploymentIds1,
+        },
+        {
+          publicKey: Buffer.from('666', 'hex'),
+          deploymentIds: deploymentIds2,
+        }]
+    const updateGenerateKeyResult = {
+      taskId: Buffer.from('777', 'hex'),
+      result: keyGenerationInfo,
+    }
+
+    const requestBuf = new proto.DelegateProtobuf('UpdateGenerateKeyResult')
+    requestBuf.payload(updateGenerateKeyResult)
+    const requestBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64')
+    console.log('UpdateGenerateKeyResult Base64', requestBase64)
+
+    const newRequestBuf = new proto.DelegateProtobuf('UpdateGenerateKeyResult')
+    const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'))
+    assert.deepEqual(updateGenerateKeyResult, newRequest)
+  })
 })
 
 describe('ra protobuf test suit', () => {
