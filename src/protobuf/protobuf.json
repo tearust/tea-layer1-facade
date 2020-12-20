@@ -643,6 +643,105 @@
             }
           }
         },
+        "KeyGenerationRequest": {
+          "fields": {
+            "accountId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "keyType": {
+              "rule": "required",
+              "type": "string",
+              "id": 2
+            }
+          }
+        },
+        "KeyGenerationData": {
+          "fields": {
+            "keyType": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "m": {
+              "rule": "required",
+              "type": "int32",
+              "id": 2
+            },
+            "n": {
+              "rule": "required",
+              "type": "int32",
+              "id": 3
+            },
+            "k": {
+              "rule": "required",
+              "type": "int32",
+              "id": 4
+            },
+            "delegatorTeaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 5
+            }
+          }
+        },
+        "GenerateKeyResponse": {
+          "fields": {
+            "taskId": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "dataAdhoc": {
+              "rule": "required",
+              "type": "KeyGenerationData",
+              "id": 2
+            },
+            "payment": {
+              "rule": "required",
+              "type": "string",
+              "id": 3
+            }
+          }
+        },
+        "DeploymentId": {
+          "fields": {
+            "id": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            }
+          }
+        },
+        "KeyGenerationInfo": {
+          "fields": {
+            "publicKey": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "deploymentIds": {
+              "rule": "repeated",
+              "type": "DeploymentId",
+              "id": 2
+            }
+          }
+        },
+        "UpdateGenerateKeyResult": {
+          "fields": {
+            "taskId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "result": {
+              "rule": "repeated",
+              "type": "KeyGenerationInfo",
+              "id": 2
+            }
+          }
+        },
         "AddNewNodeRequest": {
           "fields": {
             "teaId": {

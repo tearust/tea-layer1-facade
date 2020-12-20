@@ -281,6 +281,45 @@ async function main () {
         nc.publish(reply, nodeBase64)
         break
       }
+      case 'update_generate_key_result': {
+        const newRequestBuf = new proto.DelegateProtobuf('UpdateGenerateKeyResult')
+        const updateGenerateKeyResultRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'))
+
+        const taskId = toHex(updateGenerateKeyResultRequest.taskId, { addPrefix: true })
+        const results = []
+        if (updateGenerateKeyResultRequest.result) {
+          updateGenerateKeyResultRequest.result.forEach((info, i) => {
+            const deploymentIds = []
+            if (info.deploymentIds) {
+              info.deploymentIds.forEach((id, i) => {
+                deploymentIds.push({
+                  id: Buffer.from(id, 'hex'),
+                })
+              })
+            }
+            results.push({
+              publicKey: Buffer.from(info.publicKey, 'hex'),
+              deploymentIds: deploymentIds,
+            })
+          })
+        }
+
+        await api.tx.tea.updateGenerateKeyResult(taskId, results)
+            .signAndSend(ac, ({ events = [], status }) => {
+              if (status.isInBlock) {
+                console.log('update generate key result ' + teaId)
+                nc.publish(reply, JSON.stringify({ status, teaId }))
+              } else {
+                console.log('Status of transfer: ' + status.type)
+              }
+
+              events.forEach(({ phase, event: { data, method, section } }) => {
+                console.log(phase.toString() + ' : ' + section + '.' + method + ' ' + data.toString())
+              })
+            })
+        console.log('send generate_key tx')
+        break
+      }
       case 'deposit_info': {
         const newRequestBuf = new proto.DelegateProtobuf('DepositInfoRequest')
         const newRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'))
@@ -637,6 +676,29 @@ function handle_events (events) {
 
           nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
           break
+        }
+        case 'GenerateKeyBegin': {
+          const generateKeyData = {
+            keyType: Buffer.from(eventData.KeyGenerationData.keyType, 'hex').toString(),
+            m: parseInt(eventData.KeyGenerationData.m, 10),
+            n: parseInt(eventData.KeyGenerationData.n, 10),
+            k: parseInt(eventData.KeyGenerationData.k, 10),
+            delegatorTeaId:  Buffer.from(eventData.KeyGenerationData.delegatorTeaId.slice(2), 'hex'),
+          }
+
+          const generateKeyResponse = {
+            taskId: Buffer.from(eventData.Cid, 'hex').toString(),
+            dataAdhoc: generateKeyData,
+            payment: ''
+          }
+
+          console.log('newRuntimeActivityResponse:', JSON.stringify(generateKeyResponse))
+          const responseBuf = new proto.DelegateProtobuf('GenerateKeyResponse')
+          responseBuf.payload(generateKeyResponse)
+          const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64')
+          console.log('GenerateKeyResponse Base64', responseBase64)
+
+          nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
         }
         default:
       }

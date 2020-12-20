@@ -4,6 +4,7 @@ const types = {
   TeaPubKey: '[u8; 32]',
   Url: 'Bytes',
   Cid: 'Bytes',
+  TxData: "Bytes",
   RefNum: 'H256',
   Result: 'Bytes',
   NodeStatus: {
@@ -78,6 +79,21 @@ const types = {
     cid: 'Cid',
     ephemeralId: 'TeaPubKey',
     updateHeight: 'BlockNumber'
+  },
+  KeyGenerationData: {
+    keyType: "Cid",
+    m: "u32",
+    n: "u32",
+    k: "u32",
+    delegatorTeaId: "TeaPubKey"
+  },
+  KeyGenerationInfo: {
+    publicKey: "Cid",
+    deploymentIds: "Vec<Cid>"
+  },
+  KeyGenerationResult: {
+    taskId: "Cid",
+    result: "Vec<KeyGenerationInfo>"
   }
 }
 
