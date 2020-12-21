@@ -320,6 +320,27 @@ async function main () {
         console.log('send generate_key tx')
         break
       }
+      case 'update_sign_transaction_result': {
+        const newRequestBuf = new proto.DelegateProtobuf('UpdateSignTransactionResult')
+        const updateSignTransactionRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'))
+
+        const taskId = toHex(updateSignTransactionRequest.taskId, { addPrefix: true })
+        const signedTx =  toHex(updateSignTransactionRequest.signedTx, { addPrefix: true })
+        
+        await api.tx.tea.updateSignTransactionResult(taskId, signedTx)
+            .signAndSend(ac, ({ events = [], status }) => {
+              if (status.isInBlock) {
+                console.log('update sign transaction result ' + teaId)
+                nc.publish(reply, JSON.stringify({ status, teaId }))
+              } else {
+                console.log('Status of transfer: ' + status.type)
+              }
+
+              events.forEach(({ phase, event: { data, method, section } }) => {
+                console.log(phase.toString() + ' : ' + section + '.' + method + ' ' + data.toString())
+              })
+            })
+      }
       case 'deposit_info': {
         const newRequestBuf = new proto.DelegateProtobuf('DepositInfoRequest')
         const newRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'))
@@ -677,7 +698,7 @@ function handle_events (events) {
           nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
           break
         }
-        case 'GenerateKeyBegin': {
+        case 'GenerateKeyBegan': {
           const generateKeyData = {
             keyType: Buffer.from(eventData.KeyGenerationData.keyType, 'hex').toString(),
             m: parseInt(eventData.KeyGenerationData.m, 10),
@@ -692,13 +713,32 @@ function handle_events (events) {
             payment: ''
           }
 
-          console.log('newRuntimeActivityResponse:', JSON.stringify(generateKeyResponse))
+          console.log('newGenerateKeyResponse:', JSON.stringify(generateKeyResponse))
           const responseBuf = new proto.DelegateProtobuf('GenerateKeyResponse')
           responseBuf.payload(generateKeyResponse)
           const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64')
           console.log('GenerateKeyResponse Base64', responseBase64)
 
           nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
+          break
+        }
+        case 'SignTransactionBegan': {
+          const signTransactionResponse = {
+            taskId: Buffer.from(eventData.Cid, 'hex').toString(),
+            keyTaskId: Buffer.from(eventData.SignTransactionData.keyTaskId, 'hex').toString(),
+            dataAdhoc: Buffer.from(eventData.SignTransactionData.dataAdhoc, 'hex'),
+            delegatorTeaId:  Buffer.from(eventData.SignTransactionData.delegatorTeaId.slice(2), 'hex'),
+            payment: ''
+          }
+
+          console.log('newSignTransactionResponse:', JSON.stringify(signTransactionResponse))
+          const responseBuf = new proto.DelegateProtobuf('SignTransactionResponse')
+          responseBuf.payload(signTransactionResponse)
+          const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64')
+          console.log('SignTransactionResponse Base64', responseBase64)
+
+          nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
+          break
         }
         default:
       }
