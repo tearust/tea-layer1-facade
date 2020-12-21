@@ -94,6 +94,15 @@ const types = {
   KeyGenerationResult: {
     taskId: "Cid",
     result: "Vec<KeyGenerationInfo>"
+  },
+  SignTransactionData: {
+    keyTaskId: "Cid",
+    dataAdhoc: "TxData",
+    delegatorTeaId: "TeaPubKey"
+  },
+  SignTransactionResult: {
+    taskId: "Cid",
+    signedTx: "TxData"
   }
 }
 

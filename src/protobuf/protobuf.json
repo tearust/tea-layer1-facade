@@ -742,6 +742,49 @@
             }
           }
         },
+        "SignTransactionResponse": {
+          "fields": {
+            "taskId":{
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "keyTaskId": {
+              "rule": "required",
+              "type": "string",
+              "id": 2
+            },
+            "dataAdhoc": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            },
+            "delegatorTeaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 4
+            },
+            "payment": {
+              "rule": "required",
+              "type": "string",
+              "id": 5
+            }
+          }
+        },
+        "UpdateSignTransactionResult": {
+          "fields": {
+            "taskId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "signedTx": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            }
+          }
+        },
         "AddNewNodeRequest": {
           "fields": {
             "teaId": {

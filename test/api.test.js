@@ -340,6 +340,22 @@ describe('delegate protobuf test suit', () => {
     const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'))
     assert.deepEqual(updateGenerateKeyResult, newRequest)
   })
+
+  it('UpdateSignTransactionResult test', () => {
+    const updateSignTransactionResult = {
+      taskId: Buffer.from('111', 'hex'),
+      signedTx: Buffer.from('222', 'hex'),
+    }
+
+    const requestBuf = new proto.DelegateProtobuf('UpdateSignTransactionResult')
+    requestBuf.payload(updateSignTransactionResult)
+    const requestBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64')
+    console.log('UpdateSignTransactionResult Base64', requestBase64)
+
+    const newRequestBuf = new proto.DelegateProtobuf('UpdateSignTransactionResult')
+    const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'))
+    assert.deepEqual(updateSignTransactionResult, newRequest)
+  })
 })
 
 describe('ra protobuf test suit', () => {
