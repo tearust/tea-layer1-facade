@@ -82,18 +82,14 @@ const types = {
   },
   KeyGenerationData: {
     keyType: "Cid",
-    m: "u32",
     n: "u32",
     k: "u32",
     delegatorTeaId: "TeaPubKey"
   },
-  KeyGenerationInfo: {
-    publicKey: "Cid",
-    deploymentIds: "Vec<Cid>"
-  },
   KeyGenerationResult: {
     taskId: "Cid",
-    result: "Vec<KeyGenerationInfo>"
+    publicKey: "Cid",
+    deploymentIds: "Vec<Cid>"
   },
   SignTransactionData: {
     keyTaskId: "Cid",

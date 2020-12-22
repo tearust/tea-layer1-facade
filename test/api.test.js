@@ -303,32 +303,13 @@ describe('delegate protobuf test suit', () => {
 
   it('UpdateGenerateKeyResult test', () => {
 
-    const deploymentIds1 = [
-        {
-          id: Buffer.from('111', 'hex'),
-        },
-        {
-          id: Buffer.from('222', 'hex'),
-        }]
-    const deploymentIds2 = [
-        {
-          id: Buffer.from('333', 'hex'),
-        },
-        {
-          id: Buffer.from('444', 'hex'),
-        }]
-    const keyGenerationInfo = [
-        {
-          publicKey: Buffer.from('555', 'hex'),
-          deploymentIds: deploymentIds1,
-        },
-        {
-          publicKey: Buffer.from('666', 'hex'),
-          deploymentIds: deploymentIds2,
-        }]
+    const deploymentIds = [
+          Buffer.from('111', 'hex'),
+          Buffer.from('222', 'hex')]
     const updateGenerateKeyResult = {
-      taskId: Buffer.from('777', 'hex'),
-      result: keyGenerationInfo,
+      taskId: Buffer.from('333', 'hex'),
+      publicKey: Buffer.from('444', 'hex'),
+      deploymentIds: deploymentIds,
     }
 
     const requestBuf = new proto.DelegateProtobuf('UpdateGenerateKeyResult')

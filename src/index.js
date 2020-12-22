@@ -286,25 +286,15 @@ async function main () {
         const updateGenerateKeyResultRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'))
 
         const taskId = toHex(updateGenerateKeyResultRequest.taskId, { addPrefix: true })
-        const results = []
-        if (updateGenerateKeyResultRequest.result) {
-          updateGenerateKeyResultRequest.result.forEach((info, i) => {
-            const deploymentIds = []
-            if (info.deploymentIds) {
-              info.deploymentIds.forEach((id, i) => {
-                deploymentIds.push({
-                  id: Buffer.from(id, 'hex'),
-                })
-              })
-            }
-            results.push({
-              publicKey: Buffer.from(info.publicKey, 'hex'),
-              deploymentIds: deploymentIds,
-            })
+        const publicKey = toHex(updateGenerateKeyResultRequest.publicKey, { addPrefix: true })
+        const deploymentIds = []
+        if (updateGenerateKeyResultRequest.deploymentIds) {
+          updateGenerateKeyResultRequest.deploymentIds.forEach((id, i) => {
+            deploymentIds.push(Buffer.from(id, 'hex'))
           })
         }
 
-        await api.tx.tea.updateGenerateKeyResult(taskId, results)
+        await api.tx.tea.updateGenerateKeyResult(taskId, publicKey, deploymentIds)
             .signAndSend(ac, ({ events = [], status }) => {
               if (status.isInBlock) {
                 console.log('update generate key result ' + teaId)
@@ -701,7 +691,6 @@ function handle_events (events) {
         case 'GenerateKeyBegan': {
           const generateKeyData = {
             keyType: Buffer.from(eventData.KeyGenerationData.keyType, 'hex').toString(),
-            m: parseInt(eventData.KeyGenerationData.m, 10),
             n: parseInt(eventData.KeyGenerationData.n, 10),
             k: parseInt(eventData.KeyGenerationData.k, 10),
             delegatorTeaId:  Buffer.from(eventData.KeyGenerationData.delegatorTeaId.slice(2), 'hex'),
