@@ -688,7 +688,7 @@ function handle_events (events) {
           nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
           break
         }
-        case 'GenerateKeyBegan': {
+        case 'KeyGenerationRequested': {
           const generateKeyData = {
             keyType: Buffer.from(eventData.KeyGenerationData.keyType, 'hex').toString(),
             n: parseInt(eventData.KeyGenerationData.n, 10),
@@ -711,7 +711,7 @@ function handle_events (events) {
           nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
           break
         }
-        case 'SignTransactionBegan': {
+        case 'SignTransactionRequested': {
           const signTransactionResponse = {
             taskId: Buffer.from(eventData.Cid, 'hex').toString(),
             keyTaskId: Buffer.from(eventData.SignTransactionData.keyTaskId, 'hex').toString(),
