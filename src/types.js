@@ -8,6 +8,7 @@ const types = {
   RefNum: 'H256',
   Result: 'Bytes',
   ClientPubKey: "Bytes",
+  Signature: "Bytes",
   NodeStatus: {
     _enum: ['Pending', 'Active', 'Inactive', 'Invalid']
   },
