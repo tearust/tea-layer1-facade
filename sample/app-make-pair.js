@@ -18,9 +18,7 @@ async function main () {
   const bob = keyring.addFromUri('//Bob', { name: 'Bob default' })
 
   const nonce = '100'
-  const message = stringToU8a('100');
-  const nonceSignature = bob.sign(message);
-  await api.tx.gluon.sendRegistrationApplication(nonce, u8aToHex(nonceSignature), u8aToHex(alice.publicKey))
+  await api.tx.gluon.sendRegistrationApplication(nonce, u8aToHex(alice.publicKey))
       .signAndSend(bob, ({ events = [], status }) => {
         if (status.isInBlock) {
           console.log('Included at block hash', status.asInBlock.toHex())

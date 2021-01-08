@@ -15,9 +15,11 @@ async function main () {
   const keyring = new Keyring({ type: 'sr25519' })
   const alice = keyring.addFromUri('//Alice', { name: 'Alice default' })
 
-  const nonce = 100
-  const nonce_hash = Buffer.from('ad57366865126e55649ecb23ae1d48887544976efea46a48eb5d85a6eeb4d306', 'hex')
-  await api.tx.gluon.browserSendNonce(u8aToHex(nonce_hash))
+  const nonce = '100'
+  const nonce_hash = hash(nonce)
+  console.log("nonce_hash:", nonce_hash)
+  const nonce_hash_hex = u8aToHex(Buffer.from(nonce_hash, 'hex'))
+  await api.tx.gluon.browserSendNonce(nonce_hash_hex)
       .signAndSend(alice, ({ events = [], status }) => {
         if (status.isInBlock) {
           console.log('Included at block hash', status.asInBlock.toHex())
