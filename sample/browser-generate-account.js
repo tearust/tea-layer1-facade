@@ -42,7 +42,8 @@ async function main () {
       delegatorNonceRsa: delegator_nonce_rsa,
       p1: p1,
   };
-  const task_hash = hash(task.toString())
+  const task_str = JSON.stringify(task)
+  const task_hash = hash(task_str)
     console.log("task_hash:", task_hash)
 
   const nonce = '100'
