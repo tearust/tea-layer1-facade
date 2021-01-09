@@ -4,6 +4,9 @@ const { stringToU8a, u8aToHex } = require('@polkadot/util')
 const types = require('../src/types')
 const rpc = require('../src/rpc')
 
+// you need to 'npm install js-sha256'
+var hash = require('js-sha256');
+
 async function main () {
   const api = await ApiPromise.create({
     types,
