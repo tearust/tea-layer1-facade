@@ -5,6 +5,9 @@ const types = require('../src/types')
 const rpc = require('../src/rpc')
 var hash = require('js-sha256');
 
+// you need to 'npm install js-sha256'
+var hash = require('js-sha256');
+
 async function main () {
   const api = await ApiPromise.create({
     types,
