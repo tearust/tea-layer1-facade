@@ -16,6 +16,14 @@ async function main () {
   await cryptoWaitReady()
 
   const keyring = new Keyring({ type: 'sr25519' })
+
+  // sample to get address from public key and get public key from address
+  const addr = keyring.encodeAddress('0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d')
+  console.log("addr:", addr)
+  const pk = keyring.decodeAddress('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
+  console.log("pk:", u8aToHex(pk))
+
+
   const alice = keyring.addFromUri('//Alice', { name: 'Alice default' })
 
   const nonce = '100'
