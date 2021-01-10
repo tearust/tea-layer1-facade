@@ -3,7 +3,7 @@ const { stringToU8a, u8aToHex } = require('@polkadot/util')
 const { cryptoWaitReady } = require('@polkadot/util-crypto')
 const types = require('../src/types')
 const rpc = require('../src/rpc')
-
+const base64 = require("js-base64")
 
 async function main () {
   const api = await ApiPromise.create({
@@ -18,7 +18,8 @@ async function main () {
   const bob = keyring.addFromUri('//Bob', { name: 'Bob default' })
 
   const nonce = '100'
-  await api.tx.gluon.sendRegistrationApplication(nonce, u8aToHex(alice.publicKey))
+  const metadata = base64.encode('test metadata')
+  await api.tx.gluon.sendRegistrationApplication(nonce, u8aToHex(alice.publicKey), metadata)
       .signAndSend(bob, ({ events = [], status }) => {
         if (status.isInBlock) {
           console.log('Included at block hash', status.asInBlock.toHex())
