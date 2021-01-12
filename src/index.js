@@ -286,7 +286,9 @@ async function main () {
         const updateGenerateKeyResultRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'))
 
         const taskId = toHex(updateGenerateKeyResultRequest.taskId, { addPrefix: true })
-        const publicKey = toHex(updateGenerateKeyResultRequest.publicKey, { addPrefix: true })
+        const delegatorNonce = toHex(updateGenerateKeyResultRequest.delegatorNonce, { addPrefix: true })
+        const multiSigAccount = toHex(updateGenerateKeyResultRequest.multiSigAccount, { addPrefix: true })
+        const p2PublicKey = toHex(updateGenerateKeyResultRequest.publicKey, { addPrefix: true })
         const deploymentIds = []
         if (updateGenerateKeyResultRequest.deploymentIds) {
           updateGenerateKeyResultRequest.deploymentIds.forEach((id, i) => {
@@ -294,7 +296,8 @@ async function main () {
           })
         }
 
-        await api.tx.tea.updateGenerateKeyResult(taskId, publicKey, deploymentIds)
+        await api.tx.tea.updateGenerateAccountWithoutP3Result(taskId,
+            delegatorNonce, p2PublicKey, deploymentIds, multiSigAccount)
             .signAndSend(ac, ({ events = [], status }) => {
               if (status.isInBlock) {
                 console.log('update generate key result ' + teaId)
@@ -307,7 +310,7 @@ async function main () {
                 console.log(phase.toString() + ' : ' + section + '.' + method + ' ' + data.toString())
               })
             })
-        console.log('send generate_key tx')
+        console.log('send update_generate_account_without_p3_result tx')
         break
       }
       case 'update_sign_transaction_result': {
@@ -517,8 +520,8 @@ function handle_events (events) {
     const { event, phase } = record
     const types = event.typeDef
 
-    if (event.section == 'tea') {
-      console.log('Received tea events:')
+    if (event.section === 'tea' | event.section === 'gluon') {
+      console.log('Received ', event.section, 'events:')
 
       const eventData = {}
       // Loop through each of the parameters, displaying the type and data
@@ -689,18 +692,20 @@ function handle_events (events) {
           break
         }
         case 'AccountGenerationRequested': {
-          const generateKeyData = {
+          console.log('newKeyGenerationResponse start')
+          const keyGenerationData = {
             n: parseInt(eventData.AccountGenerationDataWithoutP3.n, 10),
             k: parseInt(eventData.AccountGenerationDataWithoutP3.k, 10),
-            delegatorTeaId:  Buffer.from(eventData.AccountGenerationDataWithoutP3.delegatorTeaId.slice(2), 'hex'),
             keyType: Buffer.from(eventData.AccountGenerationDataWithoutP3.keyType, 'hex').toString(),
+            delegatorTeaNonceHash:  Buffer.from(eventData.AccountGenerationDataWithoutP3.delegatorNonceHash, 'hex'),
+            delegatorTeaNonceRsa:  Buffer.from(eventData.AccountGenerationDataWithoutP3.delegatorNonceRsa, 'hex'),
           }
 
           const keyGenerationResponse = {
             taskId: Buffer.from(eventData.Cid, 'hex').toString(),
-            dataAdhoc: generateKeyData,
+            dataAdhoc: keyGenerationData,
             payment: '',
-            p1PublicKey: Buffer.from(eventData.AccountGenerationDataWithoutP3.p1.slice(2), 'hex'),
+            p1PublicKey: Buffer.from(eventData.AccountGenerationDataWithoutP3.p1, 'hex'),
           }
 
           console.log('newKeyGenerationResponse:', JSON.stringify(keyGenerationResponse))

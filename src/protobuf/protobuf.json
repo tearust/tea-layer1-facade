@@ -643,20 +643,6 @@
             }
           }
         },
-        "KeyGenerationRequest": {
-          "fields": {
-            "accountId": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 1
-            },
-            "keyType": {
-              "rule": "required",
-              "type": "string",
-              "id": 2
-            }
-          }
-        },
         "KeyGenerationData": {
           "fields": {
             "n": {
@@ -674,10 +660,15 @@
               "type": "string",
               "id": 3
             },
-            "delegatorTeaId": {
+            "delegatorTeaNonceHash": {
               "rule": "required",
               "type": "bytes",
               "id": 4
+            },
+            "delegatorTeaNonceRsa": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 5
             }
           }
         },
@@ -712,15 +703,25 @@
               "type": "bytes",
               "id": 1
             },
-            "publicKey": {
+            "delegatorNonce": {
               "rule": "required",
               "type": "bytes",
               "id": 2
             },
+            "publicKey": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            },
             "deploymentIds": {
               "rule": "repeated",
               "type": "bytes",
-              "id": 3
+              "id": 4
+            },
+            "multiSigAccount": {
+              "rule": "repeated",
+              "type": "bytes",
+              "id": 5
             }
           }
         },

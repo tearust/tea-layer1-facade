@@ -102,6 +102,7 @@ const types = {
   },
   KeyGenerationResult: {
     taskId: "Cid",
+    delegatorNonce: "Cid",
     p2: "Cid",
     p2DeploymentIds: "Vec<Cid>",
     multiSigAccount: "Cid"
