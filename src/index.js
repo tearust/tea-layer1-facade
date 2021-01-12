@@ -688,25 +688,26 @@ function handle_events (events) {
           nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
           break
         }
-        case 'KeyGenerationRequested': {
+        case 'AccountGenerationRequested': {
           const generateKeyData = {
-            keyType: Buffer.from(eventData.KeyGenerationData.keyType, 'hex').toString(),
-            n: parseInt(eventData.KeyGenerationData.n, 10),
-            k: parseInt(eventData.KeyGenerationData.k, 10),
-            delegatorTeaId:  Buffer.from(eventData.KeyGenerationData.delegatorTeaId.slice(2), 'hex'),
+            n: parseInt(eventData.AccountGenerationDataWithoutP3.n, 10),
+            k: parseInt(eventData.AccountGenerationDataWithoutP3.k, 10),
+            delegatorTeaId:  Buffer.from(eventData.AccountGenerationDataWithoutP3.delegatorTeaId.slice(2), 'hex'),
+            keyType: Buffer.from(eventData.AccountGenerationDataWithoutP3.keyType, 'hex').toString(),
           }
 
-          const generateKeyResponse = {
+          const keyGenerationResponse = {
             taskId: Buffer.from(eventData.Cid, 'hex').toString(),
             dataAdhoc: generateKeyData,
-            payment: ''
+            payment: '',
+            p1PublicKey: Buffer.from(eventData.AccountGenerationDataWithoutP3.p1.slice(2), 'hex'),
           }
 
-          console.log('newGenerateKeyResponse:', JSON.stringify(generateKeyResponse))
-          const responseBuf = new proto.DelegateProtobuf('GenerateKeyResponse')
-          responseBuf.payload(generateKeyResponse)
+          console.log('newKeyGenerationResponse:', JSON.stringify(keyGenerationResponse))
+          const responseBuf = new proto.DelegateProtobuf('KeyGenerationResponse')
+          responseBuf.payload(keyGenerationResponse)
           const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64')
-          console.log('GenerateKeyResponse Base64', responseBase64)
+          console.log('KeyGenerationResponse Base64', responseBase64)
 
           nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
           break

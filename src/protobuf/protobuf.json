@@ -659,19 +659,19 @@
         },
         "KeyGenerationData": {
           "fields": {
-            "keyType": {
-              "rule": "required",
-              "type": "string",
-              "id": 1
-            },
             "n": {
               "rule": "required",
               "type": "int32",
-              "id": 2
+              "id": 1
             },
             "k": {
               "rule": "required",
               "type": "int32",
+              "id": 2
+            },
+            "keyType": {
+              "rule": "required",
+              "type": "string",
               "id": 3
             },
             "delegatorTeaId": {
@@ -681,7 +681,7 @@
             }
           }
         },
-        "GenerateKeyResponse": {
+        "KeyGenerationResponse": {
           "fields": {
             "taskId": {
               "rule": "required",
@@ -697,6 +697,11 @@
               "rule": "required",
               "type": "string",
               "id": 3
+            },
+            "p1PublicKey": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 4
             }
           }
         },
