@@ -116,16 +116,32 @@ const types = {
     taskId: "Cid",
     succeed: 'bool'
   },
-  ransferAssetTask: {
+  TransferAssetTask: {
     from: "Cid",
     to: "Cid",
     startHeight: "BlockNumber"
   },
-  TransferAssetTask: {
-    from: "Cid",
-    to: "Cid",
-    "startHeight": "BlockNumber"
-  }
+  //////////////
+  // multiSig //
+  //////////////
+  Timepoint: {
+    /// The height of the chain at the point in time.
+    height: 'BlockNumber',
+    /// The index of the extrinsic at the point in time.
+    index: 'u32'
+  },
+  Multisig: {
+    /// The extrinsic when the multisig operation was opened.
+    when: 'Timepoint',
+    /// The amount held in reserve of the `depositor`, to be returned once the operation ends.
+    deposit: 'Balance',
+    /// The account who opened it (i.e. the first to approve it).
+    depositor: 'AccountId',
+    /// The approvals achieved so far, including the depositor. Always sorted.
+    approvals: 'Vec<AccountId>'
+  },
+  OpaqueCall: 'Vec<u8>',
+  Weight: 'u64'
 }
 
 module.exports = types
