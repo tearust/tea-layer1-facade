@@ -55,17 +55,9 @@ async function main () {
   const alice = keyring.addFromUri('//Alice', { name: 'Alice default' })
   const charlie = keyring.addFromUri('//Charlie', { name: 'Alice default' })
 
-  // fn as_multi(origin,
-  //     threshold: u16,
-  //     other_signatories: Vec<T::AccountId>,
-  //     maybe_timepoint: Option<Timepoint<T::BlockNumber>>,
-  //     call: OpaqueCall,
-  //     store_call: bool,
-  //     max_weight: Weight,
-  // )
   const amount2 = 10 * unit;
-  const transfer2 = api.tx.balances.transfer(charlie.address, amount2.toString())
-  const asMulti = await api.tx.multisig.asMulti(
+  const transfer2 = api.tx.balances.transfer(charlie.address, amount2.toString()).method.toHex()
+  await api.tx.multisig.asMulti(
       threshold,
       otherSignatoriesSorted,
       null,
@@ -84,10 +76,6 @@ async function main () {
         }
   })
 
-  // await api.tx.balances.transferKeepAlive(bob, 100)
-  //     .signAndSend(alice)
-  // await api.tx.balances.transferKeepAlive(bob, 100)
-  //     .signAndSend(bob)
   console.log('send nonce tx')
 }
 

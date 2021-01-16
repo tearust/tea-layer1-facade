@@ -22,7 +22,7 @@ const threshold = 2;
 
 // The address (as index in `addresses`) that will submit a transaction.
 // bob
-const index = 1;
+const index = 2;
 
 async function main () {
   const api = await ApiPromise.create({
@@ -51,41 +51,21 @@ async function main () {
   const bob = keyring.addFromUri('//Bob', { name: 'Alice default' })
   const charlie = keyring.addFromUri('//Charlie', { name: 'Alice default' })
 
-  // get TimePoint from multisig pallet:(sample in multi_sign_transaction_get_time_point.js)
-  const id = '5DjYJStmdZ2rcqXbXGX7TW85JsrW6uG4y9MUcLq2BoPMpRA7';
-  const call_hash = '0xd7355881aab269cc469314240cb6d061119ae5265300bb6475123b6e756b791f';
+  await api.query.system.events((events) => {
+    events.forEach(({ event: { data, method, section }, phase }) => {
+      if (section === 'multisig' && method === 'NewMultisig') {
+        console.log("api.query.system.events");
+        const who = encodeAddress(data[0].toHex());
+        const id =  encodeAddress(data[1].toHex());
+        const call_hash = u8aToHex(data[2]);
+        console.log('\t', phase.toString(), `: ${section}.${method}`);
+        console.log('\t','New multisig, who:', who, "id:", id, "call_hash:", call_hash);
+      }
+    })
+  });
 
-  const op_multisig = await api.query.multisig.multisigs(id, call_hash);
-  console.log('multisig:', op_multisig.toString());
-  if (op_multisig.isSome) {
-    const multisig = op_multisig.unwrap();
-    console.log('\t', 'multisig:', multisig.toString());
-    console.log('\t', 'multisig TimePoint:', multisig.when.toString());
-    const time_point = multisig.when;
-    // send approve transaction (last one need to use 'asMulti')
-    const weight = 230161000;
-    const amount2 = 10 * unit;
-    const transfer2 = api.tx.balances.transfer(charlie.address, amount2.toString()).method.toHex()
-    api.tx.multisig.asMulti(
-        threshold,
-        otherSignatoriesSorted,
-        time_point,
-        transfer2,
-        false,
-        weight)
-        .signAndSend(bob, ({events = [], status}) => {
-          if (status.isInBlock) {
-            console.log('Included at block hash', status.asInBlock.toHex());
-            console.log('Events:');
-            events.forEach(({event: {data, method, section}, phase}) => {
-              console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString())
-            })
-          } else if (status.isFinalized) {
-            console.log('Finalized block hash', status.asFinalized.toHex())
-          }
-        });
-  }
-  console.log('send tx')
+  // then we can use id and call_hash to get TimePoint and send approve
+  // multisig transaction (sample in multi_sign_transaction_approve.js)
 }
 
 main()

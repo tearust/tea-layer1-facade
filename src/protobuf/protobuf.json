@@ -612,6 +612,11 @@
               "rule": "required",
               "type": "bytes",
               "id": 4
+            },
+            "delegatePubKey": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 5
             }
           }
         },
