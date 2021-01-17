@@ -22,6 +22,41 @@ const rpc = {
         ],
         type: 'Vec<TeaPubKey>'
     },
+    encodeAccountGenerationWithoutP3: {
+      description: 'get delegates',
+      params: [
+        {
+          name: 'keyType',
+          type: 'Bytes'
+        },
+        {
+          name: 'n',
+          type: 'u32'
+        },
+        {
+          name: 'k',
+          type: 'u32'
+        },
+        {
+          name: 'delegatorNonceHash',
+          type: 'Bytes'
+        },
+        {
+          name: 'delegatorNonceRsa',
+          type: 'Bytes'
+        },
+        {
+          name: 'p1',
+          type: 'Bytes'
+        },
+        {
+          name: 'at',
+          type: 'Hash',
+          isOptional: true
+        }
+      ],
+      type: 'Bytes'
+    }
   }
 }
 
