@@ -78,7 +78,7 @@ const types = {
   },
   RuntimeActivity: {
     teaId: 'TeaPubKey',
-    cid: 'Cid',
+    cid: 'Option<Cid>',
     ephemeralId: 'TeaPubKey',
     updateHeight: 'BlockNumber'
   },
