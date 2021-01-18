@@ -17,7 +17,7 @@ const rpc = {
           isOptional: true
         }
       ],
-      type: 'Vec<TeaPubKey>'
+      type: 'Vec<(TeaPubKey, TeaPubKey)>'
     },
   },
   gluon: {
