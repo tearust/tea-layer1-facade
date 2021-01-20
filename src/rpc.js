@@ -40,12 +40,27 @@ const rpc = {
       ],
       type: 'Vec<TeaPubKey>'
     },
+    encodeTask: {
+      description: 'encode task',
+      params: [
+        {
+          name: 'task',
+          type: 'AccountGenerationDataWithoutP3'
+        },
+        {
+          name: 'at',
+          type: 'Hash',
+          isOptional: true
+        }
+      ],
+      type: 'Vec<u8>'
+    },
     encodeAccountGenerationWithoutP3: {
-      description: 'get delegates',
+      description: 'encode data',
       params: [
         {
           name: 'keyType',
-          type: 'Bytes'
+          type: 'Vec<u8>'
         },
         {
           name: 'n',
@@ -57,15 +72,15 @@ const rpc = {
         },
         {
           name: 'delegatorNonceHash',
-          type: 'Bytes'
+          type: 'Vec<u8>'
         },
         {
           name: 'delegatorNonceRsa',
-          type: 'Bytes'
+          type: 'Vec<u8>'
         },
         {
           name: 'p1',
-          type: 'Bytes'
+          type: 'Vec<u8>'
         },
         {
           name: 'at',
@@ -73,7 +88,7 @@ const rpc = {
           isOptional: true
         }
       ],
-      type: 'Bytes'
+      type: 'Vec<u8>'
     }
   }
 }

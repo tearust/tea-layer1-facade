@@ -27,8 +27,8 @@ async function main () {
   const key_type = 'btc'
   // todo use real p1
   const p1 = u8aToHex(Buffer.from('24d614bd215f1c90345a4b505be6bd0589ac6b105a2a8c059a5890ba953aec11', 'hex'))
-  const p2_n = 3
-  const p2_k = 2
+  const p2_n = 3;
+  const p2_k = 2;
 
   console.log("key_type:", key_type)
   console.log("p2_n:", p2_n)
