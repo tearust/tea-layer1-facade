@@ -75,11 +75,11 @@ async function deposit (api) {
 function settle_accounts () {
   const bill1 = {
     accountId: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-    payment: new BN(10).toBuffer()
+    payment: 10
   }
   const bill2 = {
     accountId: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-    payment: new BN(20).toBuffer()
+    payment: 20
   }
   const settleAccountsRequest = {
     employer: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',

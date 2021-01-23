@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 const assert = require('assert')
 const proto = require('../src/proto')
-const BN = require('bn.js')
 
 describe('delegate protobuf test suit', () => {
   const task = {
@@ -135,7 +134,7 @@ describe('delegate protobuf test suit', () => {
       delegatorTeaId: Buffer.from('01', 'hex'),
       delegatorEphemeralId: Buffer.from('02', 'hex'),
       delegatorSignature: Buffer.from('03', 'hex'),
-      amount: new BN(1000).toBuffer(),
+      amount: 1000,
       expiredTime: 10000
     }
 
@@ -147,6 +146,7 @@ describe('delegate protobuf test suit', () => {
     const newResponseBuf = new proto.DelegateProtobuf('DepositInfoResponse')
     const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'))
     // console.log('decode:', newResponse);
+    newResponse.amount = parseInt(newResponse.amount, 10)
     newResponse.expiredTime = parseInt(newResponse.expiredTime, 10)
 
     assert.deepEqual(depositInfoResponse, newResponse)
@@ -154,11 +154,11 @@ describe('delegate protobuf test suit', () => {
 
   const bill1 = {
     accountId: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-    payment: new BN(10).toBuffer()
+    payment: 10
   }
   const bill2 = {
     accountId: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-    payment: new BN(20).toBuffer()
+    payment: 20
   }
 
   it('SettleAccountsRequest test', () => {
@@ -459,15 +459,16 @@ describe('debug', function () {
 
   it('DepositInfoResponse test', () => {
     // const responseBase64 = 'CjA1R3J3dmFFRjV6WGIyNkZ6OXJjUXBEV1M1N0N0RVJIcE5laFhDUGNOb0hHS3V0UVkSIEIfUPTJHmbQwsGMz9vvlIB0Gjx+sYn8RaLhiuPuGxhfGiCInBpXhZhg4Y0L1rZIjmAVcNznwG7uMMuYpjEC8JlypCJAgIZB3HbK4TU6pudOfJJ1Jmxsdz87fEJxpy9wlwrfMX3lTfEa3y0RA3WY9Eyif1tCdpkaTsWhTWtnFqrn5yimDCiOAjAy'
-    // const responseBase64 = 'CjA1R3J3dmFFRjV6WGIyNkZ6OXJjUXBEV1M1N0N0RVJIcE5laFhDUGNOb0hHS3V0UVkSIEIfUPTJHmbQwsGMz9vvlIB0Gjx+sYn8RaLhiuPuGxhfGiCInBpXhZhg4Y0L1rZIjmAVcNznwG7uMMuYpjEC8JlypCJAgIZB3HbK4TU6pudOfJJ1Jmxsdz87fEJxpy9wlwrfMX3lTfEa3y0RA3WY9Eyif1tCdpkaTsWhTWtnFqrn5yimDCiqATAy'
+    const responseBase64 = 'CjA1R3J3dmFFRjV6WGIyNkZ6OXJjUXBEV1M1N0N0RVJIcE5laFhDUGNOb0hHS3V0UVkSIEIfUPTJHmbQwsGMz9vvlIB0Gjx+sYn8RaLhiuPuGxhfGiCInBpXhZhg4Y0L1rZIjmAVcNznwG7uMMuYpjEC8JlypCJAgIZB3HbK4TU6pudOfJJ1Jmxsdz87fEJxpy9wlwrfMX3lTfEa3y0RA3WY9Eyif1tCdpkaTsWhTWtnFqrn5yimDCiqATAy'
 
-    // const newResponseBuf = new proto.DelegateProtobuf('DepositInfoResponse')
-    // const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'))
+    const newResponseBuf = new proto.DelegateProtobuf('DepositInfoResponse')
+    const newResponse = newResponseBuf.decode(Buffer.from(responseBase64, 'base64'))
 
-    // newResponse.delegatorEphemeralId = Buffer.from(newResponse.delegatorEphemeralId).toString('hex')
-    // newResponse.delegatorTeaId = Buffer.from(newResponse.delegatorTeaId).toString('hex')
-    // newResponse.delegatorSignature = Buffer.from(newResponse.delegatorSignature).toString('hex')
-    // newResponse.expiredTime = parseInt(newResponse.expiredTime, 10)
+    newResponse.delegatorEphemeralId = Buffer.from(newResponse.delegatorEphemeralId).toString('hex'),
+    newResponse.delegatorTeaId = Buffer.from(newResponse.delegatorTeaId).toString('hex'),
+    newResponse.delegatorSignature = Buffer.from(newResponse.delegatorSignature).toString('hex'),
+    newResponse.amount = parseInt(newResponse.amount, 10)
+    newResponse.expiredTime = parseInt(newResponse.expiredTime, 10)
 
     // console.log('decode:', newResponse);
   })

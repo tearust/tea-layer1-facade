@@ -449,7 +449,7 @@
             },
             "amount": {
               "rule": "required",
-              "type": "bytes",
+              "type": "uint32",
               "id": 5
             },
             "expiredTime": {
@@ -468,7 +468,7 @@
             },
             "payment": {
               "rule": "required",
-              "type": "bytes",
+              "type": "uint32",
               "id": 2
             }
           }
