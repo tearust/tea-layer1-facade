@@ -82,6 +82,9 @@ const types = {
     ephemeralId: 'TeaPubKey',
     updateHeight: 'BlockNumber'
   },
+  //////////////
+  //  gluon   //
+  //////////////
   AccountAsset: {
     accountId: "Cid",
     btc: "Vec<Cid>",
@@ -99,13 +102,6 @@ const types = {
     delegatorNonceHash: "Cid",
     delegatorNonceRsa: "Cid",
     p1: "Cid"
-  },
-  KeyGenerationResult: {
-    taskId: "Cid",
-    delegatorNonce: "Cid",
-    p2: "Cid",
-    p2DeploymentIds: "Vec<Cid>",
-    multiSigAccount: "Cid"
   },
   SignTransactionData: {
     dataAdhoc: "TxData",
