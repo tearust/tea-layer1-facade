@@ -599,7 +599,6 @@
               "id": 1
             },
             "cid": {
-              "rule": "required",
               "type": "string",
               "id": 2
             },
@@ -614,7 +613,6 @@
               "id": 4
             },
             "delegatePubKey": {
-              "rule": "required",
               "type": "bytes",
               "id": 5
             }
@@ -645,131 +643,6 @@
               "rule": "required",
               "type": "uint32",
               "id": 3
-            }
-          }
-        },
-        "KeyGenerationData": {
-          "fields": {
-            "n": {
-              "rule": "required",
-              "type": "int32",
-              "id": 1
-            },
-            "k": {
-              "rule": "required",
-              "type": "int32",
-              "id": 2
-            },
-            "keyType": {
-              "rule": "required",
-              "type": "string",
-              "id": 3
-            },
-            "delegatorTeaNonceHash": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 4
-            },
-            "delegatorTeaNonceRsa": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 5
-            }
-          }
-        },
-        "KeyGenerationResponse": {
-          "fields": {
-            "taskId": {
-              "rule": "required",
-              "type": "string",
-              "id": 1
-            },
-            "dataAdhoc": {
-              "rule": "required",
-              "type": "KeyGenerationData",
-              "id": 2
-            },
-            "payment": {
-              "rule": "required",
-              "type": "string",
-              "id": 3
-            },
-            "p1PublicKey": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 4
-            }
-          }
-        },
-        "UpdateGenerateKeyResult": {
-          "fields": {
-            "taskId": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 1
-            },
-            "delegatorNonce": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 2
-            },
-            "publicKey": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 3
-            },
-            "deploymentIds": {
-              "rule": "repeated",
-              "type": "bytes",
-              "id": 4
-            },
-            "multiSigAccount": {
-              "rule": "repeated",
-              "type": "bytes",
-              "id": 5
-            }
-          }
-        },
-        "SignTransactionResponse": {
-          "fields": {
-            "taskId":{
-              "rule": "required",
-              "type": "string",
-              "id": 1
-            },
-            "keyTaskId": {
-              "rule": "required",
-              "type": "string",
-              "id": 2
-            },
-            "dataAdhoc": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 3
-            },
-            "delegatorTeaId": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 4
-            },
-            "payment": {
-              "rule": "required",
-              "type": "string",
-              "id": 5
-            }
-          }
-        },
-        "UpdateSignTransactionResult": {
-          "fields": {
-            "taskId": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 1
-            },
-            "signedTx": {
-              "rule": "required",
-              "type": "bytes",
-              "id": 2
             }
           }
         },
@@ -838,6 +711,374 @@
             "errandId": {
               "rule": "required",
               "type": "bytes",
+              "id": 1
+            }
+          }
+        },
+        "RepinDeploymentRequest": {
+          "fields": {
+            "deploymentId": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "dataCid": {
+              "rule": "required",
+              "type": "string",
+              "id": 2
+            },
+            "descriptionCid": {
+              "rule": "required",
+              "type": "string",
+              "id": 3
+            },
+            "capCid": {
+              "type": "string",
+              "id": 4
+            }
+          }
+        },
+        "TaskPaymentDescription": {
+          "fields": {}
+        },
+        "KeyGenerationData": {
+          "fields": {
+            "n": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 1
+            },
+            "k": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 2
+            },
+            "keyType": {
+              "rule": "required",
+              "type": "string",
+              "id": 3
+            },
+            "delegatorTeaNonceHash": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 4
+            },
+            "delegatorTeaNonceRsaEncryption": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 5
+            }
+          }
+        },
+        "KeyGenerationResponse": {
+          "fields": {
+            "taskId": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "dataAdhoc": {
+              "rule": "required",
+              "type": "KeyGenerationData",
+              "id": 2
+            },
+            "payment": {
+              "rule": "required",
+              "type": "TaskPaymentDescription",
+              "id": 3
+            },
+            "p1PublicKey": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 4
+            }
+          }
+        },
+        "SignWithKeySlicesRequest": {
+          "fields": {
+            "taskId": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "adhocData": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "multiSigAccount": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            },
+            "payment": {
+              "rule": "required",
+              "type": "TaskPaymentDescription",
+              "id": 4
+            },
+            "delegatorTeaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 5
+            },
+            "p1Signature": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 6
+            }
+          }
+        },
+        "UpdateKeyGenerationResult": {
+          "fields": {
+            "taskId": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "delegatorNonce": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "publicKey": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            },
+            "deploymentIds": {
+              "rule": "repeated",
+              "type": "bytes",
+              "id": 4
+            },
+            "multiSigAccount": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 5
+            }
+          }
+        },
+        "SignTransactionResponse": {
+          "fields": {
+            "taskId": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "keyTaskId": {
+              "rule": "required",
+              "type": "string",
+              "id": 2
+            },
+            "dataAdhoc": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 3
+            },
+            "delegatorTeaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 4
+            },
+            "payment": {
+              "rule": "required",
+              "type": "TaskPaymentDescription",
+              "id": 5
+            }
+          }
+        },
+        "UpdateSignTransactionResult": {
+          "fields": {
+            "taskId": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "delegatorNonce": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "succeed": {
+              "rule": "required",
+              "type": "bool",
+              "id": 3
+            }
+          }
+        },
+        "GetDelegatesRequest": {
+          "fields": {
+            "start": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 1
+            },
+            "limit": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 2
+            }
+          }
+        },
+        "GetDelegatesResponse": {
+          "fields": {
+            "delegates": {
+              "rule": "repeated",
+              "type": "bytes",
+              "id": 1
+            }
+          }
+        }
+      }
+    },
+    "actor_pinner": {
+      "nested": {
+        "PropertyKeyPair": {
+          "fields": {
+            "key": {
+              "type": "string",
+              "id": 1
+            },
+            "value": {
+              "type": "string",
+              "id": 2
+            }
+          }
+        },
+        "PeerApproveRaRequest": {
+          "fields": {
+            "peerId": {
+              "type": "string",
+              "id": 1
+            },
+            "properties": {
+              "rule": "repeated",
+              "type": "PropertyKeyPair",
+              "id": 2
+            }
+          }
+        },
+        "FindPinnersRequest": {
+          "fields": {
+            "deploymentId": {
+              "type": "string",
+              "id": 1
+            },
+            "properties": {
+              "rule": "repeated",
+              "type": "PropertyKeyPair",
+              "id": 2
+            },
+            "delaySeconds": {
+              "type": "uint64",
+              "id": 3
+            },
+            "findingMode": {
+              "type": "bytes",
+              "id": 4
+            }
+          }
+        },
+        "ClientOperationAfterVerify": {
+          "fields": {
+            "peerId": {
+              "type": "string",
+              "id": 1
+            },
+            "pinnerEphemeralId": {
+              "type": "bytes",
+              "id": 2
+            },
+            "item": {
+              "type": "ChallangeStoreItem",
+              "id": 3
+            }
+          }
+        },
+        "ChallangeStoreItem": {
+          "fields": {
+            "state": {
+              "type": "bytes",
+              "id": 1
+            },
+            "uuid": {
+              "type": "string",
+              "id": 2
+            },
+            "properties": {
+              "rule": "repeated",
+              "type": "PropertyKeyPair",
+              "id": 3
+            }
+          }
+        },
+        "ServerCheckStrategy": {
+          "fields": {
+            "item": {
+              "type": "ChallangeStoreItem",
+              "id": 1
+            }
+          }
+        },
+        "ServerCheckStrategyResult": {
+          "fields": {
+            "verify": {
+              "type": "bool",
+              "id": 1
+            },
+            "message": {
+              "type": "string",
+              "id": 2
+            }
+          }
+        },
+        "DataUploadCompletedProcessRequest": {
+          "fields": {
+            "cidCode": {
+              "type": "StringValue",
+              "id": 1
+            },
+            "CidDescription": {
+              "type": "StringValue",
+              "id": 2
+            },
+            "cidCapchecker": {
+              "type": "StringValue",
+              "id": 3
+            },
+            "keyUrlEncoded": {
+              "type": "StringValue",
+              "id": 4
+            }
+          }
+        },
+        "GetDeploymentInfoResponse": {
+          "fields": {
+            "codeCid": {
+              "type": "StringValue",
+              "id": 1
+            },
+            "descriptionCid": {
+              "type": "StringValue",
+              "id": 2
+            },
+            "key1": {
+              "type": "BytesValue",
+              "id": 3
+            }
+          }
+        },
+        "BytesValue": {
+          "fields": {
+            "value": {
+              "type": "bytes",
+              "id": 1
+            }
+          }
+        },
+        "StringValue": {
+          "fields": {
+            "value": {
+              "type": "string",
               "id": 1
             }
           }
@@ -1130,6 +1371,58 @@
               "rule": "required",
               "type": "string",
               "id": 5
+            }
+          }
+        },
+        "AsyncPullCidDataRequest": {
+          "fields": {
+            "cid": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "payload": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "pin": {
+              "rule": "required",
+              "type": "bool",
+              "id": 3
+            }
+          }
+        },
+        "AsyncPullCidDataResponse": {
+          "fields": {
+            "data": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "payload": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "pin": {
+              "rule": "required",
+              "type": "bool",
+              "id": 3
+            }
+          }
+        },
+        "AsyncPullCidDataResponseForNats": {
+          "fields": {
+            "cid": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "payload": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
             }
           }
         }
