@@ -726,10 +726,10 @@ function handle_events (events) {
         }
         case 'SignTransactionRequested': {
           const signTransactionResponse = {
-            taskId: Buffer.from(eventData.Cid, 'hex').toString(),
-            keyTaskId: Buffer.from(eventData.SignTransactionData.keyTaskId, 'hex').toString(),
-            dataAdhoc: Buffer.from(eventData.SignTransactionData.dataAdhoc, 'hex'),
-            delegatorTeaId:  Buffer.from(eventData.SignTransactionData.delegatorTeaId.slice(2), 'hex'),
+            taskId: Buffer.from(eventData.SignTransactionTask.taskId, 'hex').toString(),
+            keyTaskId: Buffer.from(eventData.SignTransactionTask.taskData.keyTaskId, 'hex').toString(),
+            dataAdhoc: Buffer.from(eventData.SignTransactionTask.taskData.dataAdhoc, 'hex'),
+            delegatorTeaId:  Buffer.from(eventData.SignTransactionTask.taskData.delegatorTeaId.slice(2), 'hex'),
             payment: ''
           }
 

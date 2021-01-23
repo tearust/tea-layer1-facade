@@ -111,8 +111,8 @@ const types = {
   SignTransactionTask: {
     taskId: "Cid",
     multisigAddress: "Cid",
-    p1_signature: "TxData",
-    task_data: "SignTransactionData"
+    p1Signature: "TxData",
+    taskData: "SignTransactionData"
   },
   SignTransactionResult: {
     taskId: "Cid",
