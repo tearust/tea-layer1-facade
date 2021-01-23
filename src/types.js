@@ -108,6 +108,12 @@ const types = {
     delegatorNonceHash: "Cid",
     delegatorNonceRsa: "Cid"
   },
+  SignTransactionTask: {
+    taskId: "Cid",
+    multisigAddress: "Cid",
+    p1_signature: "TxData",
+    task_data: "SignTransactionData"
+  },
   SignTransactionResult: {
     taskId: "Cid",
     succeed: 'bool'

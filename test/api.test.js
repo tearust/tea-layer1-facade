@@ -301,31 +301,34 @@ describe('delegate protobuf test suit', () => {
     assert.deepEqual(updateRuntimeActivity, newRequest)
   })
 
-  it('UpdateGenerateKeyResult test', () => {
+  it('UpdateKeyGenerationResult test', () => {
 
     const deploymentIds = [
           Buffer.from('111', 'hex'),
           Buffer.from('222', 'hex')]
-    const updateGenerateKeyResult = {
-      taskId: Buffer.from('333', 'hex'),
-      publicKey: Buffer.from('444', 'hex'),
+    const updateKeyGenerationResult = {
+      taskId: '333',
+      delegatorNonce: Buffer.from('444', 'hex'),
+      publicKey: Buffer.from('555', 'hex'),
       deploymentIds: deploymentIds,
+      multiSigAccount: Buffer.from('666', 'hex'),
     }
 
-    const requestBuf = new proto.DelegateProtobuf('UpdateGenerateKeyResult')
-    requestBuf.payload(updateGenerateKeyResult)
+    const requestBuf = new proto.DelegateProtobuf('UpdateKeyGenerationResult')
+    requestBuf.payload(updateKeyGenerationResult)
     const requestBase64 = Buffer.from(requestBuf.toBuffer()).toString('base64')
-    console.log('UpdateGenerateKeyResult Base64', requestBase64)
+    console.log('UpdateKeyGenerationResult Base64', requestBase64)
 
-    const newRequestBuf = new proto.DelegateProtobuf('UpdateGenerateKeyResult')
+    const newRequestBuf = new proto.DelegateProtobuf('UpdateKeyGenerationResult')
     const newRequest = newRequestBuf.decode(Buffer.from(requestBase64, 'base64'))
-    assert.deepEqual(updateGenerateKeyResult, newRequest)
+    assert.deepEqual(updateKeyGenerationResult, newRequest)
   })
 
   it('UpdateSignTransactionResult test', () => {
     const updateSignTransactionResult = {
-      taskId: Buffer.from('111', 'hex'),
-      signedTx: Buffer.from('222', 'hex'),
+      taskId: '111',
+      delegatorNonce: Buffer.from('222', 'hex'),
+      succeed: true,
     }
 
     const requestBuf = new proto.DelegateProtobuf('UpdateSignTransactionResult')

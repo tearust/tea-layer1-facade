@@ -282,16 +282,16 @@ async function main () {
         break
       }
       case 'update_generate_key_result': {
-        const newRequestBuf = new proto.DelegateProtobuf('UpdateGenerateKeyResult')
-        const updateGenerateKeyResultRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'))
+        const newRequestBuf = new proto.DelegateProtobuf('UpdateKeyGenerationResult')
+        const updateKeyGenerationResultRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'))
 
-        const taskId = toHex(updateGenerateKeyResultRequest.taskId, { addPrefix: true })
-        const delegatorNonce = toHex(updateGenerateKeyResultRequest.delegatorNonce, { addPrefix: true })
-        const multiSigAccount = toHex(updateGenerateKeyResultRequest.multiSigAccount, { addPrefix: true })
-        const p2PublicKey = toHex(updateGenerateKeyResultRequest.publicKey, { addPrefix: true })
+        const taskId = toHex(updateKeyGenerationResultRequest.taskId, { addPrefix: true })
+        const delegatorNonce = toHex(updateKeyGenerationResultRequest.delegatorNonce, { addPrefix: true })
+        const multiSigAccount = toHex(updateKeyGenerationResultRequest.multiSigAccount, { addPrefix: true })
+        const p2PublicKey = toHex(updateKeyGenerationResultRequest.publicKey, { addPrefix: true })
         const deploymentIds = []
-        if (updateGenerateKeyResultRequest.deploymentIds) {
-          updateGenerateKeyResultRequest.deploymentIds.forEach((id, i) => {
+        if (updateKeyGenerationResultRequest.deploymentIds) {
+          updateKeyGenerationResultRequest.deploymentIds.forEach((id, i) => {
             deploymentIds.push(Buffer.from(id, 'hex'))
           })
         }
@@ -318,9 +318,10 @@ async function main () {
         const updateSignTransactionRequest = newRequestBuf.decode(Buffer.from(msg, 'base64'))
 
         const taskId = toHex(updateSignTransactionRequest.taskId, { addPrefix: true })
-        const signedTx =  toHex(updateSignTransactionRequest.signedTx, { addPrefix: true })
-        
-        await api.tx.tea.updateSignTransactionResult(taskId, signedTx)
+        const delegatorNonce =  toHex(updateSignTransactionRequest.delegatorNonce, { addPrefix: true })
+        const succeed = updateSignTransactionRequest.succeed
+
+        await api.tx.tea.updateSignTransactionResult(taskId, delegatorNonce, succeed)
             .signAndSend(ac, ({ events = [], status }) => {
               if (status.isInBlock) {
                 console.log('update sign transaction result ' + teaId)
