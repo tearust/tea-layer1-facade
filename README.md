@@ -206,3 +206,15 @@ Message Body:
 ```
 CiDUNZPHFf3THGEUGr0EqZ/WgiyFWIVMzeOaVoTnpW2ifRIgQh9Q9MkeZtDCwYzP2++UgHQaPH6xifxFouGK4+4bGF8aIIicGleFmGDhjQvWtkiOYBVw3OfAbu4wy5imMQLwmXKkIkCAhkHcdsrhNTqm5058knUmbGx3Pzt8QnGnL3CXCt8xfeVN8RrfLREDdZj0TKJ/W0J2mRpOxaFNa2cWqufnKKYMKICAqOwFMDI=
 ```
+
+## FAQ
+### Metadata error
+Facade run in docker may find the following error:
+```
+charlie-facade        | 2021-01-23 11:41:20        RPC-CORE: getMetadata(at?: BlockHash): Metadata:: createType(Metadata):: Unable to create Enum via index 12, in V0, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11
+charlie-facade        | 2021-01-23 11:41:20        API/INIT: Error: FATAL: Unable to initialize the API: createType(Metadata):: Unable to create Enum via index 12, in V0, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11
+charlie-facade        |     at ApiPromise.value (/tearust/tea-layer1-facade/node_modules/@polkadot/api/base/Init.js:77:25)
+charlie-facade        |     at process._tickCallback (internal/process/next_tick.js:68:7)
+charlie-facade        | Try reconnect ...
+```
+To fix this you can run `npm clean-install` and `npm install`
