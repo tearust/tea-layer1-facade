@@ -758,6 +758,7 @@ function handle_events (events) {
             taskId: Buffer.from(eventData.SignTransactionTask.taskId, 'hex').toString(),
             keyTaskId: Buffer.from(eventData.SignTransactionTask.taskData.keyTaskId, 'hex').toString(),
             dataAdhoc: Buffer.from(eventData.SignTransactionTask.taskData.dataAdhoc, 'hex'),
+            p1Signature: Buffer.from(eventData.SignTransactionTask.p1Signature.slice(2), 'hex'),
             delegatorTeaId:  Buffer.from(eventData.SignTransactionTask.taskData.delegatorTeaId.slice(2), 'hex'),
             payment: ''
           }

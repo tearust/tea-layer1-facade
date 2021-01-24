@@ -879,10 +879,15 @@
               "type": "bytes",
               "id": 4
             },
+            "p1Signature": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 5
+            },
             "payment": {
               "rule": "required",
               "type": "TaskPaymentDescription",
-              "id": 5
+              "id": 6
             }
           }
         },
