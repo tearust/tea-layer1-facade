@@ -286,7 +286,7 @@ describe('delegate protobuf test suit', () => {
   it('UpdateRuntimeActivity test', () => {
     const updateRuntimeActivity = {
       teaId: Buffer.from('0000', 'hex'),
-      cid: '1111',
+      cid: Buffer.from('1111', 'hex').toString(),
       ephemeralId: Buffer.from('2222', 'hex'),
       signature: Buffer.from('3333', 'hex')
     }
