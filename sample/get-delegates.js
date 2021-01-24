@@ -13,8 +13,10 @@ async function main () {
   const startPosition = 0
   const neededDelegatesCount = 1
   const delegates = await api.rpc.tea.getDelegates(startPosition, neededDelegatesCount)
-  console.log('gluon_getDelegates result:', delegates.toString())
-
+  console.log('tea_getDelegates result:', delegates.toString())
+  for (let i = 0; i < delegates.length; i++) {
+    console.log("pubkey:", delegates[i][0].toString(), "tea_id:", delegates[i][1].toString())
+  }
   console.log('call rpc tea_getDelegates finished')
 }
 

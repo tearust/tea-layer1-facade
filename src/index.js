@@ -511,6 +511,31 @@ async function main () {
         // TODO
         break
       }
+      case 'get_delegates': {
+        const uProtoMsg = Buffer.from(msg, 'base64')
+        const getDelegatesRequestBuf = new proto.RAProtobuf('GetDelegatesRequest')
+        const getDelegatesRequest = getDelegatesRequestBuf.decode(uProtoMsg)
+        console.log("get_delegates start:", getDelegatesRequest.start, "limit:", getDelegatesRequest.limit);
+
+        const delegates = await api.rpc.tea.getDelegates(getDelegatesRequest.start, getDelegatesRequest.limit)
+        console.log('tea_getDelegates result:', delegates.toString())
+        const pubkeys = []
+        for (let i = 0; i < delegates.length; i++) {
+          pubkeys.push(Buffer.from(delegates[i][0].slice(2), 'hex'))
+        }
+
+        const getDelegatesResponse = {
+          delegates: pubkeys,
+        }
+
+        console.log('newGetDelegatesResponse:', JSON.stringify(getDelegatesResponse))
+        const responseBuf = new proto.DelegateProtobuf('GetDelegatesResponse')
+        responseBuf.payload(getDelegatesResponse)
+        const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64')
+        console.log('GetDelegatesResponse Base64', responseBase64)
+        nc.publish(reply, responseBase64)
+        break
+      }
       default:
         nc.publish(reply, JSON.stringify(['action_does_not_support']))
     }
@@ -683,7 +708,6 @@ function handle_events (events) {
           break
         }
         case 'UpdateRuntimeActivity': {
-          var cid = ''
           if (eventData.RuntimeActivity.cid.isSome) {
             cid = Buffer.from(eventData.RuntimeActivity.cid.unwrap(), 'hex').toString()
           }
