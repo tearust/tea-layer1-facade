@@ -464,7 +464,7 @@ async function main () {
         const cid = toHex(Buffer.from(newRequest.cid), { addPrefix: true })
         const ephemeralId = toHex(newRequest.ephemeralId, { addPrefix: true })
         const signature = toHex(newRequest.signature, { addPrefix: true })
-        const delegatePubkey = toHex(newRequest.delegatePubkey, { addPrefix: true })
+        var delegatePubkey = toHex(newRequest.delegatePubKey, { addPrefix: true })
 
         await api.tx.tea.updateRuntimeActivity(teaId, cid, ephemeralId, signature, delegatePubkey)
           .signAndSend(ac, ({ events = [], status }) => {
