@@ -11,7 +11,7 @@ async function main () {
   // const header = await api.rpc.chain.getHeader();
   // const prevHash = await api.rpc.chain.getBlockHash(header.blockNumber.subn(42));
   const startPosition = 0
-  const neededDelegatesCount = 1
+  const neededDelegatesCount = 10
   const delegates = await api.rpc.tea.getDelegates(startPosition, neededDelegatesCount)
   console.log('tea_getDelegates result:', delegates.toString())
   for (let i = 0; i < delegates.length; i++) {

@@ -734,7 +734,7 @@ function handle_events (events) {
             k: parseInt(eventData.AccountGenerationDataWithoutP3.k, 10),
             keyType: Buffer.from(eventData.AccountGenerationDataWithoutP3.keyType, 'hex').toString(),
             delegatorTeaNonceHash:  Buffer.from(eventData.AccountGenerationDataWithoutP3.delegatorNonceHash, 'hex'),
-            delegatorTeaNonceRsa:  Buffer.from(eventData.AccountGenerationDataWithoutP3.delegatorNonceRsa, 'hex'),
+            delegatorTeaNonceRsaEncryption:  Buffer.from(eventData.AccountGenerationDataWithoutP3.delegatorNonceRsa, 'hex'),
           }
 
           const keyGenerationResponse = {
