@@ -737,10 +737,11 @@ function handle_events (events) {
             delegatorTeaNonceRsaEncryption:  Buffer.from(eventData.AccountGenerationDataWithoutP3.delegatorNonceRsa, 'hex'),
           }
 
+          const payment = {}
           const keyGenerationResponse = {
             taskId: Buffer.from(eventData.Cid, 'hex').toString(),
             dataAdhoc: keyGenerationData,
-            payment: '',
+            payment: payment,
             p1PublicKey: Buffer.from(eventData.AccountGenerationDataWithoutP3.p1, 'hex'),
           }
 
@@ -754,13 +755,14 @@ function handle_events (events) {
           break
         }
         case 'SignTransactionRequested': {
+          const payment = {}
           const signTransactionResponse = {
             taskId: Buffer.from(eventData.SignTransactionTask.taskId, 'hex').toString(),
             keyTaskId: Buffer.from(eventData.SignTransactionTask.taskData.keyTaskId, 'hex').toString(),
             dataAdhoc: Buffer.from(eventData.SignTransactionTask.taskData.dataAdhoc, 'hex'),
             p1Signature: Buffer.from(eventData.SignTransactionTask.p1Signature.slice(2), 'hex'),
             delegatorTeaId:  Buffer.from(eventData.SignTransactionTask.taskData.delegatorTeaId.slice(2), 'hex'),
-            payment: ''
+            payment: payment
           }
 
           console.log('newSignTransactionResponse:', JSON.stringify(signTransactionResponse))
