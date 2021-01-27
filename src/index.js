@@ -756,13 +756,17 @@ function handle_events (events) {
         }
         case 'SignTransactionRequested': {
           const payment = {}
+          const signTransactionData = {
+            transactionData: Buffer.from(eventData.SignTransactionTask.taskData.dataAdhoc, 'hex'),
+            delegatorTeaNonceHash: Buffer.from(eventData.SignTransactionTask.taskData.delegatorNonceHash, 'hex'),
+            delegatorTeaNonceRsaEncryption: Buffer.from(eventData.SignTransactionTask.taskData.delegatorNonceRsa, 'hex'),
+          }
           const signTransactionResponse = {
             taskId: Buffer.from(eventData.SignTransactionTask.taskId, 'hex').toString(),
-            keyTaskId: Buffer.from(eventData.SignTransactionTask.taskData.keyTaskId, 'hex').toString(),
-            dataAdhoc: Buffer.from(eventData.SignTransactionTask.taskData.dataAdhoc, 'hex'),
-            p1Signature: Buffer.from(eventData.SignTransactionTask.p1Signature.slice(2), 'hex'),
-            delegatorTeaId:  Buffer.from(eventData.SignTransactionTask.taskData.delegatorTeaId.slice(2), 'hex'),
-            payment: payment
+            dataAdhoc: signTransactionData,
+            payment: payment,
+            p1Signature: Buffer.from(eventData.SignTransactionTask.p1Signature, 'hex'),
+            multiSigAccount: Buffer.from(eventData.SignTransactionTask.multisigAddress, 'hex').toString(),
           }
 
           console.log('newSignTransactionResponse:', JSON.stringify(signTransactionResponse))

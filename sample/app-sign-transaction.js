@@ -38,7 +38,7 @@ async function main () {
   console.log("p1:", p1)
 
   // need to get task from browser-sign-transaction result
-  const task_id = '0x6de524f32772894873578ac6d786a5e82738ffdbadc307dfc038feb0ff4f7536';
+  const task_id = '0x4e4b4e050424d5e463985fc537b5e5e62caae36251af3a4003d3bfc1f201b4b3';
   const p1_signature = u8aToHex(stringToU8a('testSignature'));;
   const multi_sig_account = u8aToHex(stringToU8a('testAddress'));
 

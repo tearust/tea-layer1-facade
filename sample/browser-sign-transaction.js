@@ -20,7 +20,7 @@ async function main () {
   const alice = keyring.addFromUri('//Alice', { name: 'Alice default' });
 
   // prepare data
-  const data_adhoc = u8aToHex('transactionData')
+  const data_adhoc = u8aToHex(stringToU8a('transactionData'))
   const nonce = '200';
   const delegator_nonce_hash = u8aToHex(Buffer.from(hash(nonce), 'hex'));
   // todo use real rsa
