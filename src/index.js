@@ -513,7 +513,7 @@ async function main () {
       }
       case 'get_delegates': {
         const uProtoMsg = Buffer.from(msg, 'base64')
-        const getDelegatesRequestBuf = new proto.RAProtobuf('GetDelegatesRequest')
+        const getDelegatesRequestBuf = new proto.DelegateProtobuf('GetDelegatesRequest')
         const getDelegatesRequest = getDelegatesRequestBuf.decode(uProtoMsg)
         console.log("get_delegates start:", getDelegatesRequest.start, "limit:", getDelegatesRequest.limit);
 
