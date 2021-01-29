@@ -94,8 +94,9 @@ async function main () {
 
         const teaId = toHex(newNodeRequest.teaId, { addPrefix: true })
 
+        const nonce = await api.rpc.system.accountNextIndex(ac.address)
         await api.tx.tea.addNewNode(teaId)
-          .signAndSend(ac, ({ events = [], status }) => {
+          .signAndSend(ac, {nonce: nonce}, ({ events = [], status }) => {
             if (status.isInBlock) {
               console.log('Add new node with teaId ' + teaId)
               nc.publish(reply, JSON.stringify({ status, teaId }))
@@ -119,8 +120,9 @@ async function main () {
         const isPass = newRequest.isPass
         const signature = toHex(newRequest.signature, { addPrefix: true })
 
+        const nonce = await api.rpc.system.accountNextIndex(ac.address)
         await api.tx.tea.remoteAttestation(teaId, targetTeaId, isPass, signature)
-          .signAndSend(ac, ({ events = [], status }) => {
+          .signAndSend(ac, {nonce: nonce},({ events = [], status }) => {
             if (status.isInBlock) {
               console.log('Commit remote attestation result, teaId:' + teaId)
               nc.publish(reply, JSON.stringify({ status, teaId }))
@@ -151,8 +153,9 @@ async function main () {
         })
         const signature = toHex(Buffer.from(updateProfile.signature), { addPrefix: true })
 
+        const nonce = await api.rpc.system.accountNextIndex(ac.address)
         await api.tx.tea.updateNodeProfile(teaId, ephemeralPublicKey, profileCid, publicUrls, peerId, signature)
-          .signAndSend(ac, ({ events = [], status }) => {
+          .signAndSend(ac, {nonce: nonce},({ events = [], status }) => {
             if (status.isInBlock) {
               console.log('Update node profile with teaId ' + teaId)
             } else {
@@ -300,9 +303,10 @@ async function main () {
           })
         }
 
+        const nonce = await api.rpc.system.accountNextIndex(ac.address)
         await api.tx.tea.updateGenerateAccountWithoutP3Result(taskId,
             delegatorNonce, p2PublicKey, deploymentIds, multiSigAccount)
-            .signAndSend(ac, ({ events = [], status }) => {
+            .signAndSend(ac, {nonce: nonce},({ events = [], status }) => {
               if (status.isInBlock) {
                 console.log('update generate key result ' + teaId)
                 nc.publish(reply, JSON.stringify({ status, teaId }))
@@ -325,8 +329,9 @@ async function main () {
         const delegatorNonce =  toHex(updateSignTransactionRequest.delegatorNonce, { addPrefix: true })
         const succeed = updateSignTransactionRequest.succeed
 
+        const nonce = await api.rpc.system.accountNextIndex(ac.address)
         await api.tx.tea.updateSignTransactionResult(taskId, delegatorNonce, succeed)
-            .signAndSend(ac, ({ events = [], status }) => {
+            .signAndSend(ac, {nonce: nonce},({ events = [], status }) => {
               if (status.isInBlock) {
                 console.log('update sign transaction result ' + teaId)
                 nc.publish(reply, JSON.stringify({ status, teaId }))
@@ -387,8 +392,9 @@ async function main () {
         const descriptionCid = toHex(Buffer.from(newData.data.descriptionCid), { addPrefix: true })
         const capCid = toHex(Buffer.from(newData.data.capCid), { addPrefix: true })
 
+        const nonce = await api.rpc.system.accountNextIndex(ac.address)
         await api.tx.tea.addNewData(delegatorEphemeralId, deploymentId, dataCid, descriptionCid, capCid)
-          .signAndSend(ac, ({ events = [], status }) => {
+          .signAndSend(ac, {nonce: nonce},({ events = [], status }) => {
             if (status.isInBlock) {
               console.log('Included at block hash', status.asInBlock.toHex())
               console.log('Events:')
@@ -427,6 +433,7 @@ async function main () {
 
         // const bills = [['5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', 10], ['5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', 10]];
 
+        const nonce = await api.rpc.system.accountNextIndex(ac.address)
         await api.tx.tea.settleAccounts(
           employer,
           delegatorTeaId,
@@ -440,7 +447,7 @@ async function main () {
           resultCid,
           executorSingature,
           bills)
-          .signAndSend(ac, ({ events = [], status }) => {
+          .signAndSend(ac, {nonce: nonce},({ events = [], status }) => {
             if (status.isInBlock) {
               console.log('Included at block hash', status.asInBlock.toHex())
               console.log('Events:')
@@ -466,8 +473,9 @@ async function main () {
         const signature = toHex(newRequest.signature, { addPrefix: true })
         var delegatePubkey = toHex(newRequest.delegatePubKey, { addPrefix: true })
 
+        const nonce = await api.rpc.system.accountNextIndex(ac.address)
         await api.tx.tea.updateRuntimeActivity(teaId, cid, ephemeralId, signature, delegatePubkey)
-          .signAndSend(ac, ({ events = [], status }) => {
+          .signAndSend(ac, {nonce: nonce},({ events = [], status }) => {
             if (status.isInBlock) {
               console.log('Included at block hash', status.asInBlock.toHex())
               console.log('Events:')
