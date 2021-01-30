@@ -527,13 +527,17 @@ async function main () {
 
         const delegates = await api.rpc.tea.getDelegates(getDelegatesRequest.start, getDelegatesRequest.limit)
         console.log('tea_getDelegates result:', delegates.toString())
-        const pubkeys = []
+        const delegateItems = []
         for (let i = 0; i < delegates.length; i++) {
-          pubkeys.push(Buffer.from(delegates[i][0].slice(2), 'hex'))
+          const delegateItem = {
+            teaId: Buffer.from(delegates[i][1].slice(2), 'hex'),
+            peerId: Buffer.from(delegates[i][2].slice(2), 'hex').toString()
+          }
+          delegateItems.push(delegateItem)
         }
 
         const getDelegatesResponse = {
-          delegates: pubkeys,
+          delegates: delegateItems,
         }
 
         console.log('newGetDelegatesResponse:', JSON.stringify(getDelegatesResponse))

@@ -938,11 +938,25 @@
             }
           }
         },
+        "DelegateItem": {
+          "fields": {
+            "teaId": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "peerId": {
+              "rule": "required",
+              "type": "string",
+              "id": 2
+            }
+          }
+        },
         "GetDelegatesResponse": {
           "fields": {
             "delegates": {
               "rule": "repeated",
-              "type": "bytes",
+              "type": "DelegateItem",
               "id": 1
             }
           }
