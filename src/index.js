@@ -531,7 +531,7 @@ async function main () {
         for (let i = 0; i < delegates.length; i++) {
           const delegateItem = {
             teaId: Buffer.from(delegates[i][1].slice(2), 'hex'),
-            peerId: delegates[i][2].toString().slice(2)
+            peerId: Buffer.from(delegates[i][2].toString().slice(2), 'hex').toString()
           }
           delegateItems.push(delegateItem)
         }

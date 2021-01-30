@@ -23,7 +23,7 @@ async function main () {
     console.log(delegates[i].toString() )
     const delegateItem = {
       teaId: Buffer.from(delegates[i][1].slice(2), 'hex'),
-      peerId: delegates[i][2].toString().slice(2)
+      peerId:  Buffer.from(delegates[i][2].toString().slice(2), 'hex').toString()
     }
     delegateItems.push(delegateItem)
   }
@@ -31,6 +31,12 @@ async function main () {
   const getDelegatesResponse = {
     delegates: delegateItems,
   }
+
+  console.log(getDelegatesResponse)
+
+
+  // const addr_hex = '0x516d5a6a4b78783953736d56634e384339487a33375035675050785344617435346962584e644e57766133557034'
+  // console.log( Buffer.from(addr_hex.slice(2), 'hex').toString())
 
   console.log('call rpc tea_getDelegates finished')
 }
