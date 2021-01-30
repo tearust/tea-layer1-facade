@@ -22,7 +22,7 @@ async function main () {
   const delegator_nonce_hash = Buffer.from(hash(nonce), 'hex');
   // todo use real rsa
   const delegator_nonce_rsa = Buffer.from('24d614bd215f1c90345a4b505be6bd0589ac6b105a2a8c059a5890ba953aec11', 'hex');
-  const key_type = stringToU8a('btc');
+  const key_type = stringToU8a('bitcoin_mainnet');
   // todo use real p1
   const p1 = Buffer.from('24d614bd215f1c90345a4b505be6bd0589ac6b105a2a8c059a5890ba953aec11', 'hex');
   const p2_n = 3;

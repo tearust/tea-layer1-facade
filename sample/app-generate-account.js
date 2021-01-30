@@ -24,7 +24,7 @@ async function main () {
   const delegator_nonce_hash = u8aToHex(Buffer.from(hash(nonce2), 'hex'))
   // todo use real rsa
   const delegator_nonce_rsa = u8aToHex(Buffer.from('24d614bd215f1c90345a4b505be6bd0589ac6b105a2a8c059a5890ba953aec11', 'hex'))
-  const key_type = 'btc'
+  const key_type = 'bitcoin_mainnet'
   // todo use real p1
   const p1 = u8aToHex(Buffer.from('24d614bd215f1c90345a4b505be6bd0589ac6b105a2a8c059a5890ba953aec11', 'hex'))
   const p2_n = 3;
