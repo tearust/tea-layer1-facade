@@ -231,7 +231,7 @@ async function main () {
         break
       }
       case 'manifest_cid_by_tea_id': {
-        const teaId = '0x' + Buffer.from(msg, 'base64')
+        const teaId = toHex(Buffer.from(msg, 'base64'), { addPrefix: true })
         console.log('manifest_cid_by_tea_id, teaId:', teaId)
         const nodeObj = await api.query.tea.manifest(teaId)
 
@@ -251,6 +251,7 @@ async function main () {
         const nodeObj = await api.query.tea.nodes(teaId)
         if (nodeObj.isNone) {
           console.log('No such node found')
+          console.log('teaId:', teaId)
           nc.publish(reply, 'no_such_node_found')
           break
         }
@@ -530,9 +531,10 @@ async function main () {
         const delegateItems = []
         for (let i = 0; i < delegates.length; i++) {
           const delegateItem = {
-            teaId: Buffer.from(delegates[i][1].slice(2), 'hex'),
+            teaId: Buffer.from(delegates[i][1], 'hex'),
             peerId: Buffer.from(delegates[i][2].toString().slice(2), 'hex').toString()
           }
+          console.log('teaId:', delegates[i][1].toString())
           delegateItems.push(delegateItem)
         }
 
