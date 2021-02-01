@@ -305,7 +305,7 @@ async function main () {
         }
 
         const nonce = await api.rpc.system.accountNextIndex(ac.address)
-        await api.tx.tea.updateGenerateAccountWithoutP3Result(taskId,
+        await api.tx.gluon.updateGenerateAccountWithoutP3Result(taskId,
             delegatorNonce, p2PublicKey, deploymentIds, multiSigAccount)
             .signAndSend(ac, {nonce: nonce},({ events = [], status }) => {
               if (status.isInBlock) {
@@ -331,7 +331,7 @@ async function main () {
         const succeed = updateSignTransactionRequest.succeed
 
         const nonce = await api.rpc.system.accountNextIndex(ac.address)
-        await api.tx.tea.updateSignTransactionResult(taskId, delegatorNonce, succeed)
+        await api.tx.gluon.updateSignTransactionResult(taskId, delegatorNonce, succeed)
             .signAndSend(ac, {nonce: nonce},({ events = [], status }) => {
               if (status.isInBlock) {
                 console.log('update sign transaction result ' + teaId)
