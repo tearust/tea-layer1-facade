@@ -792,6 +792,34 @@ function handle_events (events) {
           nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
           break
         }
+        case "AssetGenerated": {
+          const p2DeploymentIds = []
+          if (eventData.Asset.deploymentIds) {
+            eventData.Asset.deploymentIds.forEach((id, i) => {
+              p2DeploymentIds.push(Buffer.from(id, 'hex'))
+            })
+          }
+          const AssetInfo = {
+            sender: Buffer.from(eventData.Asset.owner, 'hex'),
+            p2: Buffer.from(eventData.Asset.p2, 'hex'),
+            p2DeploymentIds: p2DeploymentIds,
+          }
+
+          const assetGeneratedResponse = {
+            taskId:Buffer.from(eventData.Cid, 'hex').toString(),
+            multiSigAccount: Buffer.from(eventData.MultiSigAccount, 'hex').toString(),
+            assetInfo: AssetInfo,
+          }
+
+          console.log('newAssetGeneratedResponse:', JSON.stringify(assetGeneratedResponse))
+          const responseBuf = new proto.DelegateProtobuf('AssetGeneratedResponse')
+          responseBuf.payload(assetGeneratedResponse)
+          const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64')
+          console.log('AssetGeneratedResponse Base64', responseBase64)
+
+          nc.publish(`layer1.event.${event.section}.${event.method}`, responseBase64)
+          break
+        }
         default:
       }
     }

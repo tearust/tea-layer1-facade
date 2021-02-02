@@ -22,7 +22,7 @@ async function main () {
   const delegator_nonce_hash = Buffer.from(hash(nonce), 'hex');
   // todo use real rsa
   const delegator_nonce_rsa = Buffer.from('24d614bd215f1c90345a4b505be6bd0589ac6b105a2a8c059a5890ba953aec11', 'hex');
-  const key_type = stringToU8a('btc');
+  const key_type = stringToU8a('bitcoin_mainnet');
   // todo use real p1
   const p1 = Buffer.from('24d614bd215f1c90345a4b505be6bd0589ac6b105a2a8c059a5890ba953aec11', 'hex');
   const p2_n = 3;
@@ -66,7 +66,7 @@ async function main () {
       console.log('task_hash: ', task_hash);
       const task_hash_hex = u8aToHex(Buffer.from(task_hash, 'hex'));
 
-      const task_id = '0x6de524f32772894873578ac6d786a5e82738ffdbadc307dfc038feb0ff4f7536';
+      const task_id = '0xb5a2e1f3cabd598b8c2e5ecc0ee5f62b989c46a86f3e09b755843345d36ac760';
       const delegator_nonce = '200';
       const p2 = u8aToHex(stringToU8a('p2pubkey'));
       const p2_deployment_ids = ['0x1234', '0x5678'];

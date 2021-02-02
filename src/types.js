@@ -8,6 +8,7 @@ const types = {
   RefNum: 'H256',
   Result: 'Bytes',
   ClientPubKey: "Bytes",
+  MultiSigAccount: "Bytes",
   Signature: "Bytes",
   NodeStatus: {
     _enum: ['Pending', 'Active', 'Inactive', 'Invalid']
@@ -81,6 +82,11 @@ const types = {
     cid: 'Option<Cid>',
     ephemeralId: 'TeaPubKey',
     updateHeight: 'BlockNumber'
+  },
+  Asset: {
+    owner: 'AccountId',
+    p2: 'Cid',
+    deploymentIds: 'Vec<Cid>',
   },
   //////////////
   //  gluon   //

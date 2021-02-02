@@ -960,6 +960,44 @@
               "id": 1
             }
           }
+        },
+        "AssetInfo": {
+          "fields": {
+            "sender": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "p2": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 2
+            },
+            "p2DeploymentIds": {
+              "rule": "repeated",
+              "type": "bytes",
+              "id": 3
+            }
+          }
+        },
+        "AssetGeneratedResponse": {
+          "fields": {
+            "taskId": {
+              "rule": "required",
+              "type": "string",
+              "id": 1
+            },
+            "multiSigAccount": {
+              "rule": "required",
+              "type": "string",
+              "id": 2
+            },
+            "assetInfo": {
+              "rule": "required",
+              "type": "AssetInfo",
+              "id": 3
+            }
+          }
         }
       }
     },
@@ -987,6 +1025,10 @@
               "rule": "repeated",
               "type": "PropertyKeyPair",
               "id": 2
+            },
+            "sendToActor": {
+              "type": "string",
+              "id": 3
             }
           }
         },
@@ -1008,6 +1050,10 @@
             "findingMode": {
               "type": "bytes",
               "id": 4
+            },
+            "sendToActor": {
+              "type": "string",
+              "id": 5
             }
           }
         },
