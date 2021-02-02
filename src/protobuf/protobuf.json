@@ -900,7 +900,7 @@
             },
             "multiSigAccount": {
               "rule": "required",
-              "type": "string",
+              "type": "bytes",
               "id": 5
             }
           }
@@ -975,7 +975,7 @@
             },
             "p2DeploymentIds": {
               "rule": "repeated",
-              "type": "bytes",
+              "type": "string",
               "id": 3
             }
           }
@@ -989,7 +989,7 @@
             },
             "multiSigAccount": {
               "rule": "required",
-              "type": "string",
+              "type": "bytes",
               "id": 2
             },
             "assetInfo": {

@@ -780,7 +780,7 @@ function handle_events (events) {
             dataAdhoc: signTransactionData,
             payment: payment,
             p1Signature: Buffer.from(eventData.SignTransactionTask.p1Signature, 'hex'),
-            multiSigAccount: Buffer.from(eventData.SignTransactionTask.multisigAddress, 'hex').toString(),
+            multiSigAccount: Buffer.from(eventData.SignTransactionTask.multisigAddress, 'hex'),
           }
 
           console.log('newSignTransactionResponse:', JSON.stringify(signTransactionResponse))
@@ -796,7 +796,7 @@ function handle_events (events) {
           const p2DeploymentIds = []
           if (eventData.Asset.deploymentIds) {
             eventData.Asset.deploymentIds.forEach((id, i) => {
-              p2DeploymentIds.push(Buffer.from(id, 'hex'))
+              p2DeploymentIds.push(Buffer.from(id, 'hex').toString())
             })
           }
           const AssetInfo = {
@@ -807,7 +807,7 @@ function handle_events (events) {
 
           const assetGeneratedResponse = {
             taskId:Buffer.from(eventData.Cid, 'hex').toString(),
-            multiSigAccount: Buffer.from(eventData.MultiSigAccount, 'hex').toString(),
+            multiSigAccount: Buffer.from(eventData.MultiSigAccount, 'hex'),
             assetInfo: AssetInfo,
           }
 
