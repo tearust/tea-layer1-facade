@@ -550,6 +550,34 @@ async function main () {
         nc.publish(reply, responseBase64)
         break
       }
+      case 'get_deployment_ids': {
+        const uProtoMsg = Buffer.from(msg, 'base64')
+        const getDeploymentIdsRequestBuf = new proto.DelegateProtobuf('GetDeploymentIds')
+        const getDeploymentIdsRequest = getDeploymentIdsRequestBuf.decode(uProtoMsg)
+        console.log("get_deployment_ids multiSigAccount:", getDeploymentIdsRequest.multiSigAccount);
+
+        const assetInfo = await api.query.gluon.assets(getDeploymentIdsRequest.multiSigAccount)
+        console.log('get_deployment_ids result:', assetInfo.toString())
+
+        const asset = assetInfo.toJSON()
+        const AssetInfo = {
+          sender: Buffer.from(asset.owner, 'hex'),
+          p2: Buffer.from(asset.p2.slice(2), 'hex'),
+          p2DeploymentIds: asset.deploymentIds,
+        }
+
+        const getDeploymentIdsResponse = {
+          assetInfo: AssetInfo
+        }
+
+        console.log('newGetDeploymentIdsResponse:', JSON.stringify(getDeploymentIdsResponse))
+        const responseBuf = new proto.DelegateProtobuf('GetDeploymentIdsResponse')
+        responseBuf.payload(getDeploymentIdsResponse)
+        const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64')
+        console.log('GetDeploymentIdsResponse Base64', responseBase64)
+        nc.publish(reply, responseBase64)
+        break
+      }
       default:
         nc.publish(reply, JSON.stringify(['action_does_not_support']))
     }

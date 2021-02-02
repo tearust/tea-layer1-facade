@@ -998,6 +998,24 @@
               "id": 3
             }
           }
+        },
+        "GetDeploymentIds": {
+          "fields": {
+            "multiSigAccount": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            }
+          }
+        },
+        "GetDeploymentIdsResponse": {
+          "fields": {
+            "assetInfo": {
+              "rule": "required",
+              "type": "AssetInfo",
+              "id": 1
+            }
+          }
         }
       }
     },

@@ -68,8 +68,11 @@ async function main () {
 
       const task_id = '0xb5a2e1f3cabd598b8c2e5ecc0ee5f62b989c46a86f3e09b755843345d36ac760';
       const delegator_nonce = '200';
-      const p2 = u8aToHex(stringToU8a('p2pubkey'));
+      const p2 = u8aToHex(Buffer.from('038eba1db314e7569aafc62a3c0fd1de9fe6359f88962521768a37786fce62dd37', 'hex'));
       const p2_deployment_ids = ['0x1234', '0x5678'];
+      console.log('delegator_nonce:', delegator_nonce);
+      console.log('p2:', p2);
+      console.log('p2_deployment_ids:', p2_deployment_ids);
       const multi_sig_account = u8aToHex(stringToU8a('testAddress'));
       api.tx.gluon.updateGenerateAccountWithoutP3Result(task_hash_hex, delegator_nonce,
           p2, p2_deployment_ids, multi_sig_account)
