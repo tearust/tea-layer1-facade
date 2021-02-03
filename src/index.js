@@ -836,7 +836,7 @@ function handle_events (events) {
           }
 
           const assetGeneratedResponse = {
-            taskId:Buffer.from(eventData.Cid.slice(2), 'hex').toString(),
+            taskId:Buffer.from(eventData.Cid, 'hex').toString().slice(2),
             multiSigAccount: Buffer.from(eventData.MultiSigAccount, 'hex'),
             assetInfo: AssetInfo,
           }
