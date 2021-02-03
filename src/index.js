@@ -302,7 +302,7 @@ async function main () {
         const deploymentIds = []
         if (updateKeyGenerationResultRequest.deploymentIds) {
           updateKeyGenerationResultRequest.deploymentIds.forEach((id, i) => {
-            deploymentIds.push(toHex(updateKeyGenerationResultRequest.publicKey, { addPrefix: true }))
+            deploymentIds.push('0x' + id)
           })
         }
 
