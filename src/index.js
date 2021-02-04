@@ -826,7 +826,7 @@ function handle_events (events) {
           const p2DeploymentIds = []
           if (eventData.Asset.deploymentIds) {
             eventData.Asset.deploymentIds.forEach((id, i) => {
-              p2DeploymentIds.push(Buffer.from(id, 'hex').toString())
+              p2DeploymentIds.push(Buffer.from(id, 'hex').toString().slice(2))
             })
           }
           const AssetInfo = {
