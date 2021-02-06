@@ -8,6 +8,7 @@ const toHex = require('to-hex')
 const types = require('./types')
 const rpc = require('./rpc')
 const BN = require('bn.js')
+const { stringToHex, stringToU8a, u8aToHex, u8aToString, hexToU8a, promisify, u8aToBuffer, hexToString, bufferToU8a} = require('@polkadot/util');
 
 const natsUrl = process.env.NATS_URL || '127.0.0.1:4222'
 const nc = NATS.connect(natsUrl, {
@@ -476,6 +477,8 @@ async function main () {
         const signature = toHex(newRequest.signature, { addPrefix: true })
         var delegatePubkey = toHex(newRequest.delegatePubKey, { addPrefix: true })
 
+console.log('Original RSA KEY =>', u8aToString(bufferToU8a(newRequest.delegatePubKey)));
+console.log('RSA KEY HEX =>', delegatePubkey);
         const nonce = await api.rpc.system.accountNextIndex(ac.address)
         await api.tx.tea.updateRuntimeActivity(teaId, cid, ephemeralId, signature, delegatePubkey)
           .signAndSend(ac, {nonce: nonce},({ events = [], status }) => {
