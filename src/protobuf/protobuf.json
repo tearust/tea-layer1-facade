@@ -1005,6 +1005,48 @@
               "id": 1
             }
           }
+        },
+        "KeyGenerationInfo": {
+          "fields": {
+            "p1PublicKey": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            },
+            "n": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 2
+            },
+            "k": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 3
+            },
+            "keyType": {
+              "rule": "required",
+              "type": "string",
+              "id": 4
+            }
+          }
+        },
+        "GetKeyGenerationInfoRequest": {
+          "fields": {
+            "multiSigAccount": {
+              "rule": "required",
+              "type": "bytes",
+              "id": 1
+            }
+          }
+        },
+        "GetKeyGenerationInfoResponse": {
+          "fields": {
+            "keyGenerationInfo": {
+              "rule": "required",
+              "type": "KeyGenerationInfo",
+              "id": 1
+            }
+          }
         }
       }
     },

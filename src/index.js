@@ -559,10 +559,10 @@ console.log('RSA KEY HEX =>', delegatePubkey);
         const uProtoMsg = Buffer.from(msg, 'base64')
         const getDeploymentIdsRequestBuf = new proto.DelegateProtobuf('GetDeploymentIds')
         const getDeploymentIdsRequest = getDeploymentIdsRequestBuf.decode(uProtoMsg)
-        console.log("get_deployment_ids multiSigAccount:", getDeploymentIdsRequest.multiSigAccount.toString());
+        const multi_sig_account = getDeploymentIdsRequest.multiSigAccount.toString()
+        console.log("get_deployment_ids multiSigAccount:", multi_sig_account);
 
-        // const multiSigAccount =
-        const assetInfo = await api.query.gluon.assets(getDeploymentIdsRequest.multiSigAccount.toString())
+        const assetInfo = await api.query.gluon.assets(multi_sig_account)
         console.log('get_deployment_ids result:', assetInfo.toString())
 
         const asset = assetInfo.toJSON()
@@ -581,6 +581,35 @@ console.log('RSA KEY HEX =>', delegatePubkey);
         responseBuf.payload(getDeploymentIdsResponse)
         const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64')
         console.log('GetDeploymentIdsResponse Base64', responseBase64)
+        nc.publish(reply, responseBase64)
+        break
+      }
+      case 'get_key_generation_info_request': {
+        const uProtoMsg = Buffer.from(msg, 'base64')
+        const getKeyGenerationInfoRequestBuf = new proto.DelegateProtobuf('GetKeyGenerationInfoRequest')
+        const getKeyGenerationInfoRequest = getKeyGenerationInfoRequestBuf.decode(uProtoMsg)
+        console.log("get_key_generation_info_request multiSigAccount:", getKeyGenerationInfoRequest.multiSigAccount.toString());
+
+        const assetInfo = await api.query.gluon.assets(getDeploymentIdsRequest.multiSigAccount.toString())
+        console.log('get_key_generation_info_request result:', assetInfo.toString())
+
+        const asset = assetInfo.toJSON()
+        const keyGenerationInfo = {
+          p1PublicKey: Buffer.from(asset.dataAdhoc.p1.slice(2), 'hex'),
+          n: asset.dataAdhoc.n,
+          k: asset.dataAdhoc.k,
+          keyType: Buffer.from(asset.dataAdhoc.keyType.slice(2), 'hex').toString(),
+        }
+
+        const getKeyGenerationInfoResponse = {
+          keyGenerationInfo: keyGenerationInfo
+        }
+
+        console.log('newGetKeyGenerationInfoResponse:', JSON.stringify(getKeyGenerationInfoResponse))
+        const responseBuf = new proto.DelegateProtobuf('GetKeyGenerationInfoResponse')
+        responseBuf.payload(getKeyGenerationInfoResponse)
+        const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64')
+        console.log('GetKeyGenerationInfoResponse Base64', responseBase64)
         nc.publish(reply, responseBase64)
         break
       }
