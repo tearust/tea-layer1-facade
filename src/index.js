@@ -559,9 +559,10 @@ console.log('RSA KEY HEX =>', delegatePubkey);
         const uProtoMsg = Buffer.from(msg, 'base64')
         const getDeploymentIdsRequestBuf = new proto.DelegateProtobuf('GetDeploymentIds')
         const getDeploymentIdsRequest = getDeploymentIdsRequestBuf.decode(uProtoMsg)
-        console.log("get_deployment_ids multiSigAccount:", getDeploymentIdsRequest.multiSigAccount);
+        console.log("get_deployment_ids multiSigAccount:", getDeploymentIdsRequest.multiSigAccount.toString());
 
-        const assetInfo = await api.query.gluon.assets(getDeploymentIdsRequest.multiSigAccount)
+        // const multiSigAccount =
+        const assetInfo = await api.query.gluon.assets(getDeploymentIdsRequest.multiSigAccount.toString())
         console.log('get_deployment_ids result:', assetInfo.toString())
 
         const asset = assetInfo.toJSON()
@@ -580,6 +581,41 @@ console.log('RSA KEY HEX =>', delegatePubkey);
         responseBuf.payload(getDeploymentIdsResponse)
         const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64')
         console.log('GetDeploymentIdsResponse Base64', responseBase64)
+        nc.publish(reply, responseBase64)
+        break
+      }
+      case 'get_assets': {
+        const assets = await api.query.gluon.assets.entries()
+        console.log(assets.toString())
+
+        const multiAssetInfos = []
+        assets.forEach((asset, i) => {
+          const p2DeploymentIds = []
+          asset[1].deploymentIds.forEach((id, i) => {
+            p2DeploymentIds.push(id.toString().slice(2))
+          })
+          const AssetInfo = {
+            sender: u8aToHex(asset[1].owner).slice(2),
+            p2: u8aToHex(asset[1].p2).slice(2),
+            p2DeploymentIds: p2DeploymentIds,
+          }
+          console.log()
+          const multiAssetInfo = {
+            multiSigAccount: Buffer.from(asset[1].multiSigAccount, 'hex'),
+            assetInfo: AssetInfo
+          }
+          multiAssetInfos.push(multiAssetInfo)
+        })
+
+        const getAssetsResponse = {
+          assets: multiAssetInfos
+        }
+
+        console.log('newGetAssetsResponse:', JSON.stringify(getAssetsResponse))
+        const responseBuf = new proto.DelegateProtobuf('GetAssetsResponse')
+        responseBuf.payload(getAssetsResponse)
+        const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64')
+        console.log('GetAssetsResponse Base64', responseBase64)
         nc.publish(reply, responseBase64)
         break
       }

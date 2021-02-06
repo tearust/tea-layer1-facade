@@ -88,6 +88,15 @@ const types = {
     p2: 'Cid',
     deploymentIds: 'Vec<Cid>',
   },
+  GluonAsset: {
+    owner: 'AccountId',
+    p2: 'Cid',
+    deploymentIds: 'Vec<Cid>',
+    web: "AccountId",
+    app: "AccountId",
+    multiSigAccount: "MultiSigAccount",
+    dataAdhoc: "AccountGenerationDataWithoutP3"
+  },
   //////////////
   //  gluon   //
   //////////////
