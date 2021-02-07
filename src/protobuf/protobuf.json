@@ -1013,20 +1013,25 @@
               "type": "bytes",
               "id": 1
             },
-            "n": {
+            "p2PublicKey": {
               "rule": "required",
-              "type": "uint32",
+              "type": "bytes",
               "id": 2
             },
-            "k": {
+            "n": {
               "rule": "required",
               "type": "uint32",
               "id": 3
             },
+            "k": {
+              "rule": "required",
+              "type": "uint32",
+              "id": 4
+            },
             "keyType": {
               "rule": "required",
               "type": "string",
-              "id": 4
+              "id": 5
             }
           }
         },

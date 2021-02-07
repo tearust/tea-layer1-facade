@@ -597,6 +597,7 @@ console.log('RSA KEY HEX =>', delegatePubkey);
         const asset = assetInfo.toJSON()
         const keyGenerationInfo = {
           p1PublicKey: Buffer.from(asset.dataAdhoc.p1.slice(2), 'hex'),
+          p2PublicKey: Buffer.from(asset.p2.slice(2), 'hex'),
           n: asset.dataAdhoc.n,
           k: asset.dataAdhoc.k,
           keyType: Buffer.from(asset.dataAdhoc.keyType.slice(2), 'hex').toString(),
