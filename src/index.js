@@ -559,10 +559,10 @@ console.log('RSA KEY HEX =>', delegatePubkey);
         const uProtoMsg = Buffer.from(msg, 'base64')
         const getDeploymentIdsRequestBuf = new proto.DelegateProtobuf('GetDeploymentIds')
         const getDeploymentIdsRequest = getDeploymentIdsRequestBuf.decode(uProtoMsg)
-        const multi_sig_account = getDeploymentIdsRequest.multiSigAccount.toString()
+        const multi_sig_account = toHex(getDeploymentIdsRequest.multiSigAccount, { addPrefix: true })
         console.log("get_deployment_ids multiSigAccount:", multi_sig_account);
 
-        const assetInfo = await api.query.gluon.assets(multi_sig_account)
+        const assetInfo = await api.query.gluon.assets('0x'+multi_sig_account)
         console.log('get_deployment_ids result:', assetInfo.toString())
 
         const asset = assetInfo.toJSON()
@@ -588,9 +588,10 @@ console.log('RSA KEY HEX =>', delegatePubkey);
         const uProtoMsg = Buffer.from(msg, 'base64')
         const getKeyGenerationInfoRequestBuf = new proto.DelegateProtobuf('GetKeyGenerationInfoRequest')
         const getKeyGenerationInfoRequest = getKeyGenerationInfoRequestBuf.decode(uProtoMsg)
-        console.log("get_key_generation_info_request multiSigAccount:", getKeyGenerationInfoRequest.multiSigAccount.toString());
+        const multi_sig_account = toHex(getKeyGenerationInfoRequest.multiSigAccount, { addPrefix: true })
+        console.log("get_key_generation_info_request multiSigAccount:", multi_sig_account);
 
-        const assetInfo = await api.query.gluon.assets(getDeploymentIdsRequest.multiSigAccount.toString())
+        const assetInfo = await api.query.gluon.assets(multi_sig_account)
         console.log('get_key_generation_info_request result:', assetInfo.toString())
 
         const asset = assetInfo.toJSON()
