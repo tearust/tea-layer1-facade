@@ -296,7 +296,7 @@ async function main () {
 
         console.log("update_generate_key_result msg:", updateKeyGenerationResultRequest)
 
-        const taskId = '0x' + updateKeyGenerationResultRequest.taskId
+        const taskId = toHex(updateKeyGenerationResultRequest.taskId, { addPrefix: true })
         const delegatorNonce = toHex(updateKeyGenerationResultRequest.delegatorNonce, { addPrefix: true })
         const multiSigAccount = toHex(updateKeyGenerationResultRequest.multiSigAccount, { addPrefix: true })
         const p2PublicKey = toHex(updateKeyGenerationResultRequest.publicKey, { addPrefix: true })
@@ -853,7 +853,7 @@ function handle_events (events) {
 
           const payment = {}
           const keyGenerationResponse = {
-            taskId: Buffer.from(eventData.Cid, 'hex').toString(),
+            taskId: Buffer.from(eventData.Cid, 'hex'),
             dataAdhoc: keyGenerationData,
             payment: payment,
             p1PublicKey: Buffer.from(eventData.AccountGenerationDataWithoutP3.p1, 'hex'),
@@ -876,7 +876,7 @@ function handle_events (events) {
             delegatorTeaNonceRsaEncryption: Buffer.from(eventData.SignTransactionTask.taskData.delegatorNonceRsa, 'hex'),
           }
           const signTransactionResponse = {
-            taskId: Buffer.from(eventData.SignTransactionTask.taskId, 'hex').toString(),
+            taskId: Buffer.from(eventData.SignTransactionTask.taskId, 'hex'),
             dataAdhoc: signTransactionData,
             payment: payment,
             p1Signature: Buffer.from(eventData.SignTransactionTask.p1Signature, 'hex'),
@@ -906,7 +906,7 @@ function handle_events (events) {
           }
 
           const assetGeneratedResponse = {
-            taskId:Buffer.from(eventData.Cid, 'hex').toString().slice(2),
+            taskId: Buffer.from(eventData.Cid, 'hex'),
             multiSigAccount: Buffer.from(eventData.MultiSigAccount, 'hex'),
             assetInfo: AssetInfo,
           }
