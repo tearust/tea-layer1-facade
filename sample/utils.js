@@ -1,9 +1,11 @@
 const { ApiPromise, Keyring, WsProvider } = require('@polkadot/api')
 const { cryptoWaitReady } = require('@polkadot/util-crypto')
+const { stringToU8a, u8aToString, u8aToHex, stringToHex, promisify } = require('@polkadot/util')
 const types = require('../src/types')
 const rpc = require('../src/rpc')
 const BN = require('bn.js')
 const _ = require('lodash');
+const error = require('../src/error');
 
 const Layer1 = exports.Layer1 = class {
   constructor(){
@@ -35,6 +37,62 @@ const Layer1 = exports.Layer1 = class {
     // console.log('Use default account =>', ac);
     return ac;
   }
+
+  async promisify(fn) {
+    return promisify(this, async (cb) => {
+      try {
+        await fn(cb);
+      } catch (e) {
+        cb(e.toString());
+      }
+    });
+  }
+
+  _transactionCallback(param, cb) {
+    const {events = [], status} = param;
+    if (status.isInBlock) {
+      console.log('Included at block hash', status.asInBlock.toHex());
+      console.log('Events:');
+
+      const opts = {};
+      events.forEach(({event: {data, method, section}, phase}) => {
+        console.log(
+          '\t',
+          phase.toString(),
+          `: ${section}.${method}`,
+          data.toString(),
+        );
+        if (method === 'ExtrinsicFailed') {
+          const error = this._findError(data);
+          if (error) {
+            cb(error);
+            return;
+          }
+          opts.data = data;
+        }
+      });
+
+      cb(null, opts);
+    } else if (status.isFinalized) {
+      console.log('Finalized block hash', status.asFinalized.toHex());
+    }
+  }
+  _findError(data) {
+    let err = false;
+
+    _.each(data.toJSON(), (p) => {
+      if (!_.isUndefined(_.get(p, 'Module.error'))) {
+        err = _.get(p, 'Module.error');
+        return false;
+      }
+    });
+
+    if (err !== false) {
+      return error[err];
+    }
+
+    return null;
+  }
 };
 
 exports._ = _;
@@ -46,11 +104,23 @@ exports.runSample = async (name, fn)=>{
   await layer1.init();
 
   try{
-    await fn(layer1);
-  }catch(e){
-    console.error(e);
-  }
+    await fn(layer1, (param, cb)=>{
+      layer1._transactionCallback(param, (err, data)=>{
+        if(err){
+          console.error(`TX ERROR => ${err}`);
+          cb(err);
+        }
+        else{
+          cb(null, data);
+        }
   
+      });
+  
+    });
+  }catch(e){
+
+  }
+
   console.log('----- sample ['+name+'] end -----');
   process.exit(0);
 }
