@@ -6,23 +6,17 @@ const rpc = require('../src/rpc')
 
 var base64 = require('js-base64');
 
-async function main () {
-  const api = await ApiPromise.create({
-    types,
-    rpc
-  })
+const {runSample} = require('./utils');
 
-  await cryptoWaitReady()
+runSample('query_app_browser_pair', async (layer1)=>{
+  const api = layer1.getApi();
 
-  const keyring = new Keyring({ type: 'sr25519' })
-  const alice = keyring.addFromUri('//Alice', { name: 'Alice default' })
-  const bob = keyring.addFromUri('//Bob', { name: 'Alice default' })
+  const alice = layer1.getDefaultAccountByName('Alice');
+  const bob = layer1.getDefaultAccountByName('Bob');
 
-  const app = await api.query.gluon.browserAppPair(alice.publicKey)
-  console.log('query gluon.BrowserAppPair app:', u8aToHex(app[0]), "metadata:", base64.decode(u8aToString(app[1])))
+  const app = await api.query.gluon.browserAppPair(alice.publicKey);
+  console.log('query gluon.BrowserAppPair app:', u8aToHex(app[0]), "metadata:", base64.decode(u8aToString(app[1])));
 
-  const browser = await api.query.gluon.appBrowserPair(bob.publicKey)
-  console.log('query gluon.AppBrowserPair browser:', u8aToHex(browser[0]), "metadata:",base64.decode(u8aToString(browser[1])))
-}
-
-main()
+  const browser = await api.query.gluon.appBrowserPair(bob.publicKey);
+  console.log('query gluon.AppBrowserPair browser:', u8aToHex(browser[0]), "metadata:",base64.decode(u8aToString(browser[1])));
+});
