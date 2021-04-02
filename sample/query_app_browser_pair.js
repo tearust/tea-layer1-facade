@@ -8,7 +8,7 @@ var base64 = require('js-base64');
 
 const {runSample} = require('./utils');
 
-runSample('query_app_browser_pair', async (layer1)=>{
+runSample(null, async (layer1)=>{
   const api = layer1.getApi();
 
   const alice = layer1.getDefaultAccountByName('Alice');

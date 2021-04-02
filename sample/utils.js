@@ -3,6 +3,7 @@ const { cryptoWaitReady } = require('@polkadot/util-crypto')
 const types = require('../src/types')
 const rpc = require('../src/rpc')
 const BN = require('bn.js')
+const _ = require('lodash');
 
 const Layer1 = exports.Layer1 = class {
   constructor(){
@@ -36,7 +37,10 @@ const Layer1 = exports.Layer1 = class {
   }
 };
 
+exports._ = _;
+
 exports.runSample = async (name, fn)=>{
+  name = name || _.last(process.argv[1].split('/'));
   console.log('----- sample ['+name+'] start -----');
   const layer1 = new Layer1();
   await layer1.init();
