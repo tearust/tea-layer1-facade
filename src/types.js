@@ -88,8 +88,9 @@ const types = {
   //////////////
   AccountAsset: {
     accountId: "Cid",
-    btc: "Vec<Cid>",
-    eth: "Vec<Cid>"
+    BTC: "Vec<Cid>",
+    ETH: "Vec<Cid>",
+    DOT: "Vec<Cid>",
  },
   Asset: {
     owner: 'AccountId',
