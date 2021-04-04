@@ -5,7 +5,7 @@ const types = require('../src/types')
 const rpc = require('../src/rpc')
 const BN = require('bn.js')
 const _ = require('lodash');
-const error = require('../src/error');
+const ERRORS = require('../src/error');
 
 const Layer1 = exports.Layer1 = class {
   constructor(){
@@ -79,16 +79,17 @@ const Layer1 = exports.Layer1 = class {
   }
   _findError(data) {
     let err = false;
-
+    let type_index = -1;
     _.each(data.toJSON(), (p) => {
       if (!_.isUndefined(_.get(p, 'Module.error'))) {
         err = _.get(p, 'Module.error');
+        type_index = _.get(p, 'Module.index');
         return false;
       }
     });
 
     if (err !== false) {
-      return error[err];
+      return _.get(ERRORS, type_index+'.'+err, 'Not Found in Error definination');
     }
 
     return null;
@@ -96,6 +97,10 @@ const Layer1 = exports.Layer1 = class {
 };
 
 exports._ = _;
+
+const sleep = exports.sleep = (time)=>{
+  return new Promise((resolve) => setTimeout(resolve, time))
+}
 
 exports.runSample = async (name, fn)=>{
   name = name || _.last(process.argv[1].split('/'));
