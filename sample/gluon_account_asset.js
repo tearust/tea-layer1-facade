@@ -50,11 +50,11 @@ runSample(null, async (layer1, handler)=>{
   console.log('Alice asset', alice_asset);
 
   // add test asset
-  // await F.addTestAsset(layer1, alice, alice.address, 'dot', handler);
-  // await sleep(3000);
+  await F.addTestAsset(layer1, alice, alice.address, 'dot', handler);
+  await sleep(3000);
   
-  // alice_asset = await F.getAccountAssets(layer1, alice);
-  // console.log('Alice asset', alice_asset);
+  alice_asset = await F.getAccountAssets(layer1, alice);
+  console.log('Alice asset', alice_asset);
 
 
   // transfer asset from alict to bob
