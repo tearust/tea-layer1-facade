@@ -61,6 +61,6 @@ AlreadyProxy,
 
 // index list was defined in tea-layer1/runtime/src/lib.rs
 module.exports = {
-  10: format(GLUON_ERRORS),
-  12: format(RECOVERY_ERRORS),
+  16: format(GLUON_ERRORS),
+  14: format(RECOVERY_ERRORS),
 };

@@ -28,6 +28,14 @@ const Layer1 = exports.Layer1 = class {
     return this.api;
   }
 
+  getCurrentBlock(){
+    return new Promise((resolve)=>{
+      this.api.rpc.chain.subscribeNewHeads((header) => {
+        resolve(header);
+      })
+    });
+  }
+
   getDefaultAccountByName(name="Alice"){
     const keyring = new Keyring({ type: 'sr25519' })
 
@@ -123,7 +131,7 @@ exports.runSample = async (name, fn)=>{
   
     });
   }catch(e){
-
+    console.error(e);
   }
 
   console.log('----- sample ['+name+'] end -----');
