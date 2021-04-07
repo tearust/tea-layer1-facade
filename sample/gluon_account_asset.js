@@ -27,14 +27,16 @@ const F = {
     })
   },
 
-  async transferAsset(layer1, account, from_address, to_address, tx_handler){
+  async transferAsset(layer1, account, to_address, tx_handler){
+    const me_address = account.address;
     return await layer1.promisify((cb)=>{
-      const tx = layer1.getApi().tx.gluon.transferAsset(from_address, to_address);
+      const tx = layer1.getApi().tx.gluon.testTransferAsset(me_address, to_address);
       tx.signAndSend(account, (param)=>{
         tx_handler(param, cb);
       })
     });
   },
+
 
 };
 
@@ -50,7 +52,7 @@ runSample(null, async (layer1, handler)=>{
   console.log('Alice asset', alice_asset);
 
   // add test asset
-  await F.addTestAsset(layer1, alice, alice.address, 'dot', handler);
+  await F.addTestAsset(layer1, alice, alice.address, 'btc', handler);
   await sleep(3000);
   
   alice_asset = await F.getAccountAssets(layer1, alice);
@@ -58,13 +60,13 @@ runSample(null, async (layer1, handler)=>{
 
 
   // transfer asset from alict to bob
-  // await F.transferAsset(layer1, alice, alice.address, bob.address, handler);
-  // await sleep(3000);
+  await F.transferAsset(layer1, alice, bob.address, handler);
+  await sleep(3000);
 
-  // alice_asset = await F.getAccountAssets(layer1, alice);
-  // console.log('Alice asset', alice_asset);
+  alice_asset = await F.getAccountAssets(layer1, alice);
+  console.log('Alice asset', alice_asset);
 
-  // let bob_asset = await F.getAccountAssets(layer1, bob);
-  // console.log('Bob asset', bob_asset);
+  let bob_asset = await F.getAccountAssets(layer1, bob);
+  console.log('Bob asset', bob_asset);
   
 });
