@@ -16,9 +16,10 @@ const F = {
     return rs.toHuman();
   },
 
-  async addTestAsset(layer1, account, target_address, key_type, tx_handler){
+  async addTestAsset(layer1, account, key_type, tx_handler){
+
     const api = layer1.getApi();
-    const tx = api.tx.gluon.testAddAccountAsset(target_address, stringToHex(key_type), stringToHex(key_type+'_test_address'));
+    const tx = api.tx.gluon.testAddAccountAsset(stringToHex(key_type), stringToHex(key_type+'_test_address'));
 
     return await layer1.promisify((cb)=>{
       tx.signAndSend(account, (param)=>{
@@ -28,9 +29,9 @@ const F = {
   },
 
   async transferAsset(layer1, account, to_address, tx_handler){
-    const me_address = account.address;
+    
     return await layer1.promisify((cb)=>{
-      const tx = layer1.getApi().tx.gluon.testTransferAsset(me_address, to_address);
+      const tx = layer1.getApi().tx.gluon.testTransferAllAsset(to_address);
       tx.signAndSend(account, (param)=>{
         tx_handler(param, cb);
       })
@@ -48,25 +49,37 @@ runSample(null, async (layer1, handler)=>{
   const charlie = layer1.getDefaultAccountByName('Charlie');
   const dave = layer1.getDefaultAccountByName('Dave');
 
-  let alice_asset = await F.getAccountAssets(layer1, alice);
-  console.log('Alice asset', alice_asset);
+  const jacky = layer1.getAccountFrom('attend faith multiply expire cancel repair beauty syrup panda provide water weather');
+  const kevin = layer1.getAccountFrom('attend faith multiply expire cancel repair beauty syrup panda provide water where');
+
+  await layer1.faucet(jacky.address);
+  await sleep(3000);
+  let jacky_ba = await layer1.getBalance(jacky.address);
+  console.log('jacky balance', jacky_ba);
+
+
+  let jacky_asset = await F.getAccountAssets(layer1, jacky);
+  console.log('jacky asset', jacky_asset);
 
   // add test asset
-  await F.addTestAsset(layer1, alice, alice.address, 'btc', handler);
+  await F.addTestAsset(layer1, jacky, 'dot', handler);
   await sleep(3000);
   
-  alice_asset = await F.getAccountAssets(layer1, alice);
-  console.log('Alice asset', alice_asset);
+  jacky_asset = await F.getAccountAssets(layer1, jacky);
+  console.log('jacky asset', jacky_asset);
 
-
-  // transfer asset from alict to bob
-  await F.transferAsset(layer1, alice, bob.address, handler);
+  // transfer asset from jacky to kevin
+  await F.transferAsset(layer1, jacky, kevin.address, handler);
   await sleep(3000);
 
-  alice_asset = await F.getAccountAssets(layer1, alice);
-  console.log('Alice asset', alice_asset);
+  jacky_asset = await F.getAccountAssets(layer1, jacky);
+  console.log('jacky asset', jacky_asset);
+  jacky_ba = await layer1.getBalance(jacky.address);
+  console.log('jacky balance', jacky_ba);
 
-  let bob_asset = await F.getAccountAssets(layer1, bob);
-  console.log('Bob asset', bob_asset);
+  let kevin_asset = await F.getAccountAssets(layer1, kevin);
+  console.log('kevin asset', kevin_asset);
+  kevin_ba = await layer1.getBalance(kevin.address);
+  console.log('kevin balance', kevin_ba);
   
 });

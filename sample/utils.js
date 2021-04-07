@@ -24,6 +24,43 @@ const Layer1 = exports.Layer1 = class {
     await cryptoWaitReady();
   }
 
+  getAccountFrom(mn){
+    const keyring = new Keyring({ type: 'sr25519' })
+    const ac = keyring.addFromUri(mn);
+    return ac;
+  }
+
+  asUnit(){
+    const yi = new BN('100000000', 10);
+    const million = new BN('10000000', 10);
+    const unit = yi.mul(million);
+
+    return unit;
+  }
+
+  async faucet(target_address){
+    const da = this.getDefaultAccountByName('Ferdie');
+    const total = new BN((1000*this.asUnit()).toString(), 10);
+    const transfer = this.api.tx.balances.transfer(target_address, total);
+
+    return new Promise((resolve)=>{
+      transfer.signAndSend(da, (result) => {
+        console.log(`Current status is ${result.status}`);
+  
+        if (result.status.isInBlock) {
+          console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
+          result.events.forEach(({ event: { data, method, section }, phase }) => {
+            console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString());
+          });
+        } else if (result.status.isFinalized) {
+          console.log(`Transaction finalized at blockHash ${result.status.asFinalized}`);
+          resolve(true);
+        }
+      });
+    });
+    
+  }
+
   getApi(){
     return this.api;
   }
@@ -34,6 +71,12 @@ const Layer1 = exports.Layer1 = class {
         resolve(header);
       })
     });
+  }
+
+  async getBalance(account){
+    let { data: { free: previousFree }, nonce: previousNonce } = await this.api.query.system.account(account);
+
+    return parseInt(previousFree.toString(), 10);
   }
 
   getDefaultAccountByName(name="Alice"){
@@ -97,7 +140,7 @@ const Layer1 = exports.Layer1 = class {
     });
 
     if (err !== false) {
-      return _.get(ERRORS, type_index+'.'+err, 'Not Found in Error definination');
+      return _.get(ERRORS, type_index+'.'+err, 'Not Found in Error definination with [index: '+type_index+', error: '+err+']');
     }
 
     return null;

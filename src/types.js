@@ -86,8 +86,7 @@ const types = {
   //////////////
   //  gluon   //
   //////////////
-  AccountAsset: {
-    accountId: "Cid",
+  AccountAssetData: {
     btc: "Vec<Cid>",
     eth: "Vec<Cid>",
     dot: "Vec<Cid>",
