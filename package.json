@@ -12,6 +12,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@open-rpc/client-js": "^1.6.3",
+    "@open-rpc/schema-utils-js": "^1.14.3",
+    "@open-rpc/server-js": "^1.8.4",
     "@polkadot/api": "^2.1.1",
     "bignumber.js": "^9.0.0",
     "js-base64": "^3.6.0",
