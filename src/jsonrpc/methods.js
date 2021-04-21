@@ -36,6 +36,7 @@ exports.rpc_desc = {
 exports.rpc_methods = (layer1, layer1_account)=>{
   return {
     add_new_node: async (param_b64)=>{
+      console.log(111, param_b64);
       const newRequestBuf = new proto.DelegateProtobuf('AddNewNodeRequest');
       const newNodeRequest = newRequestBuf.decode(Buffer.from(param_b64, 'base64'));
 
