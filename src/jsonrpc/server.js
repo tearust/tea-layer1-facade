@@ -4,6 +4,7 @@ const { WebSocketServerTransportOptions } = require("@open-rpc/server-js/build/t
 const { OpenrpcDocument } = require("@open-rpc/meta-schema");
 const { parseOpenRPCDocument } = require("@open-rpc/schema-utils-js");
 const { MethodMapping } = require("@open-rpc/server-js/build/router");
+const cors = require('cors');
 
 const rpc_doc = require("./testrpc.json");
 const _ = require('lodash');
@@ -27,7 +28,9 @@ const server = class {
           type: "HTTPTransport",
           options: {
             port: 3330,
-            middleware: [],
+            middleware: [
+              cors({ origin: "*" })
+            ],
           },
         },
         {
