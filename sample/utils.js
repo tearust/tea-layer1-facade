@@ -1,5 +1,5 @@
 
-const {_} = require('tearust_utils/index.cjs');
+const {_} = require('tearust_utils');
 // const {Layer1} = require('tearust_layer1');
 
 const client = require('../src/jsonrpc/client');

@@ -1,5 +1,6 @@
 const {_} = require('tearust_utils');
 const proto = require('../proto');
+const b64 = require('js-base64');
 
 exports.rpc_desc = {
   openrpc: '1.0.0',
@@ -28,6 +29,9 @@ exports.rpc_desc = {
           }
         }
       ],
+      result: {
+        name: 'rs', schema: { type: "string" },
+      }
     },
   ],
 
@@ -36,31 +40,25 @@ exports.rpc_desc = {
 exports.rpc_methods = (layer1, layer1_account)=>{
   return {
     add_new_node: async (param_b64)=>{
-      console.log(111, param_b64);
+
+      const buf = Buffer.from(param_b64, 'base64');
       const newRequestBuf = new proto.DelegateProtobuf('AddNewNodeRequest');
-      const newNodeRequest = newRequestBuf.decode(Buffer.from(param_b64, 'base64'));
+      const newNodeRequest = newRequestBuf.decode(buf);
 
       const teaId = '0x' + newNodeRequest.teaId;
-      // const nonce = await layer1.getLayer1Nonce(layer1_account.address);
 
       const api = layer1.getApi();
       const tx = api.tx.tea.addNewNode(teaId);
-      await layer1.sendTx(layer1_account, tx);
 
-        // await api.tx.tea.addNewNode(teaId)
-        //   .signAndSend(ac, {nonce: nonce}, ({ events = [], status }) => {
-        //     if (status.isInBlock) {
-        //       console.log('Add new node with teaId ' + teaId)
-        //       nc.publish(reply, JSON.stringify({ status, teaId }))
-        //     } else {
-        //       console.log('Status of transfer: ' + status.type)
-        //     }
+      let rs = 'OK';
+      try{
+        await layer1.sendTx(layer1_account, tx);
+      }catch(e){
+        rs = e.toString();
+      }
+      
 
-        //     events.forEach(({ phase, event: { data, method, section } }) => {
-        //       console.log(phase.toString() + ' : ' + section + '.' + method + ' ' + data.toString())
-        //     })
-        //   })
-        // console.log('send add_new_node tx')
+      return rs;
     },
 
 

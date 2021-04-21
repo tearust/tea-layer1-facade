@@ -30,10 +30,11 @@ const Facade = class {
     });
     await this.layer1.init();
 
-    const default_account = process.env.FACADE_ACCOUNT_URI || '//Alice';
+    const default_account = process.env.FACADE_ACCOUNT_URI || 'Alice';
     this.current_layer1_account = this.layer1.getAccountFrom(default_account);
+    const balance = await this.layer1.getRealAccountBalance(this.current_layer1_account.address);
 
-    console.log(`facade use account: ${this.current_layer1_account.address}`)
+    console.log(`facade use account: ${this.current_layer1_account.address} | ${balance}`)
   }
 
   async initJsonRpc(){
@@ -51,7 +52,7 @@ async function run(){
   const o = new Facade();
   await o.init();
 
-  
+
 };
 
 run().catch((e)=>{
