@@ -43,6 +43,7 @@ class RAProtobuf extends Protobuf {
 
 const F = {
   DelegateProtobuf,
+  Protobuf,
   RAProtobuf,
   stringToU8 (str) {
     var arr = []
@@ -70,7 +71,7 @@ const F = {
 //     cid: 'dfdfd',
 //     hash: F.stringToU8('sfefesf')
 //   }],
-//   ekey1: F.stringToU8('eeeeee'),
+//   c: F.stringToU8('eeeeee'),
 //   blockChainAccount: F.stringToU8('sdfsdfs')
 // });
 
