@@ -30,6 +30,8 @@ const Facade = class {
     });
     await this.layer1.init();
 
+    this.initLayer1Event();
+
     const default_account = process.env.FACADE_ACCOUNT_URI || 'Alice';
     this.current_layer1_account = this.layer1.getAccountFrom(default_account);
     const balance = await this.layer1.getRealAccountBalance(this.current_layer1_account.address);
@@ -43,6 +45,23 @@ const Facade = class {
 
     this.rpc_client = new rpcclient({
       http_url: RPC_HTTP_URL,
+    });
+  }
+
+  initLayer1Event(){
+    // NewNodeJoined
+    this.layer1.buildCallback('tea.NewNodeJoined', (data, event)=>{
+      // const addNewNodeResponse = {
+      //   accountId: eventData.AccountId.toString(),
+      //   teaId: Buffer.from(eventData.Node.teaId, 'hex')
+      // }
+
+      // const responseBuf = new proto.DelegateProtobuf('AddNewNodeResponse')
+      // responseBuf.payload(addNewNodeResponse)
+      // const responseBase64 = Buffer.from(responseBuf.toBuffer()).toString('base64')
+      // console.log('AddNewNodeResponse Base64', responseBase64)
+
+      console.log('tea.NewNodeJoined =>', data.toHuman())
     });
   }
 };

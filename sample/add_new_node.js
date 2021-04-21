@@ -8,7 +8,7 @@ const {stringToU8a} = require('tearust_layer1');
 runSample(null, async (rpc)=>{
   const p = new proto.DelegateProtobuf('AddNewNodeRequest');
   p.payload({
-    teaId: stringToU8a('aaaaa')
+    teaId: stringToU8a('aaabbbcccdd1')
   });
 
   const buf = p.toBuffer();
