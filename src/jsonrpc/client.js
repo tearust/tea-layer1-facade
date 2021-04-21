@@ -1,6 +1,6 @@
 
 const { RequestManager, HTTPTransport, WebSocketTransport, Client } = require("@open-rpc/client-js");
-const _ = require('lodash');
+const {_} = require('tearust_utils');
 
 const client = class {
   constructor(options){

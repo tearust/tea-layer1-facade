@@ -6,8 +6,8 @@ const { parseOpenRPCDocument } = require("@open-rpc/schema-utils-js");
 const { MethodMapping } = require("@open-rpc/server-js/build/router");
 const cors = require('cors');
 
-const rpc_doc = require("./testrpc.json");
-const _ = require('lodash');
+const {_} = require('tearust_utils');
+const {rpc_desc, rpc_methods} = require('./methods');
 
 const methodMapping = {
   addition: (a, b) => a + b,
@@ -15,14 +15,18 @@ const methodMapping = {
 };
 
 const server = class {
-  constructor(){
+  constructor(layer1_instance, layer1_account){
+    this.layer1 = layer1_instance;
+    this.layer1_account = layer1_account;
+
     this.serverOptions = null;
     this.server = null;
   }
 
   async init(){
     this.serverOptions = {
-      openrpcDocument: await parseOpenRPCDocument(rpc_doc),
+      // openrpcDocument: await parseOpenRPCDocument(rpc_desc),
+      openrpcDocument: rpc_desc,
       transportConfigs: [
         {
           type: "HTTPTransport",
@@ -41,7 +45,7 @@ const server = class {
           },
         },
       ],
-      methodMapping,
+      methodMapping: rpc_methods(this.layer1, this.layer1_account),
     };
   
     const http_port = _.get(this.serverOptions, 'transportConfigs.0.options.port');
