@@ -58,7 +58,7 @@ const Facade = class {
         teaId: Buffer.from(data[1].teaId, 'hex').toString('base64')
       };
       console.log('send event: ', nodeAddedEvent);
-      this.rpc_client.notify("newNodeJoined", nodeAddedEvent);
+      this.rpc_client.call("newNodeJoined", [nodeAddedEvent]);
     });
   }
 };
