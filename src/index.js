@@ -60,6 +60,36 @@ const Facade = class {
       console.log('send event: ', nodeAddedEvent);
       this.rpc_client.call("newNodeJoined", [nodeAddedEvent]);
     });
+    this.layer1.buildCallback('tea.UpdateNodeProfile', (data, event) => {
+      console.log('tea.UpdateNodeProfile =>', data.toHuman())
+      const urls = [];
+      if (data[0].Node.urls) {
+        data[0].Node.urls.forEach((url, i) => {
+          urls.push(Buffer.from(url, 'hex').toString())
+        })
+      }
+      const raNodes = []
+      if (data[0].Node.raNodes) {
+        data[0].Node.raNodes.forEach((raNode, i) => {
+          raNodes.push({
+            teaId: Buffer.from(raNode[0], 'hex').toString('base64'),
+            isPass: Boolean(raNode[1])
+          })
+        })
+      }
+      const updateNodeProfileEvent = {
+        accountId: data[0].toString(),
+        ephemeralPublicKey: Buffer.from(data[1].Node.ephemeralId, 'hex').toString('base64'),
+        profileCid: Buffer.from(data[1].Node.ephemeralId, 'hex').toString(),
+        teaId: Buffer.from(data[1].Node.teaId, 'hex').toString('base64'),
+        publicUrls: urls,
+        peerId: Buffer.from(data[1].Node.peerId, 'hex').toString(),
+        raNodes: raNodes,
+        status: Buffer.from(data[1].Node.status, 'hex').toString(),
+      };
+      console.log('send event: ', updateNodeProfileEvent);
+      this.rpc_client.call("updateNodeProfile", [updateNodeProfileEvent]);
+    });
   }
 };
 

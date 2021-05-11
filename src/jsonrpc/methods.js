@@ -1,7 +1,7 @@
 const {_} = require("tearust_utils");
 const proto = require("../proto");
 const b64 = require("js-base64");
-const { JSONRPCError } = require("@open-rpc/server-js");
+const {JSONRPCError} = require("@open-rpc/server-js");
 
 exports.rpc_desc = {
   openrpc: "1.0.0",
@@ -10,16 +10,6 @@ exports.rpc_desc = {
     version: "1.0.0",
   },
   methods: [
-    {
-      name: "test",
-      params: [
-        {name: "x", schema: {type: "integer"}},
-        {name: "y", schema: {type: "integer"}},
-      ],
-      result: {
-        name: "z", schema: {type: "integer"},
-      }
-    },
     {
       name: "addNewNode",
       params: [
@@ -46,8 +36,38 @@ exports.rpc_desc = {
         },
       }
     },
+    {
+      name: "updateNodeProfile",
+      params: [
+        {
+          schema: {
+            name: "updateNodeProfileRequest",
+            type: "object",
+            properties: {
+              ephemeralPublicKey: {
+                type: "string",
+              },
+              profileCid: {
+                type: "string",
+              },
+              teaId: {
+                type: "string",
+              },
+              peerId: {
+                type: "string",
+              },
+              publicUrls: {
+                type: "array",
+                items: {
+                  type: "string",
+                }
+              }
+            }
+          }
+        }
+      ],
+    }
   ],
-
 };
 
 exports.rpc_methods = (layer1, layer1_account) => {
@@ -70,9 +90,24 @@ exports.rpc_methods = (layer1, layer1_account) => {
       return rs;
     },
 
+    updateNodeProfile: async (params) => {
+      const ephemeralPublicKey = "0x" + Buffer.from(params.ephemeralPublicKey, "base64").toString("hex");
+      const teaId = "0x" + Buffer.from(params.teaId, "base64").toString("hex");
+      const profileCid = "0x" + Buffer.from(params.profileCid).toString("hex");
+      const peerId = "0x" + Buffer.from(params.peerId).toString("hex");
+      const publicUrls = []
+      params.publicUrls.forEach((url, i) => {
+        publicUrls.push("0x" + Buffer.from(url).toString("hex"));
+      })
 
-    test: (a, b) => {
-      return a + b;
+      const api = layer1.getApi();
+      const tx = api.tx.tea.updateNodeProfile(teaId, ephemeralPublicKey, profileCid, publicUrls, peerId);
+
+      try {
+        await layer1.sendTx(layer1_account, tx);
+      } catch (e) {
+        throw new JSONRPCError("Layer1 Error", -32603, e);
+      }
     }
   };
 };
