@@ -14,19 +14,15 @@ const client = class {
   }
 
   async call(rpc_name, params = []) {
-    return await this.client.request({
-      method: rpc_name,
-      params,
-    });
+    try {
+      await this.client.request({
+        method: rpc_name,
+        params,
+      });
+    } catch (e) {
+      console.log('call rpc ' + rpc_name + 'failed, details: ' + e)
+    }
   }
-
-  async notify(rpc_name, params = []) {
-    return await  this.client.notify({
-      method: rpc_name,
-      params,
-    })
-  }
-
 };
 
 module.exports = client;

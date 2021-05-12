@@ -52,7 +52,7 @@ const Facade = class {
   initLayer1Event() {
     // NewNodeJoined
     this.layer1.buildCallback('tea.NewNodeJoined', (data, event) => {
-      console.log('tea.NewNodeJoined =>', data.toHuman())
+      console.log('tea.NewNodeJoined =>', data.toHuman());
       const nodeAddedEvent = {
         accountId: data[0].toString(),
         teaId: Buffer.from(data[1].teaId, 'hex').toString('base64')
@@ -61,7 +61,7 @@ const Facade = class {
       this.rpc_client.call("newNodeJoined", [nodeAddedEvent]);
     });
     this.layer1.buildCallback('tea.UpdateNodeProfile', (data, event) => {
-      console.log('tea.UpdateNodeProfile =>', data)
+      console.log('tea.UpdateNodeProfile =>', data.toHuman());
       const urls = [];
       if (data[1]['urls']) {
         data[1]['urls'].forEach((url, i) => {
