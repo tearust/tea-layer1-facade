@@ -61,16 +61,16 @@ const Facade = class {
       this.rpc_client.call("newNodeJoined", [nodeAddedEvent]);
     });
     this.layer1.buildCallback('tea.UpdateNodeProfile', (data, event) => {
-      console.log('tea.UpdateNodeProfile =>', data.toHuman())
+      console.log('tea.UpdateNodeProfile =>', data)
       const urls = [];
-      if (data[0].Node.urls) {
-        data[0].Node.urls.forEach((url, i) => {
+      if (data[1]['urls']) {
+        data[1]['urls'].forEach((url, i) => {
           urls.push(Buffer.from(url, 'hex').toString())
         })
       }
       const raNodes = []
-      if (data[0].Node.raNodes) {
-        data[0].Node.raNodes.forEach((raNode, i) => {
+      if (data[1]['raNodes']) {
+        data[1]['raNodes'].forEach((raNode, i) => {
           raNodes.push({
             teaId: Buffer.from(raNode[0], 'hex').toString('base64'),
             isPass: Boolean(raNode[1])
@@ -79,13 +79,13 @@ const Facade = class {
       }
       const updateNodeProfileEvent = {
         accountId: data[0].toString(),
-        ephemeralPublicKey: Buffer.from(data[1].Node.ephemeralId, 'hex').toString('base64'),
-        profileCid: Buffer.from(data[1].Node.ephemeralId, 'hex').toString(),
-        teaId: Buffer.from(data[1].Node.teaId, 'hex').toString('base64'),
+        ephemeralPublicKey: Buffer.from(data[1]['ephemeralId'], 'hex').toString('base64'),
+        profileCid: Buffer.from(data[1]['profileCid'], 'hex').toString(),
+        teaId: Buffer.from(data[1]['teaId'], 'hex').toString('base64'),
         publicUrls: urls,
-        peerId: Buffer.from(data[1].Node.peerId, 'hex').toString(),
+        peerId: Buffer.from(data[1]['peerId'], 'hex').toString(),
         raNodes: raNodes,
-        status: Buffer.from(data[1].Node.status, 'hex').toString(),
+        status: data[1]['status'].toString(),
       };
       console.log('send event: ', updateNodeProfileEvent);
       this.rpc_client.call("updateNodeProfile", [updateNodeProfileEvent]);
