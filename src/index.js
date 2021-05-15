@@ -60,6 +60,7 @@ const Facade = class {
       console.log('send event: ', nodeAddedEvent);
       this.rpc_client.call("newNodeJoined", [nodeAddedEvent]);
     });
+
     this.layer1.buildCallback('tea.UpdateNodeProfile', (data, event) => {
       console.log('tea.UpdateNodeProfile =>', data.toHuman());
       const urls = [];
@@ -89,6 +90,20 @@ const Facade = class {
       };
       console.log('send event: ', updateNodeProfileEvent);
       this.rpc_client.call("updateNodeProfile", [updateNodeProfileEvent]);
+    });
+
+    this.layer1.buildCallback('tea.CommitRaResult', (data, event) => {
+      console.log('tea.CommitRaResult =>', data.toHuman());
+
+      const commitRaResultEvent = {
+        accountId: data[0].toString(),
+        teaId: Buffer.from(data[1]['teaId'], 'hex').toString('base64'),
+        targetTeaId: Buffer.from(data[1]['targetTeaId'], 'hex').toString('base64'),
+        isPass: Boolean(data[1]['isPass']),
+        targetStatus: data[1]['targetStatus'].toString(),
+      };
+      console.log('send event: ', commitRaResultEvent);
+      this.rpc_client.call("commitRaResult", [commitRaResultEvent]);
     });
   }
 };

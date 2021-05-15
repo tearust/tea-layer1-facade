@@ -66,6 +66,31 @@ exports.rpc_desc = {
           }
         }
       ],
+    },
+    {
+      name: "commitRaResult",
+      params: [
+        {
+          schema: {
+            name: "commitRaResultRequest",
+            type: "object",
+            properties: {
+              teaId: {
+                type: "string",
+              },
+              targetTeaId: {
+                type: "string",
+              },
+              signature: {
+                type: "string",
+              },
+              isPass: {
+                type: "boolean",
+              },
+            }
+          }
+        }
+      ],
     }
   ],
 };
@@ -102,6 +127,22 @@ exports.rpc_methods = (layer1, layer1_account) => {
 
       const api = layer1.getApi();
       const tx = api.tx.tea.updateNodeProfile(teaId, ephemeralPublicKey, profileCid, publicUrls, peerId);
+
+      try {
+        await layer1.sendTx(layer1_account, tx);
+      } catch (e) {
+        throw new JSONRPCError("Layer1 Error", -32603, e);
+      }
+    },
+
+    commitRaResult: async (params) => {
+      const teaId = "0x" + Buffer.from(params.teaId, "base64").toString("hex");
+      const targetTeaId = "0x" + Buffer.from(params.targetTeaId, "base64").toString("hex");
+      const isPass = params.isPass;
+      const signature = "0x" + Buffer.from(params.signature, "base64").toString("hex");
+
+      const api = layer1.getApi();
+      const tx = api.tx.tea.remoteAttestation(teaId, targetTeaId, isPass, signature);
 
       try {
         await layer1.sendTx(layer1_account, tx);
