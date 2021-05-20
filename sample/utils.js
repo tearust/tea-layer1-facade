@@ -3,7 +3,7 @@ const {_} = require('tearust_utils');
 const {Layer1} = require('tearust_layer1');
 
 const client = require('../src/jsonrpc/client');
-
+const types = require('../res/types.json');
 
 exports._ = _;
 
@@ -16,7 +16,11 @@ exports.runSample = async (name, fn, type="layer1")=>{
   console.log('----- sample ['+name+'] start -----');
 
   if(type === 'layer1'){
-    const layer1 = new Layer1();
+    const layer1 = new Layer1({
+      ws_url: 'ws://127.0.0.1:9944',
+      env: 'node',
+      types,
+    });
     await layer1.init();
 
     try{
