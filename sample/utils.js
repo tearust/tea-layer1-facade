@@ -1,6 +1,6 @@
 
 const {_} = require('tearust_utils');
-// const {Layer1} = require('tearust_layer1');
+const {Layer1} = require('tearust_layer1');
 
 const client = require('../src/jsonrpc/client');
 
@@ -16,26 +16,15 @@ exports.runSample = async (name, fn, type="layer1")=>{
   console.log('----- sample ['+name+'] start -----');
 
   if(type === 'layer1'){
-    // const layer1 = new Layer1();
-    // await layer1.init();
+    const layer1 = new Layer1();
+    await layer1.init();
 
-    // try{
-    //   await fn(layer1, (param, cb)=>{
-    //     layer1._transactionCallback(param, (err, data)=>{
-    //       if(err){
-    //         console.error(`TX ERROR => ${err}`);
-    //         cb(err);
-    //       }
-    //       else{
-    //         cb(null, data);
-    //       }
+    try{
+      await fn(layer1);
+    }catch(e){
+      console.error('[LAYER1]', e);
+    }
     
-    //     });
-    
-    //   });
-    // }catch(e){
-    //   console.error(e);
-    // }
   }
   else if(type === 'rpc'){
     try{
