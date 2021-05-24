@@ -1,30 +1,13 @@
 {
-  "AccountInfo": "AccountInfoWithDualRefCount",
-  "Address": "AccountId",
-  "LookupSource": "AccountId",
-  "TeaPubKey": "[u8; 32]",
+  "Address": "MultiAddress",
+  "LookupSource": "MultiAddress",
   "Url": "Bytes",
+  "TeaPubKey": "[u8; 32]",
+  "PeerId": "Bytes",
   "Cid": "Bytes",
-  "TxData": "Bytes",
-  "ClientPubKey": "Bytes",
-  "MultiSigAccount": "Bytes",
   "Signature": "Bytes",
-  "KeyType": "Bytes",
-  "RefNum": "H256",
-  "Result": "Bytes",
   "NodeStatus": {
     "_enum": ["Pending", "Active", "Inactive", "Invalid"]
-  },
-  
-  "RaResult": {
-    "teaId": "TeaPubKey",
-    "targetTeaId": "TeaPubKey",
-    "isPass": "bool",
-    "targetStatus": "NodeStatus"
-  },
-  "ManifestInfo": {
-    "teaId": "TeaPubKey",
-    "manifestCid": "Cid"
   },
   "Node": {
     "teaId": "TeaPubKey",
@@ -37,106 +20,25 @@
     "raNodes": "Vec<(TeaPubKey, bool)>",
     "status": "NodeStatus"
   },
-  "Model": {
-    "account": "AccountId",
-    "payment": "u32",
-    "cid": "Bytes"
-  },
-  "Task": {
-    "refNum": "RefNum",
-    "delegateTeaId": "TeaPubKey",
-    "modelCid": "Bytes",
-    "bodyCid": "Bytes",
-    "payment": "Balance"
-  },
-  "Deposit": {
-    "delegatorTeaId": "TeaPubKey",
-    "delegatorEphemeralId": "TeaPubKey",
-    "delegatorSignature": "Bytes",
-    "amount": "Balance",
-    "expiredTime": "BlockNumber"
-  },
-  "Bill": {
-    "employer": "AccountId",
-    "delegatorTeaId": "TeaPubKey",
-    "delegatorEphemeralId": "TeaPubKey",
-    "errandUuid": "Bytes",
-    "errandJsonCid": "Bytes",
-    "executorEphemeralId": "TeaPubKey",
-    "expiredTime": "BlockNumber",
-    "resultCid": "Cid",
-    "bills": "Vec<(AccountId, Balance)>"
-  },
-  "Data": {
-    "delegatorEphemeralId": "TeaPubKey",
-    "deploymentId": "Cid",
-    "cid": "Cid",
-    "description": "Cid",
-    "capChecker": "Cid"
-  },
-  "Service": {
-    "delegatorEphemeralId": "TeaPubKey",
-    "deploymentId": "Cid",
-    "cid": "Cid",
-    "capChecker": "Cid"
+  "RaResult": {
+    "teaId": "TeaPubKey",
+    "teaTargetId": "TeaPubKey",
+    "isPass": "bool",
+    "targetStatus": "NodeStatus"
   },
   "RuntimeActivity": {
     "teaId": "TeaPubKey",
     "cid": "Option<Cid>",
     "ephemeralId": "TeaPubKey",
-    "updateHeight": "BlockNumber",
-    "delegatorPubKey": "Option<TeaPubKey>"
-  },
-  "TransferAssetTask": {
-    "from": "Cid",
-    "to": "Cid",
-    "startHeight": "BlockNumber"
-  },
-  "AccountAsset": {
-    "accountId": "Cid",
-    "btc": "Vec<Cid>",
-    "eth": "Vec<Cid>"
-  },
-  "SignTransactionData": {
-    "dataAdhoc": "TxData",
-    "delegatorNonceHash": "Cid",
-    "delegatorNonceRsa": "Cid"
-  },
-  "SignTransactionTask": {
-    "taskId": "Cid",
-    "multisigAddress": "Cid",
-    "p1Signature": "TxData",
-    "taskData": "SignTransactionData"
-  },
-  "SignTransactionResult": {
-    "taskId": "Cid",
-    "succeed": "bool"
-  },
-  "Asset": {
-    "owner": "Cid",
-    "p2": "Cid",
-    "deploymentIds": "Vec<Cid>",
-    "web": "AccountId",
-    "app": "AccountId",
-    "multiSigAccount": "MultiSigAccount",
-    "dataAdhoc": "AccountGenerationDataWithoutP3"
-  },
-  "AccountGenerationDataWithoutP3": {
-    "keyType": "Cid",
-    "n": "u32",
-    "k": "u32",
-    "delegatorNonceHash": "Cid",
-    "delegatorNonceRsa": "Cid",
-    "p1": "Cid"
+    "updateHeight": "BlockNumber"
   },
 
-
-  "Dai": "u64",
+  "Dai": "u32",
   "StakingItem": {
     "owner": "AccountId",
     "category": "Cid",
-    "amount": "u128",
-    "cml": "Vec<AssetId>"
+    "amount": "u32",
+    "cml": "Option<AssetId>"
   },
   "CML": {
     "id": "AssetId",
@@ -146,6 +48,13 @@
     "lock_time": "BlockNumber",
     "mining_rate": "u8",
     "staking_slot": "Vec<StakingItem>",
-    "created_at": "BlockNumber"
+    "created_at": "BlockNumber",
+    "miner_id": "Cid"
+  },
+  "MinerItem": {
+    "id": "Cid",
+    "group": "Cid",
+    "ip": "Cid",
+    "status": "Cid"
   }
 }
