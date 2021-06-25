@@ -33,10 +33,21 @@
     "updateHeight": "BlockNumber"
   },
 
-  "Dai": "u32",
-  "CmlId": "u32",
+  "CmlType": {
+    "_enum": ["A", "B", "C"]
+  },
+  "DefrostScheduleType": {
+    "_enum": ["Investor", "Team"]
+  },
+
+  "Voucher": {
+    "amount": "u32",
+    "cml_type": "CmlType"
+  },
+
+  "CmlId": "u64",
   "CmlStatus": {
-    "_enum": ["SeedLive", "SeedFrozen", "CmlLive", "Staking", "Dead"]
+    "_enum": ["Seed", "SeedStaking", "Tree"]
   },
   "MinerStatus": {
     "_enum": ["Active", "Offline"]
@@ -54,25 +65,33 @@
     "amount": "Option<Balance>",
     "cml": "Option<CmlId>"
   },
+
+  "MachineId": "u64",
   "MinerItem": {
-    "id": "Cid",
+    "id": "MachineId",
     "ip": "Cid",
     "status": "MinerStatus"
   },
 
-  "CML": {
+  "Seed": {
     "id": "CmlId",
+    "cml_type": "CmlType",
+    "defrost_schedule": "DefrostScheduleType",
+    "generate_defrost_time": "BlockNumber",
+    "lifespan": "BlockNumber",
+    "performance": "u32"
+  },
+
+  "CML": {
+    "intrinsic": "Seed",
     "group": "CmlGroup",
     "status": "CmlStatus",
-    "life_time": "BlockNumber",
-    "lock_time": "BlockNumber",
     "mining_rate": "u8",
     "staking_slot": "Vec<StakingItem>",
-    "created_at": "BlockNumber",
-    "miner_id": "Cid"
+    "planted_at": "BlockNumber",
+    "machine_id": "Option<MachineId>"
   },
   
-
   "AuctionId": "u64",
   "AuctionItem": {
     "id": "AuctionId",
@@ -92,5 +111,16 @@
     "deposit": "Option<Balance>",
 	  "created_at": "BlockNumber",
 	  "updated_at": "BlockNumber"
-  }
+  },
+
+  "chainbridge::ChainId": "u8",
+  "ChainId": "u8",
+  "ResourceId": "[u8; 32]",
+  "DepositNonce": "u64",
+  "ProposalVotes": {
+    "votes_for": "Vec<AccountId>",
+    "votes_against": "Vec<AccountId>",
+    "status": "enum"
+  },
+  "TokenId": "U256"
 }
