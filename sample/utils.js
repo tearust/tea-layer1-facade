@@ -19,6 +19,7 @@ exports.runSample = async (name, fn, type="layer1")=>{
     const layer1 = new Layer1({
       ws_url: 'ws://127.0.0.1:9944',
       env: 'node',
+      system_top_up_account: 'Alice',
       types,
     });
     await layer1.init();
