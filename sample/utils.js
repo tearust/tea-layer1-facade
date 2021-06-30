@@ -1,6 +1,8 @@
 
 const {_} = require('tearust_utils');
 const {Layer1} = require('tearust_layer1');
+const chalk = require('chalk');
+const axios = require('axios');
 
 const client = require('../src/jsonrpc/client');
 const types = require('../res/types.json');
@@ -9,6 +11,42 @@ exports._ = _;
 
 const sleep = exports.sleep = (time)=>{
   return new Promise((resolve) => setTimeout(resolve, time))
+}
+
+const _aseert = {
+  Y: 0, N: 0,
+};
+exports.assert = (condition_left, condition_right, error)=>{
+  
+  if(condition_left !== condition_right){
+    _aseert.N++;
+    console.log(chalk.red('[assert failed] => '+error.toString()));
+    console.log(chalk.red(`Left: ${condition_left} | Right: ${condition_right}`));
+  }
+  else{
+    _aseert.Y++
+  }
+};
+
+const LAYER1_RPC = 'http://127.0.0.1:9933';
+exports.layer1_rpc = async (method, params=[])=>{
+  const data = {
+    jsonrpc: '2.0',
+    method,
+    params,
+    id: 9999
+  };
+  const rs = await axios.post(LAYER1_RPC, data, {
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  });
+
+  if(rs.data.id === 9999){
+    return rs.data.result;
+  }
+
+  return null;
 }
 
 exports.runSample = async (name, fn, type="layer1")=>{
@@ -26,8 +64,12 @@ exports.runSample = async (name, fn, type="layer1")=>{
 
     try{
       await fn(layer1);
+
+      console.log(chalk.cyan(`----- Test result -----`));
+      console.log(chalk.green(`Y => ${_aseert.Y}`));
+      console.log(chalk.red(`N => ${_aseert.N}`));
     }catch(e){
-      console.error('[LAYER1]', e);
+      console.log(chalk.red('[LAYER1]', e));
     }
     
   }
