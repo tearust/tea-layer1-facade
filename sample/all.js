@@ -54,6 +54,13 @@ const F = {
     const transfer_tx = api.tx.balances.transfer(to.address, total);
     await layer1_instance.sendTx(from, transfer_tx);
   },
+  async assertWithTxError(layer1, account, tx, error){
+    try{
+      await layer1.sendTx(account, tx);
+    }catch(e){
+      assert(e, error, 'Layer1 Error incorrect.');
+    }
+  }
 };
 
 runSample(null, async (layer1)=>{
@@ -62,8 +69,9 @@ runSample(null, async (layer1)=>{
   const dave = layer1.getAccountFrom('Dave');
   const charlie = layer1.getAccountFrom('Charlie');
 
-  // transfer 10 tea to dave
+  // transfer 10 tea to dave and charlie
   await F.transferBalance(layer1, ac, dave, 10);
+  await F.transferBalance(layer1, ac, charlie, 10);
 
   let dave_balance = await F.getAllBalance(layer1, dave.address);
   assert(dave_balance.free, 10, 'Transfer Balance incorrect.');
@@ -82,6 +90,37 @@ runSample(null, async (layer1)=>{
   const dave_cml_id_list = await layer1_rpc('cml_getUserCmlList', [dave.address]);
   assert(dave_cml_id_list.length, 10, 'User Cml List length incorrect.');
 
+  // ac luckdraw the vouchers to cml seeds
+  const ac_luckdraw_tx = api.tx.cml.drawCmlsFromVoucher('Investor');
+  await layer1.sendTx(ac, ac_luckdraw_tx);
+  await sleep(1000);
+  const ac_cml_id_list = await layer1_rpc('cml_getUserCmlList', [ac.address]);
+  assert(ac_cml_id_list.length, 10, 'User Cml List length incorrect.');
+
+  // dave put the first cml to auction store
+  const dave_put_auction_tx = api.tx.auction.putToStore(dave_cml_id_list[0], 100*layer1.asUnit(), 200*layer1.asUnit());
+  await layer1.sendTx(dave, dave_put_auction_tx);
+  await sleep(1000);
+
+  const dave_auction_store = (await api.query.auction.userAuctionStore(dave.address)).toJSON();
+  assert(dave_auction_store.length, 1, 'User auction store length incorrect.');
+
+  const auction_id = dave_auction_store[0];
+
+  // charlie try to bid for auction
+  const charlie_bid_auction_tx = api.tx.auction.bidForAuction(auction_id, 10*layer1.asUnit());
+  await F.assertWithTxError(layer1, charlie, charlie_bid_auction_tx, 'NotEnoughBalance');
+  await sleep(1000);
+
+  // ac bid for auction with buy_now_price
+  const ac_bid_auction_tx = api.tx.auction.bidForAuction(auction_id, 200*layer1.asUnit());
+  await layer1.sendTx(ac, ac_bid_auction_tx);
+
+  assert((await F.getAllBalance(layer1, dave.address)).free>200, true, 'Balance incorrect after auction success.');
+  assert((await layer1_rpc('cml_getUserCmlList', [dave.address])).length, 9, 'Cml list length incorrect after auction success.');
+  assert((await layer1_rpc('cml_getUserCmlList', [ac.address])).length, 11, 'Cml list length incorrect after auction success.');
+
+  
   
 
   await sleep(1000);
