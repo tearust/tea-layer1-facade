@@ -1,4 +1,5 @@
 const {runSample, sleep, _, assert, layer1_rpc} = require('./utils');
+const {hexToString} = require('tearust_layer1');
 
 const F = {
   async getVouchers(layer1_instance, address){
@@ -60,6 +61,23 @@ const F = {
     }catch(e){
       assert(e, error, 'Layer1 Error incorrect.');
     }
+  },
+  async getCmlByList(layer1_instance, cml_list){
+    const api = layer1_instance.getApi();
+
+    const list = await Promise.all(_.map(cml_list, async (cml_id)=>{
+      let cml = await api.query.cml.cmlStore(cml_id);
+      cml = cml.toJSON();
+
+      return {
+        ...cml,
+        ...cml.intrinsic,
+        machine_id: hexToString(cml.machine_id),
+      };
+    }));
+
+    return list;
+    
   }
 };
 
@@ -87,14 +105,14 @@ runSample(null, async (layer1)=>{
   const dave_luckdraw_tx = api.tx.cml.drawCmlsFromVoucher('Investor');
   await layer1.sendTx(dave, dave_luckdraw_tx);
   await sleep(1000);
-  const dave_cml_id_list = await layer1_rpc('cml_getUserCmlList', [dave.address]);
+  let dave_cml_id_list = await layer1_rpc('cml_getUserCmlList', [dave.address]);
   assert(dave_cml_id_list.length, 10, 'User Cml List length incorrect.');
 
   // ac luckdraw the vouchers to cml seeds
   const ac_luckdraw_tx = api.tx.cml.drawCmlsFromVoucher('Investor');
   await layer1.sendTx(ac, ac_luckdraw_tx);
   await sleep(1000);
-  const ac_cml_id_list = await layer1_rpc('cml_getUserCmlList', [ac.address]);
+  let ac_cml_id_list = await layer1_rpc('cml_getUserCmlList', [ac.address]);
   assert(ac_cml_id_list.length, 10, 'User Cml List length incorrect.');
 
   // dave put the first cml to auction store
@@ -117,11 +135,23 @@ runSample(null, async (layer1)=>{
   await layer1.sendTx(ac, ac_bid_auction_tx);
 
   assert((await F.getAllBalance(layer1, dave.address)).free>200, true, 'Balance incorrect after auction success.');
-  assert((await layer1_rpc('cml_getUserCmlList', [dave.address])).length, 9, 'Cml list length incorrect after auction success.');
-  assert((await layer1_rpc('cml_getUserCmlList', [ac.address])).length, 11, 'Cml list length incorrect after auction success.');
 
+  ac_cml_id_list = await layer1_rpc('cml_getUserCmlList', [ac.address]);
+  assert(ac_cml_id_list.length, 11, 'Cml list length incorrect after auction success.');
+  dave_cml_id_list = await layer1_rpc('cml_getUserCmlList', [dave.address]);
+  assert(dave_cml_id_list.length, 9, 'Cml list length incorrect after auction success.');
   
-  
+
+  // find a defrost 0 cml seed to plant
+  const ac_cml_list = await F.getCmlByList(layer1, ac_cml_id_list);
+  const dave_cml_list = await F.getCmlByList(layer1, dave_cml_id_list);
+
+  let ac_seed_cml_id = _.find(ac_cml_list, (x)=>x.generate_defrost_time<1);
+  if(ac_seed_cml_id) ac_seed_cml_id = ac_seed_cml_id.id;
+  let dave_seed_cml_id = _.find(dave_cml_list, (x)=>x.generate_defrost_time<1);
+  if(dave_seed_cml_id) dave_seed_cml_id = dave_seed_cml_id.id;
+
+  console.log(111, ac_seed_cml_id, dave_seed_cml_id);
 
   await sleep(1000);
 
