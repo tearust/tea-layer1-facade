@@ -87,6 +87,8 @@ runSample(null, async (layer1)=>{
   const dave = layer1.getAccountFrom('Dave');
   const charlie = layer1.getAccountFrom('Charlie');
 
+  let ac_balance;
+
   // transfer 10 tea to dave and charlie
   await F.transferBalance(layer1, ac, dave, 10);
   await F.transferBalance(layer1, ac, charlie, 10);
@@ -113,7 +115,7 @@ runSample(null, async (layer1)=>{
   await layer1.sendTx(ac, ac_luckdraw_tx);
   await sleep(1000);
   let ac_cml_id_list = await layer1_rpc('cml_getUserCmlList', [ac.address]);
-  assert(ac_cml_id_list.length, 10, 'User Cml List length incorrect.');
+  assert(ac_cml_id_list.length, 30, 'User Cml List length incorrect.');
 
   // dave put the first cml to auction store
   const dave_put_auction_tx = api.tx.auction.putToStore(dave_cml_id_list[0], 100*layer1.asUnit(), 200*layer1.asUnit());
@@ -137,7 +139,7 @@ runSample(null, async (layer1)=>{
   assert((await F.getAllBalance(layer1, dave.address)).free>200, true, 'Balance incorrect after auction success.');
 
   ac_cml_id_list = await layer1_rpc('cml_getUserCmlList', [ac.address]);
-  assert(ac_cml_id_list.length, 11, 'Cml list length incorrect after auction success.');
+  assert(ac_cml_id_list.length, 31, 'Cml list length incorrect after auction success.');
   dave_cml_id_list = await layer1_rpc('cml_getUserCmlList', [dave.address]);
   assert(dave_cml_id_list.length, 9, 'Cml list length incorrect after auction success.');
   
@@ -151,9 +153,29 @@ runSample(null, async (layer1)=>{
   let dave_seed_cml_id = _.find(dave_cml_list, (x)=>x.generate_defrost_time<1);
   if(dave_seed_cml_id) dave_seed_cml_id = dave_seed_cml_id.id;
 
-  console.log(111, ac_seed_cml_id, dave_seed_cml_id);
-
+  
   await sleep(1000);
+
+  console.log('dave cml seed => ', dave_seed_cml_id);
+  if(dave_seed_cml_id){
+    console.log('plant dave cml seed.');
+
+    const dave_plant_tx = api.tx.cml.startMining(dave_seed_cml_id, 'miner', '1.2.3.4');
+    await layer1.sendTx(dave, dave_plant_tx);
+    await sleep(1000);
+
+    // dave balance: { free: 0, lock: 209.9996, reward: null, debt: 790.0003 }
+    dave_balance = await F.getAllBalance(layer1, dave.address);
+    assert(Math.round(dave_balance.debt), 790, 'Dave debt balance incorrect.');
+
+    // ac staking to dave cml
+    const ac_staking_tx = api.tx.cml.startStaking(dave_seed_cml_id, null);
+    await layer1.sendTx(ac, ac_staking_tx);
+    await sleep(1000);
+
+    ac_balance = await F.getAllBalance(layer1, ac.address);
+    assert(ac_balance.lock, 1000, 'ac staking lock balance incorrect.');
+  }
 
 
 
