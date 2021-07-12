@@ -50,7 +50,7 @@
       "Team"
     ]
   },
-  "Voucher": {
+  "Coupon": {
     "amount": "u32",
     "cml_type": "CmlType"
   },
