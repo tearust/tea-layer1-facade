@@ -1,6 +1,6 @@
-const {_} = require('tearust_utils');
-const {Layer1, helper, hexToString} = require('tearust_layer1');
 
+const {Layer1, helper, hexToString} = require('tearust_layer1');
+const {_} = require('tearust_utils');
 const rpcserver = require('./jsonrpc/server');
 const rpcclient = require('./jsonrpc/client');
 const types = require('../res/types.json');
